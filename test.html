@@ -25,18 +25,6 @@
                         this.label[0].animate({scale: 1}, 500);
                     }
                 });
-                
-                function cloneArray(array) {
-                    return (function () {
-                        return Array.prototype.splice.call(arguments, 0);
-                    }).apply(null, array);
-                }
-                var a = [1,2,3, {a: 0}];
-                var b = cloneArray(a);
-                b[0] = 2;
-                b[3].a = 1;
-                console.log(a);
-                console.log(b);
             };
         </script>
     </head>
