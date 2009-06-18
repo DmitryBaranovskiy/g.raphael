@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>test</title>
+        <script src="../raphael.js" type="text/javascript" charset="utf-8"></script>
+        <script src="piechart.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+            window.onload = function () {
+                var r = Raphael(10, 10, 640, 480);
+                var pie = r.g.piechart(320, 240, 100, [55, 20, 13, 32, 5, 1, 2, 10]);
+                pie.color("rgb(71, 142, 199)", "rgb(118, 152, 16)", "rgb(216, 86, 31)", "rgb(215, 229, 46)", "rgb(12, 67, 131)", "rgb(95, 190, 65)", "rgb(245, 131, 43)", "rgb(237, 239, 0)", "rgb(12, 135, 201)", "rgb(173, 42, 21)", "rgb(174, 191, 71)");
+                pie.stroke("#fff");
+                pie.legend(["%%.%% – jQuery users"], "*").moveLegend("west");
+                pie.hover(function () {
+                    this.sector.stop();
+                    this.sector.scale(1.1, 1.1, this.cx, this.cy);
+                    if (this.label) {
+                        this.label[0].stop();
+                        this.label[0].scale(1.5);
+                    }
+                }, function () {
+                    this.sector.animate({scale: [1, 1, this.cx, this.cy]}, 500);
+                    if (this.label) {
+                        this.label[0].animate({scale: 1}, 500);
+                    }
+                });
+                
+                function cloneArray(array) {
+                    return (function () {
+                        return Array.prototype.splice.call(arguments, 0);
+                    }).apply(null, array);
+                }
+                var a = [1,2,3, {a: 0}];
+                var b = cloneArray(a);
+                b[0] = 2;
+                b[3].a = 1;
+                console.log(a);
+                console.log(b);
+            };
+        </script>
+    </head>
+    <body>
+        
+    </body>
+</html>
