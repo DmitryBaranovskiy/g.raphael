@@ -7,23 +7,40 @@
         <script src="piechart.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" charset="utf-8">
             window.onload = function () {
-                var r = Raphael(10, 10, 640, 480);
-                var pie = r.g.piechart(320, 240, 100, [55, 20, 13, 32, 5, 1, 2, 10]);
-                pie.color("rgb(71, 142, 199)", "rgb(118, 152, 16)", "rgb(216, 86, 31)", "rgb(215, 229, 46)", "rgb(12, 67, 131)", "rgb(95, 190, 65)", "rgb(245, 131, 43)", "rgb(237, 239, 0)", "rgb(12, 135, 201)", "rgb(173, 42, 21)", "rgb(174, 191, 71)");
-                pie.stroke("#fff");
-                pie.legend(["%%.%% – jQuery users"], "*").moveLegend("west");
+                var r = Raphael(10, 10, 1200, 600);
+                var pie = r.g.piechart(320, 240, 100, [55, 20, 13, 32, 5, 1, 2, 10, 1, 1,1,1,1,1,1,1]);
+                pie.legend(["%%.%% – jQuery users", "EMACS users"], "%%.%% others", "square");
                 pie.hover(function () {
                     this.sector.stop();
                     this.sector.scale(1.1, 1.1, this.cx, this.cy);
                     if (this.label) {
                         this.label[0].stop();
                         this.label[0].scale(1.5);
+                        this.label[1].attr({"font-weight": 800});
                     }
                 }, function () {
                     this.sector.animate({scale: [1, 1, this.cx, this.cy]}, 500);
                     if (this.label) {
                         this.label[0].animate({scale: 1}, 500);
+                        this.label[1].attr({"font-weight": 400});
                     }
+                });
+                // pie.hover(function () {
+                //    this.lbl && this.lbl.stop().attr({opacity: .5, "text-opacity": 1});
+                //    if (!this.lbl) {
+                //        pie.inject(this.lbl = r.g.label(this.mx, this.my, this.value).attr({fill: "#000", opacity: .5, "text-fill": "#fff"}));
+                //        this.lbl[0].insertBefore(this.lbl[1]);
+                //    }
+                // }, function () {
+                //    this.lbl && this.lbl.animate({opacity: 0}, 500);
+                // });
+                
+                r.g.barchart(600, 10, 320, 200, [55, 20, 13, 32, 5, 1, 2, 10]).label(["%%.%%", "EMACS\nusers"]).hover(function () {
+                    this.bar.darker();
+                    this.label && this.label.attr({"font-weight": 800});
+                }, function () {
+                    this.bar.original();
+                    this.label && this.label.attr({"font-weight": 400});
                 });
             };
         </script>
