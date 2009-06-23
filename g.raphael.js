@@ -89,8 +89,10 @@
             len = Math.min(cut + 1, values.length);
             others && values.splice(len) && (values[cut].others = true);
             for (var i = 0; i < len; i++) {
+                var mangle = angle + 360 * values[i] / total / 2;
                 var p = sector(cx, cy, r, angle, angle += 360 * values[i] / total, colors[i] || "#666");
                 p.value = values[i];
+                p.mangle = mangle;
                 sectors.push(p);
                 chart.push(p);
             }
@@ -126,8 +128,10 @@
                         cy: cy,
                         mx: sector.middle.x,
                         my: sector.middle.y,
+                        mangle: sector.mangle,
                         r: r,
                         value: values[j],
+                        total: total,
                         label: that.labels && that.labels[j]
                     };
                     cover.mouseover(function () {
@@ -347,10 +351,12 @@
             }
             break;
             case "soft":
-            var r = Math.min(width, height) / 5;
+            var r;
             if (!dir) {
+                r = Math.min(width, height / 5);
                 path = ["M", x - .5, y - (height / 2) - .5, "l", width - r, 0, "a", r, r, 0, 0, 1, r, r, "l", 0, height - r * 2, "a", r, r, 0, 0, 1, -r, r, "l", r - width, 0, "z"];
             } else {
+                r = Math.min(width / 5, height);
                 path = ["M", x - (width / 2) - .5, y - .5, "l", 0, r - height, "a", r, r, 0, 0, 1, r, -r, "l", width - 2 * r, 0, "a", r, r, 0, 0, 1, r, r, "l", 0, height - r, "z"];
             }
         }
@@ -453,6 +459,51 @@
             this.txt.attr(fortext);
             return this;
         };
+        return res;
+    };
+    Raphael.fn.g.drop = function (x, y, size, angle) {
+        size = size || 30;
+        angle = angle || 0;
+        return this.path({}, ["M", x, y, "l", size, 0, "A", size * .4, size * .4, 0, 1, 0, x + size * .7, y - size * .7, "z"]).rotate(22.5 - angle, x, y);
+    };
+    Raphael.fn.g.dropNote = function (x, y, text, bgfg, size, angle) {
+        size = size || 30;
+        angle = angle || 0;
+        bgfg = (bgfg || "#000-#fff").split("-");
+        bgfg[0] = bgfg[0] || "#000";
+        bgfg[1] = bgfg[1] || "#fff";
+        var res = this.set();
+        res.push(this.g.drop(x, y, size, angle).attr({fill: bgfg[0], stroke: "none"}));
+        angle = (angle + 90) * Math.PI / 180;
+        res.push(this.text(x + size * Math.sin(angle), y + size * Math.cos(angle), text).attr({"font-size": size * 12 / 30, fill: bgfg[1]}));
+        res.drop = res[0];
+        res.text = res[1];
+        return res;
+    };
+    Raphael.fn.g.blob = function (x, y, text, angle) {
+        var angle = (angle || 45) + 90,
+            size = 12,
+            rad = Math.PI / 180,
+            fontSize = size * 12 / 12;
+        var txt = this.text(x + size * Math.sin((angle) * rad), y + size * Math.cos((angle) * rad) - fontSize / 2, text).attr({"font-size": fontSize, fill: "#fff"});
+        var bb = txt.getBBox(),
+            w = Math.max(bb.width + fontSize, size * 25 / 12),
+            h = Math.max(bb.height + fontSize, size * 25 / 12),
+            x2 = x + size * Math.sin((angle - 22.5) * rad),
+            y2 = y + size * Math.cos((angle - 22.5) * rad),
+            x1 = x + size * Math.sin((angle + 22.5) * rad),
+            y1 = y + size * Math.cos((angle + 22.5) * rad),
+            dx = (x1 - x2) / 2,
+            dy = (y1 - y2) / 2,
+            rx = w / 2,
+            ry = h / 2,
+            k = -Math.sqrt(Math.abs(rx * rx * ry * ry - rx * rx * dy * dy - ry * ry * dx * dx) / (rx * rx * dy * dy + ry * ry * dx * dx)),
+            cx = k * rx * dy / ry + (x1 + x2) / 2,
+            cy = k * -ry * dx / rx + (y1 + y2) / 2;
+        txt.attr({x: cx, y: cy});
+        var res = this.set();
+        res.push(this.path({fill: "#000", stroke: "none"}, ["M", x, y, "L", x1, y1, "A", rx, ry, 0, 1, 1, x2, y2, "z"]).insertBefore(txt));
+        res.push(txt);
         return res;
     };
     Raphael.fn.g.colorValue = function (value, total, s, b) {
