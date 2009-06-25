@@ -1,3 +1,9 @@
+/*
+ * g.Raphael 0.2 - Charting library on Raphaël
+ *
+ * Copyright (c) 2009 Dmitry Baranovskiy (http://raphaeljs.com)
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ */
 (function () {
     var markers = {
         disc: "disc",
@@ -45,10 +51,20 @@
             covers = [],
             chart = this.set(),
             order = [],
-            len = values.length;
-            
+            len = values.length,
+            angle = -20,
+            total = 0,
+            others = 0,
+            cut = 9,
+            defcut = true;
         if (len == 1) {
-            chart.push(paper.circle(cx, cy, r));
+            chart.push(paper.circle(cx, cy, r).attr({fill: colors[0], stroke: "#fff"}));
+            covers.push(paper.circle(cx, cy, r).attr({fill: "#000", opacity: 0, "stroke-width": 3}));
+            chart.push(covers[0]);
+            total = values[0];
+            values[0] = {value: values[0], order: 0, valueOf: function () { return this.value; }};
+            chart[0].middle = {x: cx, y: cy};
+            chart[0].mangle = 180;
         } else {
             function sector(cx, cy, r, startAngle, endAngle, fill) {
                 var rad = Math.PI / 180,
@@ -62,11 +78,6 @@
                 p.middle = {x: xm, y: ym};
                 return p;
             }
-            var angle = -20,
-                total = 0,
-                others = 0,
-                cut = 9,
-                defcut = true;
             for (var i = 0; i < len; i++) {
                 total += values[i];
                 values[i] = {value: values[i], order: i, valueOf: function () { return this.value; }};
@@ -151,14 +162,14 @@
                 y = cy - len * 10;
             labels = labels || [];
             mark = markers[mark && mark.toLowerCase()] || "disc";
-            this.labels = [];
+            this.labels = paper.set();
             this.labelsDir = "east";
             for (var i = 0; i < len; i++) {
                 var clr = this[i].attr("fill");
                 var j = values[i].order;
                 values[i].others && (labels[j] = otherslabel || "Others");
                 labels[j] = labelise(labels[j], values[i], total);
-                this.labels[i] = paper.set();
+                this.labels.push(paper.set());
                 this.labels[i].push(paper.g[mark](x + 5, y + 10 + i * 20, 5).attr({fill: clr, stroke: "none"}));
                 this.labels[i].push(paper.text(x + 20, y + 10 + i * 20, labels[j] || values[j]).attr({font: '10px "Arial"', fill: "#000", "text-anchor": "start"}));
             }
@@ -220,37 +231,69 @@
 
     Raphael.fn.g.barchart = function (x, y, width, height, values, isHorisontal, type, gutter) {
         type = {round: "round", sharp: "sharp", soft: "soft"}[type] || "square";
-        gutter = parseFloat(gutter || "10%");
-        var bars = this.set(),
+        gutter = parseFloat(gutter || "20%");
+        var chart = this.set(),
+            bars = this.set(),
+            covers = this.set(),
             total = Math.max.apply(Math, values),
             paper = this,
+            multi = 0,
             len = values.length;
+        if (typeof values[0] == "object" && values[0] instanceof Array) {
+            total = [];
+            multi = len;
+            len = 0;
+            for (var i = values.length; i--;) {
+                total.push(Math.max.apply(Math, values[i]));
+                len = Math.max(len, values[i].length);
+            }
+            for (var i = values.length; i--;) {
+                if (values[i].length < len) {
+                    for (var j = len; j--;) {
+                        values[i].push(0);
+                    }
+                }
+            }
+            total = Math.max.apply(Math, total);
+        }
         if (isHorisontal) {
             var barwidth = Math.round(width / (len * (100 + gutter) + gutter) * 100),
                 barhgutter = barwidth * gutter / 100,
                 barvgutter = 20,
                 X = x + barhgutter,
                 Y = (height - 2 * barvgutter) / total;
+            barwidth /= multi || 1;
             for (var i = 0; i < len; i++) {
-                var h = Math.round(values[i] * Y),
-                    top = y + height - barvgutter - h;
-                bars.push(this.g.finger(Math.round(X + barwidth / 2), top + h, barwidth, h, true, type).attr({stroke: "none", fill: colors[i]}));
-                bars[i].y = top;
-                bars[i].x = Math.round(X + barwidth / 2);
-                X += barwidth + barhgutter;
+                for (var j = 0; j < multi; j++) {
+                    var h = Math.round((multi ? values[j][i] : values[i]) * Y),
+                        top = y + height - barvgutter - h,
+                        bar;
+                    bars.push(bar = this.g.finger(Math.round(X + barwidth / 2), top + h, barwidth, h, true, type).attr({stroke: "none", fill: colors[multi > 1 ? j : i]}));
+                    bar.y = top;
+                    bar.x = Math.round(X + barwidth / 2);
+                    bar.w = barwidth;
+                    bar.h = h;
+                    bar.value = multi ? values[j][i] : values[i];
+                    X += barwidth;
+                }
+                X += barhgutter;
             }
             X = x + barhgutter;
             for (var i = 0; i < len; i++) {
-                bars.push(this.rect(Math.round(X), barvgutter, barwidth, y + height - barvgutter).attr({stroke: "none", fill: "#000", opacity: 0}));
-                X += barwidth + barhgutter;
+                for (var j = 0; j < multi; j++) {
+                    covers.push(this.rect(Math.round(X), y + barvgutter, barwidth, height - barvgutter).attr({stroke: "none", fill: "#000", opacity: 0}));
+                    X += barwidth;
+                }
+                X += barhgutter;
             }
-            bars.label = function (labels, isBottom) {
+            chart.label = function (labels, isBottom) {
                 labels = labels || [];
-                this.labels = [];
+                this.labels = paper.set();
                 for (var i = 0; i < len; i++) {
-                    labels[i] = labelise(labels[i], values[i], total);
-                    this.labels.push(paper.g.label(this[i].x, isBottom ? y + height - barvgutter / 2 : this[i].y - 10, labels[i]).attr({fill: "none"}));
-                    this.labels[i].insertBefore(this[len]);
+                    for (var j = 0; j < multi; j++) {
+                        var label = labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total);
+                        this.labels.push(paper.g.label(bars[i * (multi || 1) + j].x, isBottom ? y + height - barvgutter / 2 : bars[i * (multi || 1) + j].y - 10, label).attr([{fill: "none"}]).insertBefore(covers[0]));
+                    }
                 }
                 return this;
             };
@@ -259,53 +302,77 @@
                 bargutter = barheight * gutter / 100,
                 Y = y + bargutter,
                 X = (width - 1) / total;
+            barheight /= multi || 1;
             for (var i = 0; i < len; i++) {
-                bars.push(this.g.finger(x, Y + barheight / 2, Math.round(values[i] * X), barheight, false, type).attr({stroke: "none", fill: colors[i]}));
-                bars[i].x = x + Math.round(values[i] * X);
-                bars[i].y = Y + barheight / 2;
-                Y += barheight + bargutter;
+                for (var j = 0; j < multi; j++) {
+                    var val = multi ? values[j][i] : values[i],
+                        bar;
+                    bars.push(bar = this.g.finger(x, Y + barheight / 2, Math.round(val * X), barheight, false, type).attr({stroke: "none", fill: colors[multi > 1 ? j : i]}));
+                    bar.x = x + Math.round(val * X);
+                    bar.y = Y + barheight / 2;
+                    bar.w = Math.round(val * X);
+                    bar.h = barheight;
+                    bar.value = val;
+                    Y += barheight;
+                }
+                Y += bargutter;
             }
             Y = y + bargutter;
             for (var i = 0; i < len; i++) {
-                bars.push(this.rect(x, Y, width, barheight).attr({stroke: "none", fill: "#000", opacity: 0}));
-                Y += barheight + bargutter;
+                for (var j = 0; j < multi; j++) {
+                    covers.push(this.rect(x, Y, width, barheight).attr({stroke: "none", fill: "#000", opacity: 0}));
+                    Y += barheight;
+                }
+                Y += bargutter;
             }
-            bars.label = function (labels, isRight) {
+            chart.label = function (labels, isRight) {
                 labels = labels || [];
-                this.labels = [];
+                this.labels = paper.set();
                 for (var i = 0; i < len; i++) {
-                    labels[i] = labelise(labels[i], values[i], total);
-                    var X = isRight ? this[i].x - barheight / 2 + 3 : x + 5,
-                        A = isRight ? "end" : "start";
-                    this.labels.push(paper.g.label(X, this[i].y, labels[i]).attr({fill: "none", "text-anchor": A}));
-                    if (this.labels[i].getBBox().x < x + 5) {
-                        this.labels[i].attr({x: x + 5, "text-anchor": "start"});
+                    for (var j = 0; j < multi; j++) {
+                        var  label = labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total);
+                        var X = isRight ? bars[i * (multi || 1) + j].x - barheight / 2 + 3 : x + 5,
+                            A = isRight ? "end" : "start",
+                            L;
+                        this.labels.push(L = paper.text(X, bars[i * (multi || 1) + j].y, label).attr({"text-anchor": A}).insertBefore(covers[0]));
+                        if (L.getBBox().x < x + 5) {
+                            L.attr({x: x + 5, "text-anchor": "start"});
+                        }
                     }
-                    this.labels[i].insertBefore(this[len]);
                 }
                 return this;
             };
         }
-        bars.hover = function (fin, fout) {
+        chart.hover = function (fin, fout) {
             fout = fout || function () {};
             var that = this;
             for (var i = 0; i < len; i++) {
-                (function (bar, cover, j) {
-                    var o = {
-                        bar: bar,
-                        value: values[j],
-                        label: that.labels && that.labels[j]
-                    };
-                    cover.mouseover(function () {
-                        fin.call(o);
-                    }).mouseout(function () {
-                        fout.call(o);
-                    });
-                })(this[i], this[i + len], i);
+                for (var j = 0; j < multi; j++) {
+                    (function (bar, cover, i, j) {
+                        var o = {
+                            bar: bar,
+                            value: multi ? values[j][i] : values[i],
+                            label: that.labels && that.labels[i]
+                        };
+                        cover.mouseover(function () {
+                            fin.call(o);
+                        }).mouseout(function () {
+                            fout.call(o);
+                        });
+                    })(bars[i * (multi || 1) + j], covers[i * (multi || 1) + j], i, j);
+                }
             }
             return this;
         };
-        return bars;
+        chart.push(bars);
+        chart.bars = bars;
+        chart.covers = covers;
+        chart.remove = function () {
+            chart.bars.remove();
+            chart.labels && chart.labels.remove();
+            chart.covers.remove();
+        };
+        return chart;
     };
 
 
@@ -367,6 +434,7 @@
         return this.circle(cx, cy, r);
     };
     Raphael.fn.g.square = function (cx, cy, r) {
+        r = r * .7;
         return this.rect(cx - r, cy - r, 2 * r, 2 * r);
     };
     Raphael.fn.g.triangle = function (cx, cy, r) {
@@ -396,6 +464,51 @@
         r = r / 2;
         return this.path({}, "M".concat(cx, ",", cy - r / 2, "l", [0, -r, r * 1.5, r * 1.5, -r * 1.5, r * 1.5, 0, -r, -r, 0, 0, -r], "z"));
     };
+    Raphael.fn.g.tag = function (x, y, text, angle, r) {
+        angle = angle || 0;
+        r = r == null ? 5 : r;
+        text = text || "$9.99";
+        var res = this.set(),
+            d = 3;
+        res.push(this.path({fill: "#000", stroke: "none"}));
+        res.push(this.text(x, y, text).attr({"font-size": 12, fill: "#fff"}));
+        res.update = function () {
+            this.rotate(0, x, y);
+            var bb = this[1].getBBox();
+            if (bb.height >= r * 2) {
+                this[0].attr({path: ["M", x, y + r, "a", r, r, 0, 1, 1, 0, -r * 2, r, r, 0, 1, 1, 0, r * 2, "m", 0, -r * 2 -d, "a", r + d, r + d, 0, 1, 0, 0, (r + d) * 2, "L", x + r + d, y + bb.height / 2 + d, "l", bb.width + 2 * d, 0, 0, -bb.height - 2 * d, -bb.width - 2 * d, 0, "L", x, y - r - d].join(",")});
+            } else {
+                var dx = Math.sqrt(Math.pow(r + d, 2) - Math.pow(bb.height / 2 + d, 2));
+                this[0].attr({path: ["M", x, y + r, "a", r, r, 0, 1, 1, 0, -r * 2, r, r, 0, 1, 1, 0, r * 2, "M", x + dx, y - bb.height / 2 - d, "a", r + d, r + d, 0, 1, 0, 0, bb.height + 2 * d, "l", r + d - dx + bb.width + 2 * d, 0, 0, -bb.height - 2 * d, "L", x + dx, y - bb.height / 2 - d].join(",")});
+            }
+            this[1].attr({x: x + r + d + bb.width / 2, y: y});
+            angle = 360 - angle;
+            this.rotate(angle, x, y);
+            angle > 90 && angle < 270 && this[1].attr({x: x - r - d - bb.width / 2, y: y, rotation: [180 + angle, x, y]});
+            return this;
+        };
+        res.update();
+        return res;
+    };
+    Raphael.fn.g.flag = function (x, y, text, angle) {
+        angle = angle || 0;
+        text = text || "$9.99";
+        var res = this.set(),
+            d = 3;
+        res.push(this.path({fill: "#000", stroke: "none"}));
+        res.push(this.text(x, y, text).attr({"font-size": 12, fill: "#fff"}));
+        res.update = function () {
+            this.rotate(0, x, y);
+            var bb = this[1].getBBox();
+            this[0].attr({path: ["M", x, y, "l", bb.height / 2 + d, -bb.height / 2 - d, bb.width + 2 * d, 0, 0, bb.height + 2 * d, -bb.width - 2 * d, 0, "z"].join(",")});
+            this[1].attr({x: x + bb.height / 2 + d + bb.width / 2, y: y});
+            angle = 360 - angle;
+            this.rotate(angle, x, y);
+            angle > 90 && angle < 270 && this[1].attr({x: x - r - d - bb.width / 2, y: y, rotation: [180 + angle, x, y]});
+            return this;
+        };
+        return res.update();
+    };
     Raphael.fn.g.label = function (x, y, text) {
         var res = this.set();
         res.push(this.rect(x, y, 10, 10).attr({stroke: "none", fill: "#ccc"}));
@@ -407,107 +520,53 @@
                 r = Math.min(bb.width + 10, bb.height + 10) / 2;
             this.pill.attr({x: bb.x - r / 2, y: bb.y - r / 2, width: bb.width + r, height: bb.height + r, r: r});
         };
-        (function (pillattr, txtattr) {
-            res.pill.attr = function () {
-                var r = pillattr.apply(this, arguments);
-                if (r == this) {
-                    var bb = res.txt.getBBox(),
-                        r = Math.min(bb.width + 10, bb.height + 10) / 2;
-                    pillattr.call(this, {x: bb.x - r / 2, y: bb.y - r / 2, width: bb.width + r, height: bb.height + r, r: r});
-                }
-                return r;
-            };
-            res.txt.attr = function () {
-                var r = txtattr.apply(this, arguments);
-                if (r == this) {
-                    var bb = this.getBBox(),
-                        r = Math.min(bb.width + 10, bb.height + 10) / 2;
-                    pillattr.call(res.pill, {x: bb.x - r / 2, y: bb.y - r / 2, width: bb.width + r, height: bb.height + r, r: r});
-                }
-                return r;
-            };
-        })(res.pill.attr, res.txt.attr);
         res.update();
-        res.attr = function (name, value) {
-            if (value) {
-                var t = name;
-                name = {};
-                name[t] = value;
-            }
-            var fortext = {},
-                forbg = {};
-            for (var n in name) {
-                switch (n) {
-                    case "fill":
-                    case "stroke":
-                    case "opacity":
-                        forbg[n] = name[n];
-                    break;
-                    case "text-fill":
-                    case "text-stroke":
-                    case "text-opacity":
-                    case "x":
-                    case "y":
-                        fortext[n.replace(/^text-/, "")] = name[n];
-                    break;
-                    default:
-                        forbg[n] = fortext[n] = name[n];
-                    break;
-                }
-            }
-            this.pill.attr(forbg);
-            this.txt.attr(fortext);
-            return this;
-        };
         return res;
     };
-    Raphael.fn.g.drop = function (x, y, size, angle) {
+    Raphael.fn.g.drop = function (x, y, text, size, angle) {
         size = size || 30;
         angle = angle || 0;
-        return this.path({}, ["M", x, y, "l", size, 0, "A", size * .4, size * .4, 0, 1, 0, x + size * .7, y - size * .7, "z"]).rotate(22.5 - angle, x, y);
-    };
-    Raphael.fn.g.dropNote = function (x, y, text, bgfg, size, angle) {
-        size = size || 30;
-        angle = angle || 0;
-        bgfg = (bgfg || "#000-#fff").split("-");
-        bgfg[0] = bgfg[0] || "#000";
-        bgfg[1] = bgfg[1] || "#fff";
         var res = this.set();
-        res.push(this.g.drop(x, y, size, angle).attr({fill: bgfg[0], stroke: "none"}));
+        res.push(this.path({}, ["M", x, y, "l", size, 0, "A", size * .4, size * .4, 0, 1, 0, x + size * .7, y - size * .7, "z"]).attr({fill: "#000", stroke: "none", rotation: [22.5 - angle, x, y]}));
         angle = (angle + 90) * Math.PI / 180;
-        res.push(this.text(x + size * Math.sin(angle), y + size * Math.cos(angle), text).attr({"font-size": size * 12 / 30, fill: bgfg[1]}));
+        res.push(this.text(x + size * Math.sin(angle), y + size * Math.cos(angle), text).attr({"font-size": size * 12 / 30, fill: "#fff"}));
         res.drop = res[0];
         res.text = res[1];
         return res;
     };
     Raphael.fn.g.blob = function (x, y, text, angle) {
-        var angle = (angle || 45) + 90,
+        var angle = (+angle + 1 ? angle : 45) + 90,
             size = 12,
             rad = Math.PI / 180,
             fontSize = size * 12 / 12;
         var txt = this.text(x + size * Math.sin((angle) * rad), y + size * Math.cos((angle) * rad) - fontSize / 2, text).attr({"font-size": fontSize, fill: "#fff"});
-        var bb = txt.getBBox(),
-            w = Math.max(bb.width + fontSize, size * 25 / 12),
-            h = Math.max(bb.height + fontSize, size * 25 / 12),
-            x2 = x + size * Math.sin((angle - 22.5) * rad),
-            y2 = y + size * Math.cos((angle - 22.5) * rad),
-            x1 = x + size * Math.sin((angle + 22.5) * rad),
-            y1 = y + size * Math.cos((angle + 22.5) * rad),
-            dx = (x1 - x2) / 2,
-            dy = (y1 - y2) / 2,
-            rx = w / 2,
-            ry = h / 2,
-            k = -Math.sqrt(Math.abs(rx * rx * ry * ry - rx * rx * dy * dy - ry * ry * dx * dx) / (rx * rx * dy * dy + ry * ry * dx * dx)),
-            cx = k * rx * dy / ry + (x1 + x2) / 2,
-            cy = k * -ry * dx / rx + (y1 + y2) / 2;
-        txt.attr({x: cx, y: cy});
         var res = this.set();
-        res.push(this.path({fill: "#000", stroke: "none"}, ["M", x, y, "L", x1, y1, "A", rx, ry, 0, 1, 1, x2, y2, "z"]).insertBefore(txt));
+        res.update = function () {
+            var bb = this[1].getBBox(),
+                w = Math.max(bb.width + fontSize, size * 25 / 12),
+                h = Math.max(bb.height + fontSize, size * 25 / 12),
+                x2 = x + size * Math.sin((angle - 22.5) * rad),
+                y2 = y + size * Math.cos((angle - 22.5) * rad),
+                x1 = x + size * Math.sin((angle + 22.5) * rad),
+                y1 = y + size * Math.cos((angle + 22.5) * rad),
+                dx = (x1 - x2) / 2,
+                dy = (y1 - y2) / 2,
+                rx = w / 2,
+                ry = h / 2,
+                k = -Math.sqrt(Math.abs(rx * rx * ry * ry - rx * rx * dy * dy - ry * ry * dx * dx) / (rx * rx * dy * dy + ry * ry * dx * dx)),
+                cx = k * rx * dy / ry + (x1 + x2) / 2,
+                cy = k * -ry * dx / rx + (y1 + y2) / 2;
+            this[1].attr({x: cx, y: cy});
+            this[0].attr({path: ["M", x, y, "L", x1, y1, "A", rx, ry, 0, 1, 1, x2, y2, "z"].join(",")});
+            return this;
+        };
+        res.push(this.path({fill: "#000", stroke: "none"}).insertBefore(txt));
         res.push(txt);
+        res.update();
         return res;
     };
     Raphael.fn.g.colorValue = function (value, total, s, b) {
-        return "hsb(" + [Math.min((1 - value / total || 100) * .5, 1), s || .75, b || .75] + ")";
+        return "hsb(" + [Math.min((1 - value / total) * .4, 1), s || .75, b || .75] + ")";
     };
     Raphael.el.lighter = function (times) {
         times = times || 2;
