@@ -52,7 +52,7 @@
             chart = this.set(),
             order = [],
             len = values.length,
-            angle = -20,
+            angle = 0,
             total = 0,
             others = 0,
             cut = 9,
@@ -74,7 +74,7 @@
                     y1 = cy + r * Math.sin(-startAngle * rad),
                     y2 = cy + r * Math.sin(-endAngle * rad),
                     ym = cy + r / 2 * Math.sin(-(startAngle + (endAngle - startAngle) / 2) * rad),
-                    p = paper.path({fill: fill, stroke: "#fff"}, ["M", cx, cy, "L", x1, y1, "A", r, r, 0, +(endAngle - startAngle > 180), 0, x2, y2, "z"]);
+                    p = paper.path({fill: fill, stroke: "#fff"}, ["M", cx, cy, "L", x1, y1, "A", r, r, 0, +(Math.abs(endAngle - startAngle) > 180), 1, x2, y2, "z"]);
                 p.middle = {x: xm, y: ym};
                 return p;
             }
@@ -100,8 +100,12 @@
             len = Math.min(cut + 1, values.length);
             others && values.splice(len) && (values[cut].others = true);
             for (var i = 0; i < len; i++) {
-                var mangle = angle + 360 * values[i] / total / 2;
-                var p = sector(cx, cy, r, angle, angle += 360 * values[i] / total, colors[i] || "#666");
+                var mangle = angle - 360 * values[i] / total / 2;
+                if (!i) {
+                    angle = 90 - mangle;
+                    mangle = angle - 360 * values[i] / total / 2;
+                }
+                var p = sector(cx, cy, r, angle, angle -= 360 * values[i] / total, colors[i] || "#666");
                 p.value = values[i];
                 p.mangle = mangle;
                 sectors.push(p);
@@ -229,10 +233,10 @@
         return chart;
     };
 
-    Raphael.fn.g.barchart = function (x, y, width, height, values, isHorisontal, type, gutter) {
-        type = {round: "round", sharp: "sharp", soft: "soft"}[type] || "square";
-        gutter = parseFloat(gutter || "20%");
-        var chart = this.set(),
+    Raphael.fn.g.barchart = function (x, y, width, height, values, isVertical, opts) {
+        var type = {round: "round", sharp: "sharp", soft: "soft"}[opts && opts.type] || "square",
+            gutter = parseFloat((opts && opts.gutter) || "20%"),
+            chart = this.set(),
             bars = this.set(),
             covers = this.set(),
             total = Math.max.apply(Math, values),
@@ -256,7 +260,8 @@
             }
             total = Math.max.apply(Math, total);
         }
-        if (isHorisontal) {
+        total = (opts && opts.to) || total;
+        if (!isVertical) {
             var barwidth = Math.round(width / (len * (100 + gutter) + gutter) * 100),
                 barhgutter = barwidth * gutter / 100,
                 barvgutter = 20,
@@ -374,7 +379,80 @@
         };
         return chart;
     };
+    
+    Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) {
+        function shrink(values, dim) {
+            var k = values.length / dim,
+                j = 0,
+                l = k,
+                sum = 0,
+                res = [];
+            while (j < values.length) {
+                l--;
+                if (l < 0) {
+                    sum += values[j] * (1 + l);
+                    res.push(sum / k);
+                    sum = values[j++] * -l;
+                    l += k;
+                } else {
+                    sum += values[j++];
+                }
+            }
+            return res;
+        }
+        opts = opts || {};
+        if (!isArray(valuesx[0])) {
+            valuesx = [valuesx];
+        }
+        if (!isArray(valuesy[0])) {
+            valuesy = [valuesy];
+        }
+        var allx = Array.prototype.concat.apply([], valuesx),
+            ally = Array.prototype.concat.apply([], valuesy),
+            xdim = snapEnds(Math.min.apply(Math, allx), Math.max.apply(Math, allx), valuesx[0].length - 1),
+            minx = xdim.from,
+            maxx = xdim.to,
+            gutter = opts.gutter || 10,
+            kx = (width - gutter * 2) / (maxx - minx),
+            ydim = snapEnds(Math.min.apply(Math, ally), Math.max.apply(Math, ally), valuesy[0].length - 1),
+            miny = ydim.from,
+            maxy = ydim.to,
+            ky = (height - gutter * 2) / (maxy - miny),
+            len = Math.max(valuesx[0].length, valuesy[0].length),
+            symbol = opts.symbol || "",
+            path = [];
 
+        for (var i = 0, ii = valuesy.length; i < ii; i++) {
+            len = Math.max(len, valuesy[i].length);
+        }
+        var shades = this.set();
+        for (var i = 0, ii = valuesy.length; i < ii; i++) {
+            if (opts.shade) {
+                shades.push(this.path({stroke: "none", fill: colors[i], opacity: .3}));
+            }
+            if (valuesy[i].length > width) {
+                valuesy[i] = shrink(valuesy[i], width);
+            }
+            if (valuesx[i] && valuesx[i].length > width) {
+                valuesx[i] = shrink(valuesx[i], width);
+            }
+        }
+        for (var i = 0, ii = valuesy.length; i < ii; i++) {
+            var line = this.path({stroke: colors[i], "stroke-width": opts.width || 2, "stroke-linejoin": "round", "stroke-linecap": "round", "stroke-dasharray": opts.dash || ""}),
+                sym = isArray(symbol) ? symbol[i] : symbol;
+            path = [];
+            for (var j = 0, jj = valuesy[i].length; j < jj; j++) {
+                var X = x + gutter + ((valuesx[i] || valuesx[0])[j] - minx) * kx;
+                var Y = y + height - gutter - (valuesy[i][j] - miny) * ky;
+                (isArray(sym) ? sym[j] : sym) && this.g[isArray(sym) ? sym[j] : sym](X, Y, 5).attr({fill: colors[i], stroke: "none"});
+                path = path.concat([j ? "L" : "M", X, Y]);
+            }
+            if (opts.shade) {
+                shades[i].attr({path: path.concat(["L", X, y + height - gutter, "L",  x + gutter + ((valuesx[i] || valuesx[0])[0] - minx) * kx, y + height - gutter, "z"]).join(",")});
+            }
+            line.attr({path: path.join(",")});
+        }
+    };
 
 
     Raphael.fn.g.finger = function (x, y, width, height, dir, ending) {
@@ -431,7 +509,11 @@
     };
 
     Raphael.fn.g.disc = function (cx, cy, r) {
-        return this.circle(cx, cy, r);
+        return this.circle(cx, cy, r || 10);
+    };
+    Raphael.fn.g.line = function (cx, cy, r) {
+        // r = r * .7;
+        return this.rect(cx - r, cy - r / 5, 2 * r, 2 * r / 5);
     };
     Raphael.fn.g.square = function (cx, cy, r) {
         r = r * .7;
@@ -482,7 +564,7 @@
                 this[0].attr({path: ["M", x, y + r, "a", r, r, 0, 1, 1, 0, -r * 2, r, r, 0, 1, 1, 0, r * 2, "M", x + dx, y - bb.height / 2 - d, "a", r + d, r + d, 0, 1, 0, 0, bb.height + 2 * d, "l", r + d - dx + bb.width + 2 * d, 0, 0, -bb.height - 2 * d, "L", x + dx, y - bb.height / 2 - d].join(",")});
             }
             this[1].attr({x: x + r + d + bb.width / 2, y: y});
-            angle = 360 - angle;
+            angle = (360 - angle) % 360;
             this.rotate(angle, x, y);
             angle > 90 && angle < 270 && this[1].attr({x: x - r - d - bb.width / 2, y: y, rotation: [180 + angle, x, y]});
             return this;
@@ -568,6 +650,93 @@
     Raphael.fn.g.colorValue = function (value, total, s, b) {
         return "hsb(" + [Math.min((1 - value / total) * .4, 1), s || .75, b || .75] + ")";
     };
+
+    function isArray(arr) {
+        return Object.prototype.toString.call(arr) == "[object Array]";
+    }
+    function snapEnds(from, to, steps) {
+        var f = from,
+            t = to;
+        function round(a) {
+            return Math.abs(a - .5) < .25 ? Math.floor(a) + .5 : Math.round(a);
+        }
+        var d = (t - f) / steps,
+            r = Math.floor(d),
+            R = r,
+            i = 0;
+        if (r) {
+            while (R) {
+                i--;
+                R = Math.floor(d * Math.pow(10, i)) / Math.pow(10, i);
+            }
+            i ++;
+        } else {
+            while (!r) {
+                i = i || 1;
+                r = Math.floor(d * Math.pow(10, i)) / Math.pow(10, i);
+                i++;
+            }
+            i && i--;
+        }
+        var t = round(to * Math.pow(10, i)) / Math.pow(10, i);
+        if (t < to) {
+            t = round((to + .5) * Math.pow(10, i)) / Math.pow(10, i);
+        }
+        var f = round((from - (i > 0 ? 0 : .5)) * Math.pow(10, i)) / Math.pow(10, i);
+        return {from: f, to: t, power: i};
+    }
+    Raphael.fn.g.axis = function (x, y, length, from, to, steps, isVertical, labels, type, dashsize) {
+        dashsize = dashsize == null ? 1 : dashsize;
+        type = type || "t";
+        steps = steps || 10;
+        var path = type == "|" ? [] : isVertical ? ["M", x + .5, y, "l", 0, -length] : ["M", x, y + .5, "l", length, 0],
+            ends = snapEnds(from, to, steps),
+            f = ends.from,
+            t = ends.to,
+            i = ends.power,
+            j = 0,
+            text = this.set();
+        d = (t - f) / steps;
+        var label = f,
+            rnd = i > 0 ? i : 0;
+            dx = length / steps;
+        if (isVertical) {
+            var Y = y;
+            while (Y >= y - length) {
+                type != "-" && (path = path.concat(["M", x - (type == "+" ? dashsize : 0), Y + .5, "l", dashsize * 2 + 1, 0]));
+                text.push(this.text(x - dashsize - 2, Y, (labels && labels[j++]) || (Math.round(label) == label ? label : +label.toFixed(rnd))).attr({"text-anchor": "end"}));
+                label += d;
+                Y -= dx;
+            }
+            if (Y + dx != y - length) {
+                type != "-" && (path = path.concat(["M", x - (type == "+" ? dashsize : 0), y - length + .5, "l", dashsize * 2 + 1, 0]));
+                text.push(this.text(x - dashsize - 2, y - length, (labels && labels[j]) || (Math.round(label) == label ? label : +label.toFixed(rnd))).attr({"text-anchor": "end"}));
+            }
+        } else {
+            var X = x,
+                label = f,
+                rnd = i > 0 ? i : 0;
+                dx = length / steps;
+            while (X <= x + length) {
+                type != "-" && (path = path.concat(["M", X + .5, y - (type == "+" ? dashsize : 0), "l", 0, dashsize * 2 + 1]));
+                text.push(this.text(X, y + dashsize + 9, (labels && labels[j++]) || (Math.round(label) == label ? label : +label.toFixed(rnd))));
+                label += d;
+                X += dx;
+            }
+            if (X - dx != x + length) {
+                type != "-" && (path = path.concat(["M", x + length + .5, y - (type == "+" ? dashsize : 0), "l", 0, dashsize * 2 + 1]));
+                text.push(this.text(x + length, y + dashsize + 9, (labels && labels[j]) || (Math.round(label) == label ? label : +label.toFixed(rnd))));
+            }
+        }
+        var res = this.path({}, path);
+        res.text = text;
+        res.remove = function () {
+            this.text.remove();
+            this.constructor.prototype.remove.call(this);
+        };
+        return res;
+    };
+
     Raphael.el.lighter = function (times) {
         times = times || 2;
         var fs = [this.attrs.fill, this.attrs.stroke];
