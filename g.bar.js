@@ -5,6 +5,7 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, isVertical, opts)
         chart = this.set(),
         bars = this.set(),
         covers = this.set(),
+        covers2 = this.set(),
         total = Math.max.apply(Math, values),
         stacktotal = [],
         paper = this,
@@ -40,12 +41,16 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, isVertical, opts)
     
     total = (opts.to) || total;
     if (!isVertical) {
-        var barwidth = Math.round(width / (len * (100 + gutter) + gutter) * 100),
+        var barwidth = width / (len * (100 + gutter) + gutter) * 100,
             barhgutter = barwidth * gutter / 100,
-            barvgutter = 20,
+            barvgutter = typeof opts.vgutter == "undefined" ? 20 : opts.vgutter,
             stack = [],
             X = x + barhgutter,
             Y = (height - 2 * barvgutter) / total;
+        if (!opts.stretch) {
+            barhgutter = Math.round(barhgutter);
+            barwidth = Math.floor(barwidth);
+        }
         !opts.stacked && (barwidth /= multi || 1);
         for (var i = 0; i < len; i++) {
             stack = [];
@@ -67,6 +72,12 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, isVertical, opts)
                 }
             }
             if (opts.stacked) {
+                var cvr;
+                covers2.push(cvr = this.rect(stack[0].x - stack[0].w / 2, y, barwidth, height).attr({stroke: "none", fill: "#000", opacity: 0}));
+                cvr.bars = [];
+                for (var s = 0, ss = stack.length; s < ss; s++) {
+                    cvr.bars.push(stack[s]);
+                }
                 stack.sort(function (a, b) {
                     return a.value - b.value;
                 });
@@ -87,10 +98,12 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, isVertical, opts)
                     cover.bar = bar;
                     size += bar.value;
                 }
+
                 X += barwidth;
             }
             X += barhgutter;
         }
+        covers2.toFront();
         X = x + barhgutter;
         if (!opts.stacked) {
             for (var i = 0; i < len; i++) {
@@ -106,10 +119,38 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, isVertical, opts)
         chart.label = function (labels, isBottom) {
             labels = labels || [];
             this.labels = paper.set();
-            for (var i = 0; i < len; i++) {
-                for (var j = 0; j < multi; j++) {
-                    var label = paper.g.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total);
-                    this.labels.push(paper.g.label(bars[i * (multi || 1) + j].x, isBottom ? y + height - barvgutter / 2 : bars[i * (multi || 1) + j].y - 10, label).attr([{fill: "none"}]).insertBefore(covers[0]));
+            var L, l = -Infinity;
+            if (opts.stacked) {
+                for (var i = 0; i < len; i++) {
+                    var tot = 0;
+                    for (var j = 0; j < multi; j++) {
+                        tot += multi ? values[j][i] : values[i];
+                        if (j == multi - 1) {
+                            var label = paper.g.labelise(labels[i], tot, total);
+                            L = paper.text(bars[i * (multi || 1) + j].x, y + height - barvgutter / 2, label).insertBefore(covers[i * (multi || 1) + j]);
+                            var bb = L.getBBox();
+                            if (bb.x - 7 < l) {
+                                L.remove();
+                            } else {
+                                this.labels.push(L);
+                                l = bb.x + bb.width;
+                            }
+                        }
+                    }
+                }
+            } else {
+                for (var i = 0; i < len; i++) {
+                    for (var j = 0; j < multi; j++) {
+                        var label = paper.g.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total);
+                        L = paper.text(bars[i * (multi || 1) + j].x, isBottom ? y + height - barvgutter / 2 : bars[i * (multi || 1) + j].y - 10, label).insertBefore(covers[i * (multi || 1) + j]);
+                        var bb = L.getBBox();
+                        if (bb.x - 7 < l) {
+                            L.remove();
+                        } else {
+                            this.labels.push(L);
+                            l = bb.x + bb.width;
+                        }
+                    }
                 }
             }
             return this;
@@ -151,7 +192,7 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, isVertical, opts)
                     var bar = stack[s],
                         cover,
                         val = Math.round((size + bar.value) * X),
-                        path = this.g.finger(x/* + !!size * .5*/, bar.y, val, barheight - 1, false, type, 1);
+                        path = this.g.finger(x, bar.y, val, barheight - 1, false, type, 1);
                     size && opts.init && bar.animate({path: path}, (+opts.init - 1) || 1000, ">");
                     size && !opts.init && bar.attr({path: path});
                     bar.w = val;
@@ -195,10 +236,22 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, isVertical, opts)
         };
     }
     chart.hover = function (fin, fout) {
+        covers2.hide();
+        covers.show();
         fout = fout || function () {};
         var that = this;
         for (var i = 0, ii = covers.length; i < ii; i++) {
             covers[i].mouseover(fin).mouseout(fout);
+        }
+        return this;
+    };
+    chart.hoverColumn = function (fin, fout) {
+        covers.hide();
+        covers2.show();
+        fout = fout || function () {};
+        var that = this;
+        for (var i = 0, ii = covers2.length; i < ii; i++) {
+            covers2[i].mouseover(fin).mouseout(fout);
         }
         return this;
     };
