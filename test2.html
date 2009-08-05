@@ -6,6 +6,8 @@
         <script src="../jquery.js" type="text/javascript" charset="utf-8"></script>
         <script src="../raphael.js" type="text/javascript" charset="utf-8"></script>
         <script src="g.raphael.js" type="text/javascript" charset="utf-8"></script>
+        <script src="g.dot.js" type="text/javascript" charset="utf-8"></script>
+        <script src="g.line.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" charset="utf-8">
             window.onload = function () {
                 var data = [],
@@ -32,6 +34,7 @@
                 }
 
                 var r = Raphael("holder", 1200, 800);
+                r.g.txtattr.font = "11px 'Fontin Sans'";
                 var x = [], y = [], y2 = [], y3 = [];
                 for (var i = 0; i < 500; i++) {
                     x[i] = i * 10;
@@ -39,16 +42,16 @@
                     y2[i] = (y2[i - 1] || 150) + (Math.random() * 7) - 3.5;
                     y3[i] = (y3[i - 1] || 300) + (Math.random() * 7) - 4;
                 }
-                r.g.dotchart(10, 10, 800, 300, xs, ys, data, {symbol: "o", max: 15, heat: true, axis: "0 0 1 1", axisxstep: 23, axisystep: 6, axisxlabels: axisx, axisxtype: " ", axisytype: " ", axisylabels: axisy.reverse()}).hover(function () {
+                r.g.dotchart(10, 10, 800, 300, xs, ys, data, {max: 15, heat: true, axis: "0 0 1 1", axisxstep: 23, axisystep: 6, axisxlabels: axisx, axisxtype: " ", axisytype: " ", axisylabels: axisy.reverse()}).hover(function () {
                     this.tag = this.tag || r.g.tag(this.x, this.y, this.value, 0, this.r + 2).insertBefore(this);
                     this.tag.show();
                 }, function () {
                     this.tag && this.tag.hide();
-                }).axis.attr({font: "12px 'Fontin'"});
+                }).axis.attr({font: "12px Fontin"});
 
                 r.g.linechart(10, 400, 400, 300, x, [y, y2, y3], {nostroke: false, shade: true, axis: "1 1 1 1", axisxstep: 10});
                 var tag;
-                r.g.linechart(440, 400, 400, 300, [[1, 2, 3, 4, 5, 6, 7],[3.5, 4.5, 5.5, 6.5, 7, 8]], [[12, 32, 23, 15, 17, 27, 22], [10, 20, 30, 25, 15, 28]], {nostroke: false, axis: "0 0 1 1", symbol: "disc"}).hoverColumn(function () {
+                r.g.linechart(440, 400, 400, 300, [[1, 2, 3, 4, 5, 6, 7],[3.5, 4.5, 5.5, 6.5, 7, 8]], [[12, 32, 23, 15, 17, 27, 22], [10, 20, 30, 25, 15, 28]], {nostroke: false, axis: "0 0 1 1", symbol: "o"}).hoverColumn(function () {
                     for (var i = 0, ii = this.y.length; i < ii; i++) {
                         r.g.tag(this.x, this.y[i], this.values[i], 0, 9).insertBefore(this);
                     }

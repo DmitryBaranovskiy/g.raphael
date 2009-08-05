@@ -1,9 +1,17 @@
+/*
+ * g.Raphael 0.2 - Charting library, based on Raphaël
+ *
+ * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ */
+
 Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
     opts = opts || {};
     var paper = this,
         sectors = [],
-        covers = [],
+        covers = this.set(),
         chart = this.set(),
+        series = this.set(),
         order = [],
         len = values.length,
         angle = 0,
@@ -13,13 +21,12 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
         defcut = true;
     chart.covers = covers;
     if (len == 1) {
-        chart.push(paper.circle(cx, cy, r).attr({fill: Raphael.fn.g.colors[0], stroke: opt.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth}));
-        covers.push(paper.circle(cx, cy, r).attr({fill: "#000", opacity: 0, "stroke-width": 3}));
-        chart.push(covers[0]);
+        series.push(this.circle(cx, cy, r).attr({fill: this.g.colors[0], stroke: opt.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth}));
+        covers.push(this.circle(cx, cy, r).attr({fill: "#000", opacity: 0, "stroke-width": 3}));
         total = values[0];
         values[0] = {value: values[0], order: 0, valueOf: function () { return this.value; }};
-        chart[0].middle = {x: cx, y: cy};
-        chart[0].mangle = 180;
+        series[0].middle = {x: cx, y: cy};
+        series[0].mangle = 180;
     } else {
         function sector(cx, cy, r, startAngle, endAngle, fill) {
             var rad = Math.PI / 180,
@@ -64,12 +71,12 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
                 var ipath = sector(cx, cy, 1, angle, angle - 360 * values[i] / total).join(",");
             }
             var path = sector(cx, cy, r, angle, angle -= 360 * values[i] / total);
-            var p = this.path({fill: opts.colors && opts.colors[i] || Raphael.fn.g.colors[i] || "#666", stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth, "stroke-linejoin": "round"}, opts.init ? ipath : path.join(","));
+            var p = this.path({fill: opts.colors && opts.colors[i] || this.g.colors[i] || "#666", stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth, "stroke-linejoin": "round"}, opts.init ? ipath : path.join(","));
             p.value = values[i];
             p.middle = path.middle;
             p.mangle = mangle;
             sectors.push(p);
-            chart.push(p);
+            series.push(p);
             opts.init && p.animate({path: path.join(",")}, (+opts.init - 1) || 1000, ">");
         }
         for (var i = 0; i < len; i++) {
@@ -77,17 +84,10 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
             opts.href && opts.href[i] && p.attr({href: opts.href[i]});
             p.attr = function () {};
             covers.push(p);
-            chart.push(p);
+            series.push(p);
         }
     }
 
-    chart.color = function (colorarray) {
-        var arr = colorarray || arguments;
-        for (var i = 0, ii = len; i < ii; i++) {
-            this[i].attr({fill: arr[i] || Raphael.fn.g.colors[i]});
-        }
-        return this;
-    };
     chart.hover = function (fin, fout) {
         fout = fout || function () {};
         var that = this;
@@ -111,7 +111,29 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
                 }).mouseout(function () {
                     fout.call(o);
                 });
-            })(this[i], covers[i], i);
+            })(series[i], covers[i], i);
+        }
+        return this;
+    };
+    chart.click = function (f) {
+        var that = this;
+        for (var i = 0; i < len; i++) {
+            (function (sector, cover, j) {
+                var o = {
+                    sector: sector,
+                    cover: cover,
+                    cx: cx,
+                    cy: cy,
+                    mx: sector.middle.x,
+                    my: sector.middle.y,
+                    mangle: sector.mangle,
+                    r: r,
+                    value: values[j],
+                    total: total,
+                    label: that.labels && that.labels[j]
+                };
+                cover.click(function () { f.call(o); });
+            })(series[i], covers[i], i);
         }
         return this;
     };
@@ -127,14 +149,14 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
         mark = paper.g.markers[mark && mark.toLowerCase()] || "disc";
         chart.labels = paper.set();
         for (var i = 0; i < len; i++) {
-            var clr = chart[i].attr("fill"),
+            var clr = series[i].attr("fill"),
                 j = values[i].order,
                 txt;
             values[i].others && (labels[j] = otherslabel || "Others");
             labels[j] = paper.g.labelise(labels[j], values[i], total);
             chart.labels.push(paper.set());
             chart.labels[i].push(paper.g[mark](x + 5, h, 5).attr({fill: clr, stroke: "none"}));
-            chart.labels[i].push(txt = paper.text(x + 20, h, labels[j] || values[j]).attr({font: opts.legendfont || '10px "Arial"', fill: opts.legendcolor || "#000", "text-anchor": "start"}));
+            chart.labels[i].push(txt = paper.text(x + 20, h, labels[j] || values[j]).attr(paper.g.txtattr).attr({fill: opts.legendcolor || "#000", "text-anchor": "start"}));
             covers[i].label = chart.labels[i];
             h += txt.getBBox().height * 1.2;
         }
@@ -151,5 +173,8 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
     if (opts.legend) {
         legend(opts.legend, opts.legendothers, opts.legendmark, opts.legendpos);
     }
+    chart.push(series, covers);
+    chart.series = series;
+    chart.covers = covers;
     return chart;
 };

@@ -1,3 +1,10 @@
+/*
+ * g.Raphael 0.2 - Charting library, based on Raphaël
+ *
+ * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ */
+
 Raphael.fn.g.barchart = function (x, y, width, height, values, isVertical, opts) {
     opts = opts || {};
     var type = {round: "round", sharp: "sharp", soft: "soft"}[opts.type] || "square",
@@ -10,9 +17,9 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, isVertical, opts)
         stacktotal = [],
         paper = this,
         multi = 0,
-        colors = opts.colors || Raphael.fn.g.colors,
+        colors = opts.colors || this.g.colors,
         len = values.length;
-    if (this.g.isArray(values[0])) {
+    if (this.raphael.isArray(values[0])) {
         total = [];
         multi = len;
         len = 0;
@@ -58,7 +65,7 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, isVertical, opts)
                 var h = Math.round((multi ? values[j][i] : values[i]) * Y),
                     top = y + height - barvgutter - h,
                     bar;
-                bars.push(bar = this.g.finger(Math.round(X + barwidth / 2), top + h, barwidth, opts.init ? 0 : h, true, type).attr({stroke: "none", fill: colors[multi > 1 ? j : i]}));
+                bars.push(bar = this.g.finger(Math.round(X + barwidth / 2), top + h, barwidth, opts.init ? 0 : h, true, type).attr({stroke: "none", fill: colors[multi ? j : i]}));
                 bar.y = top;
                 bar.x = Math.round(X + barwidth / 2);
                 bar.w = barwidth;
@@ -127,7 +134,7 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, isVertical, opts)
                         tot += multi ? values[j][i] : values[i];
                         if (j == multi - 1) {
                             var label = paper.g.labelise(labels[i], tot, total);
-                            L = paper.text(bars[i * (multi || 1) + j].x, y + height - barvgutter / 2, label).insertBefore(covers[i * (multi || 1) + j]);
+                            L = paper.g.text(bars[i * (multi || 1) + j].x, y + height - barvgutter / 2, label).insertBefore(covers[i * (multi || 1) + j]);
                             var bb = L.getBBox();
                             if (bb.x - 7 < l) {
                                 L.remove();
@@ -142,7 +149,7 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, isVertical, opts)
                 for (var i = 0; i < len; i++) {
                     for (var j = 0; j < multi; j++) {
                         var label = paper.g.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total);
-                        L = paper.text(bars[i * (multi || 1) + j].x, isBottom ? y + height - barvgutter / 2 : bars[i * (multi || 1) + j].y - 10, label).insertBefore(covers[i * (multi || 1) + j]);
+                        L = paper.g.text(bars[i * (multi || 1) + j].x, isBottom ? y + height - barvgutter / 2 : bars[i * (multi || 1) + j].y - 10, label).insertBefore(covers[i * (multi || 1) + j]);
                         var bb = L.getBBox();
                         if (bb.x - 7 < l) {
                             L.remove();
@@ -224,7 +231,7 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, isVertical, opts)
                     var X = isRight ? bars[i * (multi || 1) + j].x - barheight / 2 + 3 : x + 5,
                         A = isRight ? "end" : "start",
                         L;
-                    this.labels.push(L = paper.text(X, bars[i * (multi || 1) + j].y, label).attr({"text-anchor": A}).insertBefore(covers[0]));
+                    this.labels.push(L = paper.g.text(X, bars[i * (multi || 1) + j].y, label).attr({"text-anchor": A}).insertBefore(covers[0]));
                     if (L.getBBox().x < x + 5) {
                         L.attr({x: x + 5, "text-anchor": "start"});
                     } else {
@@ -239,29 +246,30 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, isVertical, opts)
         covers2.hide();
         covers.show();
         fout = fout || function () {};
-        var that = this;
-        for (var i = 0, ii = covers.length; i < ii; i++) {
-            covers[i].mouseover(fin).mouseout(fout);
-        }
+        covers.mouseover(fin).mouseout(fout);
         return this;
     };
     chart.hoverColumn = function (fin, fout) {
         covers.hide();
         covers2.show();
         fout = fout || function () {};
-        var that = this;
-        for (var i = 0, ii = covers2.length; i < ii; i++) {
-            covers2[i].mouseover(fin).mouseout(fout);
-        }
+        covers2.mouseover(fin).mouseout(fout);
         return this;
     };
-    chart.push(bars);
+    chart.click = function (f) {
+        covers2.hide();
+        covers.show();
+        covers.click(f);
+        return this;
+    };
+    chart.clickColumn = function (f) {
+        covers.hide();
+        covers2.show();
+        covers2.click(f);
+        return this;
+    };
+    chart.push(bars, covers, covers2);
     chart.bars = bars;
     chart.covers = covers;
-    chart.remove = function () {
-        chart.bars.remove();
-        chart.labels && chart.labels.remove();
-        chart.covers.remove();
-    };
     return chart;
 };

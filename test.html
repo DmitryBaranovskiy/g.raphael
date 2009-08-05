@@ -20,10 +20,29 @@
             var _7 = {"seriesLabels":["CLOV","contrib","FE"],"categoryLabels":["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],"data":[[71,359,243,393,288,252,48],[2,9,5,5,2,4,1],[18,46,53,50,32,57,2]]};
             window.onload = function () {
                 var r = Raphael(10, 10, 1200, 800);
+                r.g.txtattr.font = "12px 'Fontin Sans'";
+                r.g.colors = ["#468cc8", "#76960f", "#d7551e", "#d7e62d", "#0c4382", "#5fbe41", "#f5822d", "#edf000", "#0c87c8", "#ad2814", "#afbe46"];
+                
+                
+                r.g.disc(50, 50, 20);
+                r.g.line(100, 50, 20);
+                r.g.square(150, 50, 20);
+                r.g.triangle(200, 50, 20);
+                r.g.star(250, 50, 20);
+                r.g.cross(300, 50, 20);
+                r.g.plus(350, 50, 20);
+                r.g.arrow(400, 50, 20);
+                
+                r.g.tag(50, 100, "$9.99", 130);
+                r.g.popup(100, 100, "$9.99");
+                r.g.flag(150, 100, "$9.99", 45);
+                r.g.label(200, 100, "$9.99");
+                r.g.drop(250, 100, "$10");
+                r.g.blob(300, 100, "$9.99");
                 // r.rect(10, 10, 50, 50).attr({fill: "#000", stroke: "none"});
                 // r.path({fill: "#000", stroke: "none"}, "M70,10l50,0,0,50-50,0z")
                 var inited = false;
-                var pie = r.g.piechart(320, 240, 100, [55, 20, 13, 32, 5, 1, 2, 10], {legend: ["%%.%% – jQuery users", "EMACS users"], legendfont: '12px "Fontin Sans"', legendpos: "west", href: ["http://raphaeljs.com", "#tre"], colors: ["#468cc8", "#76960f", "#d7551e", "#d7e62d", "#0c4382", "#5fbe41", "#f5822d", "#edf000", "#0c87c8", "#ad2814", "#afbe46"], legendmark: "t"});
+                var pie = r.g.piechart(320, 440, 100, [55, 20, 13, 32, 5, 1, 2, 10], {legend: ["%%.%% – jQuery users", "EMACS users"], legendpos: "west", href: ["http://raphaeljs.com", "#tre"]});
                 pie.hover(function () {
                     this.sector.stop();
                     this.sector.scale(1.1, 1.1, this.cx, this.cy);
@@ -40,49 +59,16 @@
                     }
                 });
                 // pie.attr({opacity: .5});
-
-
+                
                 // var b = r.g.barchart(600, 10, 320, 50, [[55], [10], [12]], 1, {type: "square", init: 0, stacked: 1});
-                r.g.label(320, 240, "Raphaël").attr({font: "20px Fontin"}).update();
-                // var b = r.g.barchart(600, 10, 320, 400, [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55], [12, 20, 30]], false, {type: "square", stacked: 1}).hover(function () {
-                //     if (inited) {
-                //         pop.attr({text: this.bar.value}).update(this.bar.x, this.bar.y, 1);
-                //     } else {
-                //         pop.attr({text: this.bar.value, opacity: 1}).update(this.bar.x, this.bar.y).toFront();
-                //         inited = true;
-                //     }
-                // });//.label();
+                // r.g.label(320, 240, "Raphaël").attr({font: "20px Myriad Pro"}).update();
+                var b = r.g.barchart(600, 10, 320, 400, [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55], [12, 20, 30]], 1, {type: "round", stacked: 1});
                 
-                var val52 = [];
-                // for (var i = 0, ii = _52.length; i < ii; i++) {
-                //     val52[i] = [];
-                //     for (var j = 0, jj = _52[i][1].length; j < jj; j++) {
-                //         val52[i][j] = _52[i][1][j][1];
-                //     }
-                // }
-                
-                val52 = _52.data;
-                
-                var val7 = [[912, 815, 106, 569, 57, 148, 487], [711, 674, 28, 70, 866, 494, 297]];
-                var val18 = [[3326, 3589, 6453, 3969, 750, 1021, 3946, 4161, 6499, 4109, 1031, 3155, 6991, 5322, 5733, 2313, 132, 8142], [3184, 1674, 3204, 9154, 679, 1862, 824, 2982, 2291, 5753, 8667, 2410, 8142, 3704, 5107, 4709, 1397, 8259]];
-                // r.rect(600, 420, 276, 32).attr({stroke: "none", fill: "#ccc"});
-                var clr = ["#d7561f", "#dee439", "#769810"];
-                r.g.barchart(600, 10, 276, 32, val52, false, {stacked: 1, vgutter: 0, colors: clr});
-                r.g.barchart(600, 52, 276, 70, val52, false, {stacked: 1, vgutter: 0, colors: clr});
-                r.g.barchart(600, 132, 276, 70, _7.data, false, {stacked: 1, vgutter: 15, colors: clr}).label(_7.categoryLabels);
-                r.g.linechart(600, 212, 276, 130, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], val18, {axis: "0 0 0 1", axisxstep: 17, colors: ["#d7561f", "#769810"], width: 1});
-                r.g.barchart(610, 352, 256, 70, _18.data, false, {stacked: 1, vgutter: 15, colors: clr}).label(_18.categoryLabels);
-                
-                var s = r.set();
-                s.push(r.text(100, 30, "234").attr({fill: "#d7561f", "font-weight": 800}));
-                s.push(r.text(100, 45, "12").attr({fill: "#dee439", "font-weight": 800}));
-                s.push(r.text(100, 60, "0").attr({fill: "#769810", "font-weight": 800}));
-                r.g.labelit(s);
-                // r.g.barchart(600, 420, 320, 200, [[55, 20, 13, 32, 5, 1, 2, 10]], 0, {init: 1}).hover(function () {
-                //     this.flag = r.g.blob(this.bar.x + this.bar.w / 2, this.bar.y, this.bar.value || "0", 30);
-                // }, function () {
-                //     this.flag.animate({opacity: 0}, 100, function () {this.remove();});
-                // }).label([["Big (##)", "Small"]], 1);
+                r.g.barchart(600, 420, 320, 200, [[55, 20, 13, 32, 5, 1, 2, 10]]).hover(function () {
+                    this.flag = r.g.blob(this.bar.x + this.bar.w / 2, this.bar.y, this.bar.value || "0", 30);
+                }, function () {
+                    this.flag.animate({opacity: 0}, 100, function () {this.remove();});
+                }).label([["Big (##)", "Small"]], 1);
 
 
             };
