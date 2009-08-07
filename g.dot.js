@@ -90,9 +90,11 @@ Raphael.fn.g.dotchart = function (x, y, width, height, valuesx, valuesy, size, o
         return this;
     };
     res.href = function (map) {
+        var cover;
         for (var i = covers.length; i--;) {
-            if (covers[i].X == map.x && covers[i].Y == map.y && covers[i].value == map.value) {
-                covers[i].attr({href: map.href});
+            cover = covers[i];
+            if (cover.X == map.x && cover.Y == map.y && cover.value == map.value) {
+                cover.attr({href: map.href});
             }
         }
     };

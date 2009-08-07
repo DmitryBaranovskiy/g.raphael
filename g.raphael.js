@@ -4,6 +4,8 @@
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
+ 
+ 
 (function () {
     Raphael.fn.g = Raphael.fn.g || {};
     Raphael.fn.g.markers = {
@@ -141,7 +143,7 @@
         return this.path({}, points);
     };
     Raphael.fn.g.cross = function (cx, cy, r) {
-        r = r / 2;
+        r = r / 2.5;
         return this.path({}, "M".concat(cx - r, ",", cy, "l", [-r, -r, r, -r, r, r, r, -r, r, r, -r, r, r, r, -r, r, -r, -r, -r, r, -r, -r, "z"]));
     };
     Raphael.fn.g.plus = function (cx, cy, r) {
@@ -149,8 +151,7 @@
         return this.path({}, "M".concat(cx - r / 2, ",", cy - r / 2, "l", [0, -r, r, 0, 0, r, r, 0, 0, r, -r, 0, 0, r, -r, 0, 0, -r, -r, 0, 0, -r, "z"]));
     };
     Raphael.fn.g.arrow = function (cx, cy, r) {
-        r = r / 2;
-        return this.path({}, "M".concat(cx, ",", cy - r / 2, "l", [0, -r, r * 1.5, r * 1.5, -r * 1.5, r * 1.5, 0, -r, -r, 0, 0, -r], "z"));
+        return this.path({}, "M".concat(cx - r * .7, ",", cy - r * .4, "l", [r * .6, 0, 0, -r * .4, r, r * .8, -r, r * .8, 0, -r * .4, -r * .6, 0], "z"));
     };
 
     // Tooltips
