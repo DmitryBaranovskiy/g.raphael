@@ -1,5 +1,5 @@
 /*
- * g.Raphael 0.2 - Charting library, based on Raphaël
+ * g.Raphael 0.3 - Charting library, based on Raphaël
  *
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
@@ -58,7 +58,7 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
     var shades = this.set();
     for (var i = 0, ii = valuesy.length; i < ii; i++) {
         if (opts.shade) {
-            shades.push(this.path({stroke: "none", fill: colors[i], opacity: opts.nostroke ? 1 : .3}));
+            shades.push(this.path().attr({stroke: "none", fill: colors[i], opacity: opts.nostroke ? 1 : .3}));
         }
         if (valuesy[i].length > width - 2 * gutter) {
             valuesy[i] = shrink(valuesy[i], width - 2 * gutter);
@@ -81,7 +81,7 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
         line;
     for (var i = 0, ii = valuesy.length; i < ii; i++) {
         if (!opts.nostroke) {
-            lines.push(line = this.path({
+            lines.push(line = this.path().attr({
                 stroke: colors[i],
                 "stroke-width": opts.width || 2,
                 "stroke-linejoin": "round",

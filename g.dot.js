@@ -1,5 +1,5 @@
 /*
- * g.Raphael 0.2 - Charting library, based on Raphaël
+ * g.Raphael 0.3 - Charting library, based on Raphaël
  *
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
@@ -87,6 +87,12 @@ Raphael.fn.g.dotchart = function (x, y, width, height, valuesx, valuesy, size, o
     };
     res.click = function (f) {
         covers.click(f);
+        return this;
+    };
+    res.each = function (f) {
+        for (var i = covers.length; i--;) {
+            f.call(covers[i]);
+        }
         return this;
     };
     res.href = function (map) {

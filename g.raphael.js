@@ -1,5 +1,5 @@
 /*
- * g.Raphael 0.2 - Charting library, based on Raphaël
+ * g.Raphael 0.3 - Charting library, based on Raphaël
  *
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
@@ -55,7 +55,7 @@
     Raphael.fn.g.finger = function (x, y, width, height, dir, ending, isPath) {
         // dir 0 for horisontal and 1 for vertical
         if ((dir && !height) || (!dir && !width)) {
-            return isPath ? "" : this.path({});
+            return isPath ? "" : this.path();
         }
         ending = {square: "square", sharp: "sharp", soft: "soft"}[ending] || "round";
         var path;
@@ -77,9 +77,9 @@
                 var r = Math.floor(width / 2);
                 if (height < r) {
                     r = height;
-                    path = ["M", x - Math.floor(width / 2), y, "l", 0, 0, "a", Math.floor(width / 2), r, 0, 0, 1, width, 0, "l", 0, 0, "z"];
+                    path = ["M", x - Math.floor(width / 2) + .001, y + .001, "l", 0, 0, "a", Math.floor(width / 2), r, 0, 0, 1, width, 0, "l", 0, 0, "z"];
                 } else {
-                    path = ["M", x - r, y, "l", 0, r - height, "a", r, r, 0, 1, 1, width, 0, "l", 0, height - r, "z"];
+                    path = ["M", x - r + .001, y + .001, "l", 0, r - height, "a", r, r, 0, 1, 1, width, 0, "l", 0, height - r, "z"];
                 }
             }
             break;
@@ -89,14 +89,14 @@
                 path = ["M", x + .5, y + .5 + half, "l", 0, -height, Math.max(width - half, 0), 0, Math.min(half, width), half, -Math.min(half, width), half + (half * 2 < height), "z"];
             } else {
                 var half = Math.floor(width / 2);
-                path = ["M", x + half, y, "l", -width, 0, 0, -Math.max(height - half, 0), half, -Math.min(half, height), half + (half * 2 < height), Math.min(half, height), half, "z"];
+                path = ["M", x + half + .001, y + .001, "l", -width, 0, 0, -Math.max(height - half, 0), half, -Math.min(half, height), half, Math.min(half, height), half, "z"];
             }
             break;
             case "square":
             if (!dir) {
-                path = ["M", x + .5, y + .5 + Math.floor(height / 2), "l", 0, -height, width, 0, 0, height, "z"];
+                path = ["M", x, y + Math.floor(height / 2), "l", 0, -height, width, 0, 0, height, "z"];
             } else {
-                path = ["M", x + Math.floor(width / 2), y, "l", -width, 0, 0, -height, width, 0, "z"];
+                path = ["M", x + .001 + Math.floor(width / 2), y - .001, "l", 1 - width, 0, 0, -height, width - 1, 0, "z"];
             }
             break;
             case "soft":
@@ -112,7 +112,7 @@
         if (isPath) {
             return path.join(",");
         } else {
-            return this.path({}, path);
+            return this.path(path);
         }
     };
 
@@ -129,7 +129,7 @@
     };
     Raphael.fn.g.triangle = function (cx, cy, r) {
         r *= 1.75;
-        return this.path({}, "M".concat(cx, ",", cy, "m0-", r * .58, "l", r * .5, ",", r * .87, "-", r, ",0z"));
+        return this.path("M".concat(cx, ",", cy, "m0-", r * .58, "l", r * .5, ",", r * .87, "-", r, ",0z"));
     };
     Raphael.fn.g.star = function (cx, cy, r, r2) {
         r2 = r2 || r * .5;
@@ -140,18 +140,18 @@
             points = points.concat([(cx + R * Math.sin(i * Math.PI * .2)).toFixed(3), (cy + R * Math.cos(i * Math.PI * .2)).toFixed(3)]);
         }
         points.push("z");
-        return this.path({}, points);
+        return this.path(points);
     };
     Raphael.fn.g.cross = function (cx, cy, r) {
         r = r / 2.5;
-        return this.path({}, "M".concat(cx - r, ",", cy, "l", [-r, -r, r, -r, r, r, r, -r, r, r, -r, r, r, r, -r, r, -r, -r, -r, r, -r, -r, "z"]));
+        return this.path("M".concat(cx - r, ",", cy, "l", [-r, -r, r, -r, r, r, r, -r, r, r, -r, r, r, r, -r, r, -r, -r, -r, r, -r, -r, "z"]));
     };
     Raphael.fn.g.plus = function (cx, cy, r) {
         r = r / 2;
-        return this.path({}, "M".concat(cx - r / 2, ",", cy - r / 2, "l", [0, -r, r, 0, 0, r, r, 0, 0, r, -r, 0, 0, r, -r, 0, 0, -r, -r, 0, 0, -r, "z"]));
+        return this.path("M".concat(cx - r / 2, ",", cy - r / 2, "l", [0, -r, r, 0, 0, r, r, 0, 0, r, -r, 0, 0, r, -r, 0, 0, -r, -r, 0, 0, -r, "z"]));
     };
     Raphael.fn.g.arrow = function (cx, cy, r) {
-        return this.path({}, "M".concat(cx - r * .7, ",", cy - r * .4, "l", [r * .6, 0, 0, -r * .4, r, r * .8, -r, r * .8, 0, -r * .4, -r * .6, 0], "z"));
+        return this.path("M".concat(cx - r * .7, ",", cy - r * .4, "l", [r * .6, 0, 0, -r * .4, r, r * .8, -r, r * .8, 0, -r * .4, -r * .6, 0], "z"));
     };
 
     // Tooltips
@@ -162,7 +162,7 @@
         var R = .5522 * r,
             res = this.set(),
             d = 3;
-        res.push(this.path({fill: "#000", stroke: "none"}));
+        res.push(this.path().attr({fill: "#000", stroke: "none"}));
         res.push(this.text(x, y, text).attr(this.g.txtattr).attr({fill: "#fff"}));
         res.update = function () {
             this.rotate(0, x, y);
@@ -201,7 +201,7 @@
                 "l", -Math.max(w - size, 0), 0, "z"].join(","),
             xy = [{x: x, y: y + size * 2 + h}, {x: x - size * 2 - w, y: y}, {x: x, y: y - size * 2 - h}, {x: x + size * 2 + w, y: y}][dir];
         set.translate(xy.x - w - bb.x, xy.y - h - bb.y);
-        return this.path({fill: "#000", stroke: "none"}, p).insertBefore(set.node ? set : set[0]);
+        return this.path(p).attr({fill: "#000", stroke: "none"}).insertBefore(set.node ? set : set[0]);
     };
     Raphael.fn.g.popup = function (x, y, text, dir, size) {
         dir = dir == null ? 2 : dir;
@@ -209,7 +209,7 @@
         text = text || "$9.99";
         var res = this.set(),
             d = 3;
-        res.push(this.path({fill: "#000", stroke: "none"}));
+        res.push(this.path().attr({fill: "#000", stroke: "none"}));
         res.push(this.text(x, y, text).attr(this.g.txtattr).attr({fill: "#fff"}));
         res.update = function (X, Y, withAnimation) {
             X = X || x;
@@ -241,7 +241,7 @@
         text = text || "$9.99";
         var res = this.set(),
             d = 3;
-        res.push(this.path({fill: "#000", stroke: "none"}));
+        res.push(this.path().attr({fill: "#000", stroke: "none"}));
         res.push(this.text(x, y, text).attr(this.g.txtattr).attr({fill: "#fff"}));
         res.update = function (x, y) {
             this.rotate(0, x, y);
@@ -277,7 +277,7 @@
         size = size || 30;
         angle = angle || 0;
         var res = this.set();
-        res.push(this.path({}, ["M", x, y, "l", size, 0, "A", size * .4, size * .4, 0, 1, 0, x + size * .7, y - size * .7, "z"]).attr({fill: "#000", stroke: "none", rotation: [22.5 - angle, x, y]}));
+        res.push(this.path(["M", x, y, "l", size, 0, "A", size * .4, size * .4, 0, 1, 0, x + size * .7, y - size * .7, "z"]).attr({fill: "#000", stroke: "none", rotation: [22.5 - angle, x, y]}));
         angle = (angle + 90) * Math.PI / 180;
         res.push(this.text(x + size * Math.sin(angle), y + size * Math.cos(angle), text).attr(this.g.txtattr).attr({"font-size": size * 12 / 30, fill: "#fff"}));
         res.drop = res[0];
@@ -290,7 +290,7 @@
             rad = Math.PI / 180,
             fontSize = size * 12 / 12;
         var res = this.set();
-        res.push(this.path({fill: "#000", stroke: "none"}));
+        res.push(this.path().attr({fill: "#000", stroke: "none"}));
         res.push(this.text(x + size * Math.sin((angle) * rad), y + size * Math.cos((angle) * rad) - fontSize / 2, text).attr(this.g.txtattr).attr({"font-size": fontSize, fill: "#fff"}));
         res.update = function (X, Y, withAnimation) {
             X = X || x;
@@ -411,7 +411,7 @@
                 text.push(this.text(x + length, y + addon, (labels && labels[j]) || (Math.round(label) == label ? label : +label.toFixed(rnd))).attr(this.g.txtattr));
             }
         }
-        var res = this.path({}, path);
+        var res = this.path(path);
         res.text = text;
         res.all = this.set([res, text]);
         res.remove = function () {

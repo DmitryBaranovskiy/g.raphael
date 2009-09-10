@@ -1,5 +1,5 @@
 /*
- * g.Raphael 0.2 - Charting library, based on Raphaël
+ * g.Raphael 0.3 - Charting library, based on Raphaël
  *
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
@@ -71,7 +71,7 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
                 var ipath = sector(cx, cy, 1, angle, angle - 360 * values[i] / total).join(",");
             }
             var path = sector(cx, cy, r, angle, angle -= 360 * values[i] / total);
-            var p = this.path({fill: opts.colors && opts.colors[i] || this.g.colors[i] || "#666", stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth, "stroke-linejoin": "round"}, opts.init ? ipath : path.join(","));
+            var p = this.path(opts.init ? ipath : path).attr({fill: opts.colors && opts.colors[i] || this.g.colors[i] || "#666", stroke: opts.stroke || "#fff", "stroke-width": (opts.strokewidth == null ? 1 : opts.strokewidth), "stroke-linejoin": "round"});
             p.value = values[i];
             p.middle = path.middle;
             p.mangle = mangle;
@@ -80,7 +80,7 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
             opts.init && p.animate({path: path.join(",")}, (+opts.init - 1) || 1000, ">");
         }
         for (var i = 0; i < len; i++) {
-            var p = paper.path({fill: "#000", opacity: 0, "stroke-width": 3}, sectors[i].attr("path"));
+            var p = paper.path(sectors[i].attr("path")).attr({fill: "#000", opacity: 0, "stroke-width": 3});
             opts.href && opts.href[i] && p.attr({href: opts.href[i]});
             p.attr = function () {};
             covers.push(p);
@@ -111,6 +111,32 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
                 }).mouseout(function () {
                     fout.call(o);
                 });
+            })(series[i], covers[i], i);
+        }
+        return this;
+    };
+    // x: where label could be put
+    // y: where label could be put
+    // value: value to show
+    // total: total number to count %
+    chart.each = function (f) {
+        var that = this;
+        for (var i = 0; i < len; i++) {
+            (function (sector, cover, j) {
+                var o = {
+                    sector: sector,
+                    cover: cover,
+                    cx: cx,
+                    cy: cy,
+                    x: sector.middle.x,
+                    y: sector.middle.y,
+                    mangle: sector.mangle,
+                    r: r,
+                    value: values[j],
+                    total: total,
+                    label: that.labels && that.labels[j]
+                };
+                f.call(o);
             })(series[i], covers[i], i);
         }
         return this;
