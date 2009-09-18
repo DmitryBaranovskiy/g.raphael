@@ -1,10 +1,9 @@
 /*
- * g.Raphael 0.3 - Charting library, based on Raphaël
+ * g.Raphael 0.4 - Charting library, based on Raphaël
  *
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
-
 Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
     opts = opts || {};
     var paper = this,
@@ -22,7 +21,7 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
     chart.covers = covers;
     if (len == 1) {
         series.push(this.circle(cx, cy, r).attr({fill: this.g.colors[0], stroke: opt.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth}));
-        covers.push(this.circle(cx, cy, r).attr({fill: "#000", opacity: 0, "stroke-width": 3}));
+        covers.push(this.circle(cx, cy, r).attr(this.g.shim));
         total = values[0];
         values[0] = {value: values[0], order: 0, valueOf: function () { return this.value; }};
         series[0].middle = {x: cx, y: cy};
@@ -80,7 +79,7 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
             opts.init && p.animate({path: path.join(",")}, (+opts.init - 1) || 1000, ">");
         }
         for (var i = 0; i < len; i++) {
-            var p = paper.path(sectors[i].attr("path")).attr({fill: "#000", opacity: 0, "stroke-width": 3});
+            var p = paper.path(sectors[i].attr("path")).attr(this.g.shim);
             opts.href && opts.href[i] && p.attr({href: opts.href[i]});
             p.attr = function () {};
             covers.push(p);

@@ -1,79 +1,58 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en">
     <head>
+        <title>gRaphaël Dynamic Bar Chart</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>test</title>
-        <style type="text/css" media="screen">
-            body {
-/*                background: url(../blueprint.png) no-repeat;*/
-                margin: 0;
-                padding: 0;
-            }
-        </style>
+        <meta name="author" content="Dmitry Baranovskiy">
+        <meta name="description" content="Charting JavaScript Library">
+        <link rel="stylesheet" href="demo.css" type="text/css" media="screen" charset="utf-8">
+        <link rel="stylesheet" href="demo-print.css" type="text/css" media="print" charset="utf-8">
         <script src="../raphael.js" type="text/javascript" charset="utf-8"></script>
         <script src="g.raphael.js" type="text/javascript" charset="utf-8"></script>
-        <script src="g.pie.js" type="text/javascript" charset="utf-8"></script>
         <script src="g.bar.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" charset="utf-8">
-            var _52 = {"seriesLabels":["CLOV","FE","contrib"], "categoryLabels":["200832","200833","200834","200835","200836","200837","200838","200839","200840","200841","200842","200843","200844","200845","200846","200847","200848","200849","200850","200851","200852","200901","200902","200903","200904","200905","200906","200907","200908","200909","200910","200911","200912","200913","200914","200915","200916","200917","200918","200919","200920","200921","200922","200923","200924","200925","200926","200927","200928","200929","200930","200931"], "data":[[0,0,1,0,2,1,5,0,0,0,0,0,0,0,0,0,0,2,1,0,0,0,0,0,0,0,0,0,0,1,6,0,1,3,7,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,3,2,5,0,0,0,1,0,1,1,0,0,0,2,4,0,0,0,2,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,5,0,0,0,0,0]]};
-            var _18 = {"seriesLabels":["CLOV","contrib","FE"],"categoryLabels":["00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23"],"data":[[87,11,1,0,1,1,4,6,14,62,130,133,141,134,130,217,181,122,73,32,20,23,27,104],[0,1,0,0,0,0,0,0,0,1,3,2,1,4,3,7,3,2,0,0,0,0,1,0],[3,1,1,0,0,1,0,1,1,10,26,24,27,20,16,21,27,27,12,6,6,4,20,4]]};
-            var _7 = {"seriesLabels":["CLOV","contrib","FE"],"categoryLabels":["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],"data":[[71,359,243,393,288,252,48],[2,9,5,5,2,4,1],[18,46,53,50,32,57,2]]};
             window.onload = function () {
-                var r = Raphael(10, 10, 1200, 800);
-                r.g.txtattr.font = "12px 'Fontin Sans'";
-                r.g.colors = ["#468cc8", "#76960f", "#d7551e", "#d7e62d", "#0c4382", "#5fbe41", "#f5822d", "#edf000", "#0c87c8", "#ad2814", "#afbe46"];
+                var r = Raphael("holder"),
+                    fin = function () {
+                        console.log(this);
+                        this.flag = r.g.popup(this.bar.x, this.bar.y, this.bar.value || "0").insertBefore(this);
+                    },
+                    fout = function () {
+                        this.flag.animate({opacity: 0}, 300, function () {this.remove();});
+                    },
+                    fin2 = function () {
+                        var y = [], res = [];
+                        for (var i = this.bars.length; i--;) {
+                            y.push(this.bars[i].y);
+                            res.push(this.bars[i].value || "0");
+                        }
+                        this.flag = r.g.popup(this.bars[0].x, Math.min.apply(Math, y), res.join(", ")).insertBefore(this);
+                    },
+                    fout2 = function () {
+                        this.flag.animate({opacity: 0}, 300, function () {this.remove();});
+                    };
+                r.g.txtattr.font = "12px 'Fontin Sans', Fontin-Sans, sans-serif";
                 
+                r.g.text(160, 10, "Single Series Chart");
+                r.g.text(480, 10, "Multiline Series Stacked Chart");
+                r.g.text(160, 250, "Multiple Series Chart");
+                r.g.text(480, 250, "Multiline Series Stacked Chart\nColumn Hover");
                 
-                r.g.disc(50, 50, 20);
-                r.g.line(100, 50, 20);
-                r.g.square(150, 50, 20);
-                r.g.triangle(200, 50, 20);
-                r.g.star(250, 50, 20);
-                r.g.cross(300, 50, 20);
-                r.g.plus(350, 50, 20);
-                r.g.arrow(400, 50, 20);
-                
-                r.g.tag(50, 100, "$9.99", 130);
-                r.g.popup(100, 100, "$9.99");
-                r.g.flag(150, 100, "$9.99", 45);
-                r.g.label(200, 100, "$9.99");
-                r.g.drop(250, 100, "$10");
-                r.g.blob(300, 100, "$9.99");
-                // r.rect(10, 10, 50, 50).attr({fill: "#000", stroke: "none"});
-                // r.path({fill: "#000", stroke: "none"}, "M70,10l50,0,0,50-50,0z")
-                var inited = false;
-                var pie = r.g.piechart(320, 440, 100, [55, 20, 13, 32, 5, 1, 2, 10], {legend: ["%%.%% – jQuery users", "EMACS users"], legendpos: "west", href: ["http://raphaeljs.com", "#tre"]});
-                pie.hover(function () {
-                    this.sector.stop();
-                    this.sector.scale(1.1, 1.1, this.cx, this.cy);
-                    if (this.label) {
-                        this.label[0].stop();
-                        this.label[0].scale(1.5);
-                        this.label[1].attr({"font-weight": 800});
-                    }
-                }, function () {
-                    this.sector.animate({scale: [1, 1, this.cx, this.cy]}, 500, "bounce");
-                    if (this.label) {
-                        this.label[0].animate({scale: 1}, 500, "bounce");
-                        this.label[1].attr({"font-weight": 400});
-                    }
+                r.g.barchart(10, 10, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10]]).hover(fin, fout);
+                r.g.hbarchart(330, 10, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55]], {stacked: true}).hover(fin, fout);
+                r.g.hbarchart(10, 250, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55]]).hover(fin, fout);
+                var c = r.g.barchart(330, 250, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55]], {stacked: true, type: "soft"}).hoverColumn(fin2, fout2).eachColumn(function () {
+                    this.bars[1].attr({stroke: "#000"});
                 });
-                // pie.attr({opacity: .5});
-                
-                // var b = r.g.barchart(600, 10, 320, 50, [[55], [10], [12]], 1, {type: "square", init: 0, stacked: 1});
-                // r.g.label(320, 240, "Raphaël").attr({font: "20px Myriad Pro"}).update();
-                var b = r.g.barchart(600, 10, 320, 400, [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55], [12, 20, 30]], 1, {type: "round", stacked: 1});
-                
-                r.g.barchart(600, 420, 320, 200, [[55, 20, 13, 32, 5, 1, 2, 10]]).hover(function () {
-                    this.flag = r.g.blob(this.bar.x + this.bar.w / 2, this.bar.y, this.bar.value || "0", 30);
-                }, function () {
-                    this.flag.animate({opacity: 0}, 100, function () {this.remove();});
-                }).label([["Big (##)", "Small"]], 1);
-
-
+                // c.bars[1].attr({stroke: "#fff"});
             };
         </script>
     </head>
-    <body>
+    <body class="raphael" id="g.raphael.dmitry.baranovskiy.com">
+        <div id="holder"></div>
+        <p>
+            Demo of <a href="http://g.raphaeljs.com/">gRaphaël</a> JavaScript library.
+        </p>
     </body>
 </html>

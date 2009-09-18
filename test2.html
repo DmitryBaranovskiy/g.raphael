@@ -1,43 +1,21 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en">
     <head>
+        <title>gRaphaël Static Line Charts</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>test</title>
-        <script src="../jquery.js" type="text/javascript" charset="utf-8"></script>
+        <meta name="author" content="Dmitry Baranovskiy">
+        <meta name="description" content="Charting JavaScript Library">
+        <link rel="stylesheet" href="demo.css" type="text/css" media="screen" charset="utf-8">
+        <link rel="stylesheet" href="demo-print.css" type="text/css" media="print" charset="utf-8">
         <script src="../raphael.js" type="text/javascript" charset="utf-8"></script>
         <script src="g.raphael.js" type="text/javascript" charset="utf-8"></script>
-        <script src="g.dot.js" type="text/javascript" charset="utf-8"></script>
         <script src="g.line.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" charset="utf-8">
             window.onload = function () {
-                var data = [],
-                    axisx = [],
-                    axisy = [],
-                    table = $("#for-chart").hide();
-                $("tbody td", table).each(function (i) {
-                    data.push(parseFloat($(this).text()) || 0);
-                });
-                $("tbody th", table).each(function () {
-                    axisy.push($(this).text());
-                });
-                $("tfoot th", table).each(function () {
-                    axisx.push($(this).text());
-                });
-                var x = 0, y = 7, xs = [], ys = [];
-                for (var i = 0, ii = data.length; i < ii; i++) {
-                    xs[i] = x++;
-                    ys[i] = y;
-                    if (x > 23) {
-                        x = 0;
-                        y--;
-                    }
-                }
-
-                console.log(axisy.reverse());
-                console.log(axisx);
+                var r = Raphael("holder");
+                r.g.txtattr.font = "12px 'Fontin Sans', Fontin-Sans, sans-serif";
                 
-                var r = Raphael("holder", 1200, 800);
-                r.g.txtattr.font = "11px 'Fontin Sans'";
                 var x = [], y = [], y2 = [], y3 = [];
                 for (var i = 0; i < 500; i++) {
                     x[i] = i * 10;
@@ -45,295 +23,33 @@
                     y2[i] = (y2[i - 1] || 150) + (Math.random() * 7) - 3.5;
                     y3[i] = (y3[i - 1] || 300) + (Math.random() * 7) - 4;
                 }
-                r.g.dotchart(10, 10, 800, 300, xs, ys, data, {max: 15, heat: true, axis: "0 0 1 1", axisxstep: 23, axisystep: 6, axisxlabels: axisx, axisxtype: " ", axisytype: " ", axisylabels: axisy.reverse()}).hover(function () {
-                    this.tag = this.tag || r.g.tag(this.x, this.y, this.value, 0, this.r + 2).insertBefore(this);
-                    this.tag.show();
-                }, function () {
-                    this.tag && this.tag.hide();
-                }).axis.attr({font: "12px Fontin"});
 
-                r.g.linechart(10, 400, 400, 300, x, [y, y2, y3], {nostroke: false, shade: true, axis: "1 1 1 1", axisxstep: 10});
-                var tag;
-                r.g.linechart(440, 400, 400, 300, [[1, 2, 3, 4, 5, 6, 7],[3.5, 4.5, 5.5, 6.5, 7, 8]], [[12, 32, 23, 15, 17, 27, 22], [10, 20, 30, 25, 15, 28]], {nostroke: false, axis: "0 0 1 1", symbol: "o"}).hoverColumn(function () {
+                r.g.text(160, 10, "Simple Line Chart");
+                r.g.text(480, 10, "shade = true");
+                r.g.text(160, 250, "shade = true & nostroke = true");
+                r.g.text(480, 250, "Symbols, axis and hover effect");
+
+                r.g.linechart(10, 10, 300, 220, x, [y, y2, y3]);
+                r.g.linechart(330, 10, 300, 220, x, [y, y2, y3], {shade: true});
+                r.g.linechart(10, 250, 300, 220, x, [y, y2, y3], {nostroke: true, shade: true});
+                var lines = r.g.linechart(330, 250, 300, 220, [[1, 2, 3, 4, 5, 6, 7],[3.5, 4.5, 5.5, 6.5, 7, 8]], [[12, 32, 23, 15, 17, 27, 22], [10, 20, 30, 25, 15, 28]], {nostroke: false, axis: "0 0 1 1", symbol: "o"}).hoverColumn(function () {
+                    this.tags = r.set();
                     for (var i = 0, ii = this.y.length; i < ii; i++) {
-                        r.g.tag(this.x, this.y[i], this.values[i], 0, 9).insertBefore(this);
+                        this.tags.push(r.g.tag(this.x, this.y[i], this.values[i], 160, 10).insertBefore(this).attr([{fill: "#fff"}, {fill: this.symbols[i].attr("fill")}]));
                     }
-                })
-                
-                
-                // .hoverDot(function () {
-                //     if (tag) {
-                //         tag.remove();
-                //         tag = null;
-                //     }
-                //     tag = r.g.tag(this.x, this.y, this.value, 0, 9).insertBefore(this);
-                // }, function () {
-                //     if (tag) {
-                //         tag.remove();
-                //         tag = null;
-                //     }
-                // });
+                }, function () {
+                    this.tags && this.tags.remove();
+                });
+                // lines.lines[0].animate({"stroke-width": 6}, 1000);
+                // lines.symbols[0].attr({stroke: "#fff"});
+                // lines.symbols[0][1].animate({fill: "#f00"}, 1000);
             };
         </script>
     </head>
-    <body>
-        <table id="for-chart">
-            <tfoot>
-                <tr>
-                    <td><!-- Header --></td>
-                    <th>12am</th>
-                    <th>1</th>
-
-                    <th>2</th>
-                    <th>3</th>
-                    <th>4</th>
-                    <th>5</th>
-                    <th>6</th>
-                    <th>7</th>
-
-                    <th>8</th>
-                    <th>9</th>
-                    <th>10</th>
-                    <th>11</th>
-                    <th>12pm</th>
-                    <th>1</th>
-
-                    <th>2</th>
-                    <th>3</th>
-                    <th>4</th>
-                    <th>5</th>
-                    <th>6</th>
-                    <th>7</th>
-
-                    <th>8</th>
-                    <th>9</th>
-                    <th>10</th>
-                    <th>11</th>
-                </tr>
-            </tfoot>
-            <tbody>
-
-                                    <tr>
-                        <th scope="row">Mon</th>
-                                                    <td>294</td>
-                                                    <td>300</td>
-                                                    <td>204</td>
-                                                    <td>255</td>
-
-                                                    <td>348</td>
-                                                    <td>383</td>
-                                                    <td>334</td>
-                                                    <td>217</td>
-                                                    <td>114</td>
-                                                    <td>33</td>
-
-                                                    <td>44</td>
-                                                    <td>26</td>
-                                                    <td>41</td>
-                                                    <td>39</td>
-                                                    <td>52</td>
-                                                    <td>17</td>
-
-                                                    <td>13</td>
-                                                    <td>2</td>
-                                                    <td>0</td>
-                                                    <td>2</td>
-                                                    <td>5</td>
-                                                    <td>6</td>
-
-                                                    <td>64</td>
-                                                    <td>153</td>
-                                            </tr>
-                                    <tr>
-                        <th scope="row">Tue</th>
-                                                    <td>294</td>
-                                                    <td>313</td>
-
-                                                    <td>195</td>
-                                                    <td>280</td>
-                                                    <td>365</td>
-                                                    <td>392</td>
-                                                    <td>340</td>
-                                                    <td>184</td>
-
-                                                    <td>87</td>
-                                                    <td>35</td>
-                                                    <td>43</td>
-                                                    <td>55</td>
-                                                    <td>53</td>
-                                                    <td>79</td>
-
-                                                    <td>49</td>
-                                                    <td>19</td>
-                                                    <td>6</td>
-                                                    <td>1</td>
-                                                    <td>0</td>
-                                                    <td>1</td>
-
-                                                    <td>1</td>
-                                                    <td>10</td>
-                                                    <td>50</td>
-                                                    <td>181</td>
-                                            </tr>
-                                    <tr>
-                        <th scope="row">Wed</th>
-
-                                                    <td>246</td>
-                                                    <td>246</td>
-                                                    <td>220</td>
-                                                    <td>249</td>
-                                                    <td>355</td>
-                                                    <td>373</td>
-
-                                                    <td>332</td>
-                                                    <td>233</td>
-                                                    <td>85</td>
-                                                    <td>54</td>
-                                                    <td>28</td>
-                                                    <td>33</td>
-
-                                                    <td>45</td>
-                                                    <td>72</td>
-                                                    <td>54</td>
-                                                    <td>28</td>
-                                                    <td>5</td>
-                                                    <td>5</td>
-
-                                                    <td>0</td>
-                                                    <td>1</td>
-                                                    <td>2</td>
-                                                    <td>3</td>
-                                                    <td>58</td>
-                                                    <td>167</td>
-
-                                            </tr>
-                                    <tr>
-                        <th scope="row">Thu</th>
-                                                    <td>206</td>
-                                                    <td>245</td>
-                                                    <td>194</td>
-                                                    <td>207</td>
-
-                                                    <td>334</td>
-                                                    <td>290</td>
-                                                    <td>261</td>
-                                                    <td>160</td>
-                                                    <td>61</td>
-                                                    <td>28</td>
-
-                                                    <td>11</td>
-                                                    <td>26</td>
-                                                    <td>33</td>
-                                                    <td>46</td>
-                                                    <td>36</td>
-                                                    <td>5</td>
-
-                                                    <td>6</td>
-                                                    <td>0</td>
-                                                    <td>0</td>
-                                                    <td>0</td>
-                                                    <td>0</td>
-                                                    <td>0</td>
-
-                                                    <td>0</td>
-                                                    <td>9</td>
-                                            </tr>
-                                    <tr>
-                        <th scope="row">Fri</th>
-                                                    <td>9</td>
-                                                    <td>10</td>
-
-                                                    <td>7</td>
-                                                    <td>10</td>
-                                                    <td>14</td>
-                                                    <td>3</td>
-                                                    <td>3</td>
-                                                    <td>7</td>
-
-                                                    <td>0</td>
-                                                    <td>3</td>
-                                                    <td>4</td>
-                                                    <td>4</td>
-                                                    <td>6</td>
-                                                    <td>28</td>
-
-                                                    <td>24</td>
-                                                    <td>3</td>
-                                                    <td>5</td>
-                                                    <td>0</td>
-                                                    <td>0</td>
-                                                    <td>0</td>
-
-                                                    <td>0</td>
-                                                    <td>0</td>
-                                                    <td>0</td>
-                                                    <td>4</td>
-                                            </tr>
-                                    <tr>
-                        <th scope="row">Sat</th>
-
-                                                    <td>3</td>
-                                                    <td>4</td>
-                                                    <td>4</td>
-                                                    <td>3</td>
-                                                    <td>4</td>
-                                                    <td>13</td>
-
-                                                    <td>10</td>
-                                                    <td>7</td>
-                                                    <td>2</td>
-                                                    <td>3</td>
-                                                    <td>6</td>
-                                                    <td>1</td>
-
-                                                    <td>9</td>
-                                                    <td>33</td>
-                                                    <td>32</td>
-                                                    <td>6</td>
-                                                    <td>2</td>
-                                                    <td>1</td>
-
-                                                    <td>3</td>
-                                                    <td>0</td>
-                                                    <td>0</td>
-                                                    <td>4</td>
-                                                    <td>40</td>
-                                                    <td>128</td>
-
-                                            </tr>
-                                    <tr>
-                        <th scope="row">Sun</th>
-                                                    <td>212</td>
-                                                    <td>263</td>
-                                                    <td>202</td>
-                                                    <td>248</td>
-
-                                                    <td>307</td>
-                                                    <td>306</td>
-                                                    <td>284</td>
-                                                    <td>222</td>
-                                                    <td>79</td>
-                                                    <td>39</td>
-
-                                                    <td>26</td>
-                                                    <td>33</td>
-                                                    <td>40</td>
-                                                    <td>61</td>
-                                                    <td>54</td>
-                                                    <td>17</td>
-
-                                                    <td>3</td>
-                                                    <td>0</td>
-                                                    <td>0</td>
-                                                    <td>0</td>
-                                                    <td>3</td>
-                                                    <td>7</td>
-
-                                                    <td>70</td>
-                                                    <td>199</td>
-                                            </tr>
-                            </tbody>
-        </table>
+    <body class="raphael" id="g.raphael.dmitry.baranovskiy.com">
         <div id="holder"></div>
+        <p>
+            Demo of <a href="http://g.raphaeljs.com/">gRaphaël</a> JavaScript library.
+        </p>
     </body>
 </html>

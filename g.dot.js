@@ -1,10 +1,9 @@
 /*
- * g.Raphael 0.3 - Charting library, based on Raphaël
+ * g.Raphael 0.4 - Charting library, based on Raphaël
  *
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
-
 Raphael.fn.g.dotchart = function (x, y, width, height, valuesx, valuesy, size, opts) {
     function drawAxis(ax) {
         +ax[0] && (ax[0] = paper.g.axis(x + gutter, y + gutter, width - 2 * gutter, minx, maxx, opts.axisxstep || Math.floor((width - 2 * gutter) / 20), 2, opts.axisxlabels || null, opts.axisxtype || "t"));
@@ -59,7 +58,7 @@ Raphael.fn.g.dotchart = function (x, y, width, height, valuesx, valuesy, size, o
     var kx = (width - gutter * 2) / ((maxx - minx) || 1),
         ky = (height - gutter * 2) / ((maxy - miny) || 1);
     for (var i = 0, ii = valuesy.length; i < ii; i++) {
-        var sym = this.raphael.isArray(symbol) ? symbol[i] : symbol,
+        var sym = this.raphael.is(symbol, "array") ? symbol[i] : symbol,
             X = x + gutter + (valuesx[i] - minx) * kx,
             Y = y + height - gutter - (valuesy[i] - miny) * ky;
         sym && R[i] && series.push(this.g[sym](X, Y, R[i]).attr({fill: opts.heat ? this.g.colorValue(R[i], maxR) : Raphael.fn.g.colors[0], "fill-opacity": opts.opacity ? R[i] / max : 1, stroke: "none"}));
@@ -68,7 +67,7 @@ Raphael.fn.g.dotchart = function (x, y, width, height, valuesx, valuesy, size, o
     for (var i = 0, ii = valuesy.length; i < ii; i++) {
         var X = x + gutter + (valuesx[i] - minx) * kx,
             Y = y + height - gutter - (valuesy[i] - miny) * ky;
-        covers.push(this.circle(X, Y, maxR).attr({fill: "#000", stroke: "none", opacity: 0}));
+        covers.push(this.circle(X, Y, maxR).attr(this.g.shim));
         opts.href && opts.href[i] && covers[i].attr({href: opts.href[i]});
         covers[i].r = +R[i].toFixed(3);
         covers[i].x = +X.toFixed(3);
@@ -90,6 +89,9 @@ Raphael.fn.g.dotchart = function (x, y, width, height, valuesx, valuesy, size, o
         return this;
     };
     res.each = function (f) {
+        if (!Raphael.is(f, "function")) {
+            return this;
+        }
         for (var i = covers.length; i--;) {
             f.call(covers[i]);
         }

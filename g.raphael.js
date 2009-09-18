@@ -1,5 +1,5 @@
 /*
- * g.Raphael 0.3 - Charting library, based on Raphaël
+ * g.Raphael 0.4 - Charting library, based on Raphaël
  *
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
@@ -11,6 +11,10 @@
     Raphael.fn.g.markers = {
         disc: "disc",
         o: "disc",
+        flower: "flower",
+        f: "flower",
+        diamond: "diamond",
+        d: "diamond",
         square: "square",
         s: "square",
         triangle: "triangle",
@@ -24,6 +28,7 @@
         arrow: "arrow",
         "->": "arrow"
     };
+    Raphael.fn.g.shim = {stroke: "none", fill: "#000", "fill-opacity": 0};
     Raphael.fn.g.txtattr = {font: "12px Arial, sans-serif"};
     Raphael.fn.g.colors = [];
     var hues = [.6, .2, .05, .1333, .75, 0];
@@ -131,6 +136,23 @@
         r *= 1.75;
         return this.path("M".concat(cx, ",", cy, "m0-", r * .58, "l", r * .5, ",", r * .87, "-", r, ",0z"));
     };
+    Raphael.fn.g.diamond = function (cx, cy, r) {
+        return this.path(["M", cx, cy - r, "l", r, r, -r, r, -r, -r, r, -r, "z"]);
+    };
+    Raphael.fn.g.flower = function (cx, cy, r, n) {
+        r = r * 1.25;
+        var rout = r,
+            rin = rout * .5;
+        n = +n < 3 || !n ? 5 : n;
+        var points = ["M", cx, cy + rin, "Q"],
+            R;
+        for (var i = 1; i < n * 2 + 1; i++) {
+            R = i % 2 ? rout : rin;
+            points = points.concat([+(cx + R * Math.sin(i * Math.PI / n)).toFixed(3), +(cy + R * Math.cos(i * Math.PI / n)).toFixed(3)]);
+        }
+        points.push("z");
+        return this.path(points.join(","));
+    };
     Raphael.fn.g.star = function (cx, cy, r, r2) {
         r2 = r2 || r * .5;
         var points = ["M", cx, cy + r2, "L"],
@@ -140,7 +162,7 @@
             points = points.concat([(cx + R * Math.sin(i * Math.PI * .2)).toFixed(3), (cy + R * Math.cos(i * Math.PI * .2)).toFixed(3)]);
         }
         points.push("z");
-        return this.path(points);
+        return this.path(points.join(","));
     };
     Raphael.fn.g.cross = function (cx, cy, r) {
         r = r / 2.5;
@@ -285,8 +307,8 @@
         return res;
     };
     Raphael.fn.g.blob = function (x, y, text, angle) {
-        var angle = (+angle + 1 ? angle : 45) + 90,
-            size = 12,
+        angle = (+angle + 1 ? angle : 45) + 90;
+        var size = 12,
             rad = Math.PI / 180,
             fontSize = size * 12 / 12;
         var res = this.set();
