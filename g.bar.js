@@ -99,6 +99,7 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
                 bar.y = y + height - barvgutter - !!size * .5 - h;
                 covers.push(cover = this.rect(bar.x - bar.w / 2, bar.y, barwidth, bar.value * Y).attr(this.g.shim));
                 cover.bar = bar;
+                cover.value = bar.value;
                 size += bar.value;
             }
             X += barwidth;
@@ -109,10 +110,11 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
     X = x + barhgutter;
     if (!opts.stacked) {
         for (var i = 0; i < len; i++) {
-            for (var j = 0; j < multi; j++) {
+            for (var j = 0; j < (multi || 1); j++) {
                 var cover;
                 covers.push(cover = this.rect(Math.round(X), y + barvgutter, barwidth, height - barvgutter).attr(this.g.shim));
-                cover.bar = bars[j][i];
+                cover.bar = multi ? bars[j][i] : bars[i];
+                cover.value = cover.bar.value;
                 X += barwidth;
             }
             X += barhgutter;

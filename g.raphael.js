@@ -82,26 +82,26 @@
                 var r = Math.floor(width / 2);
                 if (height < r) {
                     r = height;
-                    path = ["M", x - Math.floor(width / 2) + .001, y + .001, "l", 0, 0, "a", Math.floor(width / 2), r, 0, 0, 1, width, 0, "l", 0, 0, "z"];
+                    path = ["M", x - Math.floor(width / 2), y, "l", 0, 0, "a", Math.floor(width / 2), r, 0, 0, 1, width, 0, "l", 0, 0, "z"];
                 } else {
-                    path = ["M", x - r + .001, y + .001, "l", 0, r - height, "a", r, r, 0, 1, 1, width, 0, "l", 0, height - r, "z"];
+                    path = ["M", x - r, y, "l", 0, r - height, "a", r, r, 0, 1, 1, width, 0, "l", 0, height - r, "z"];
                 }
             }
             break;
             case "sharp":
             if (!dir) {
                 var half = Math.floor(height / 2);
-                path = ["M", x + .5, y + .5 + half, "l", 0, -height, Math.max(width - half, 0), 0, Math.min(half, width), half, -Math.min(half, width), half + (half * 2 < height), "z"];
+                path = ["M", x, y + half, "l", 0, -height, Math.max(width - half, 0), 0, Math.min(half, width), half, -Math.min(half, width), half + (half * 2 < height), "z"];
             } else {
                 var half = Math.floor(width / 2);
-                path = ["M", x + half + .001, y + .001, "l", -width, 0, 0, -Math.max(height - half, 0), half, -Math.min(half, height), half, Math.min(half, height), half, "z"];
+                path = ["M", x + half, y, "l", -width, 0, 0, -Math.max(height - half, 0), half, -Math.min(half, height), half, Math.min(half, height), half, "z"];
             }
             break;
             case "square":
             if (!dir) {
                 path = ["M", x, y + Math.floor(height / 2), "l", 0, -height, width, 0, 0, height, "z"];
             } else {
-                path = ["M", x + .001 + Math.floor(width / 2), y - .001, "l", 1 - width, 0, 0, -height, width - 1, 0, "z"];
+                path = ["M", x + Math.floor(width / 2), y, "l", 1 - width, 0, 0, -height, width - 1, 0, "z"];
             }
             break;
             case "soft":
@@ -306,10 +306,10 @@
         res.text = res[1];
         return res;
     };
-    Raphael.fn.g.blob = function (x, y, text, angle) {
+    Raphael.fn.g.blob = function (x, y, text, angle, size) {
         angle = (+angle + 1 ? angle : 45) + 90;
-        var size = 12,
-            rad = Math.PI / 180,
+        size = size || 12;
+        var rad = Math.PI / 180,
             fontSize = size * 12 / 12;
         var res = this.set();
         res.push(this.path().attr({fill: "#000", stroke: "none"}));
