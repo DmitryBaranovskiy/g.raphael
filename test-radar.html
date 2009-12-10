@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+    <head>
+        <title>gRaphaël Static Radar Chart</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <script src="../raphael.js" type="text/javascript" charset="utf-8"></script>
+        <script src="g.raphael.js" type="text/javascript" charset="utf-8"></script>
+        <script src="g.radar.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+            window.onload = function () {
+                var r = Raphael("holder");
+                r.g.txtattr.font = "12px 'Fontin Sans', Fontin-Sans, sans-serif";
+
+                r.g.text(320, 20, "Static Radar Chart").attr({"font-size": 20});
+
+                static_radar = r.g.radar(
+					320, 240, 200, 
+					[35, 20, 13, 32, 25, 40, 37, 16, 42]
+				);
+				
+				r.g.text(960, 20, "Animated Radar Chart").attr({"font-size": 20});
+				anim_radar = r.g.radar(
+					960, 240, 200, 
+					[35, 37, 16, 20, 40, 13, 32, 25, 42, 20	],
+					{	stroke:     "#09f",
+						helplines:  4,
+						discradius: 6
+				});
+				
+                anim_radar.hover(function () {
+                    this.arm.stop();
+                    this.arm.animate({scale: [3, 3, this.mx, this.my]}, 500);
+                }, function () {
+                    anim_radar.each(function () {
+						this.arm.stop();
+						this.arm.animate({scale: [1, 1, this.mx, this.my]}, 500);
+					});
+                });
+				
+				anim_radar.click(function () {
+                    //this.arm.animate({scale: [5, 1, this.mx, this.my], cx: this.cx, cy: this.cy}, 500);
+                    this.arm.stop();
+                    anim_radar.each(function () {
+						this.arm.stop();
+						this.arm.animate({scale: [this.value/5, this.value/5, this.mx, this.my]}, 500);
+					});
+                });
+            };
+        </script>
+    </head>
+    <body>
+        <div id="holder" style="width:1280px; height:480px;"></div>
+    </body>
+</html>
