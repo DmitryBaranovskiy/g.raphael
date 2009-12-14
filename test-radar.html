@@ -24,17 +24,29 @@
 					[35, 37, 16, 20, 40, 13, 32, 25, 42, 20	],
 					{	stroke:     "#09f",
 						helplines:  4,
-						discradius: 6
+						discradius: 6,
+						legend: ["Tolle Sache", "Spitze", "Weiß nicht	"], 
+						href: ["http://raphaeljs.com", "http://g.raphaeljs.com"]
 				});
 				
                 anim_radar.hover(function () {
                     this.arm.stop();
                     this.arm.animate({scale: [3, 3, this.mx, this.my]}, 500);
+					//this.arm.scale(3);
+					if (this.label) {
+                        this.label[0].stop();
+                        this.label[0].scale(2);
+                        this.label[1].attr({"font-weight": 1200});
+                    }
                 }, function () {
                     anim_radar.each(function () {
 						this.arm.stop();
 						this.arm.animate({scale: [1, 1, this.mx, this.my]}, 500);
 					});
+					if (this.label) {
+                        this.label[0].animate({scale: 1}, 500, "bounce");
+                        this.label[1].attr({"font-weight": 400});
+                    }
                 });
 				
 				anim_radar.click(function () {
@@ -49,6 +61,6 @@
         </script>
     </head>
     <body>
-        <div id="holder" style="width:1280px; height:480px;"></div>
+        <div id="holder" style="width:13000px; height:480px;"></div>
     </body>
 </html>

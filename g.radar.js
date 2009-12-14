@@ -13,24 +13,17 @@
 Raphael.fn.g.radar = function (cx, cy, r, values, opts) {
     opts = opts || {};
     var paper = this,			
-        chart = this.set(),				// the chart that will be constructed and returned
 		arms = [],						// holds the values, their positions, paths, arms, discs
+        chart = this.set(),				// the chart that will be constructed and returned
         covers = this.set(),			// holds the areas for event handling
+        series = this.set(),
 		middle_point,					// raphael disc for background mesh			
-		mesh = [],						// the background mesh 
+		mesh = this.set(),				// the background mesh 
         total = 0,				
 		max = 0,						// the maximum of the values
         len = values.length,			// number of values
 		web = {pointarray: [], path: null};	// connecting lines between values
 		
-        //sectors = [],
-        //series = this.set(),
-        //order = [],
-        //angle = 0,
-        //others = 0,
-        //cut = 9,
-        //defcut = true;
-    chart.covers = covers;
 	
 	// overwrite default values for options with opts
 	var default_opts = {
@@ -77,19 +70,15 @@ Raphael.fn.g.radar = function (cx, cy, r, values, opts) {
 	if (opts.helplines){
 		var helpradius = r / opts.helplines;
 		for (var i = 0; i < opts.helplines; i++) {
-			mesh[i] = this.circle(cx, cy, helpradius*(i+1)).attr({stroke: opts.meshcolor, "stroke-width": opts.meshwidth});
+			mesh.push(this.circle(cx, cy, helpradius*(i+1)).attr({stroke: opts.meshcolor, "stroke-width": opts.meshwidth}));
 		}
 	}
 	
-	// draw the arms
+	// calculate the arms
 	for (var i = 0; i < len; i++) {
 		arms[i] = arm(cx, cy, r * values[i] / max, i * 360 / len, r);
-		arms[i].path =  this.path(arms[i].path)
-							.attr({stroke: opts.stroke,     "stroke-width": opts.strokewidth});
-		arms[i].rest =  this.path(arms[i].rest)
-							.attr({stroke: opts.meshcolor, "stroke-width": opts.meshwidth});
 	}
-	
+		
 	// draw a poligon through the value points
 	web.pointarray.push("M");
 	for (var i = 0; i < len; i++) {
@@ -98,11 +87,18 @@ Raphael.fn.g.radar = function (cx, cy, r, values, opts) {
 	web.pointarray.push(arms[0].x, arms[0].y);
 	web.path = this.path(web.pointarray.join(',')).attr({stroke: opts.stroke, "stroke-width": opts.meshwidth, fill: opts.stroke, "fill-opacity": 0.4});
 		
-	// draw the value points as latest to make sure they are the topmost
+	// draw the value points (and arms) as latest to make sure they are the topmost
 	for (var i = 0; i < len; i++) {
+		arms[i].path =  this.path(arms[i].path)
+							.attr({stroke: opts.stroke,     "stroke-width": opts.strokewidth});
+		arms[i].rest =  this.path(arms[i].rest)
+							.attr({stroke: opts.meshcolor, "stroke-width": opts.meshwidth});
 		arms[i].point = this.g.disc(arms[i].x, arms[i].y, opts.discradius)
 							.attr({stroke: opts.stroke, fill: opts.stroke });
-		covers.push(arms[i].point);
+		var cover = this.set();
+		cover.push(arms[i].path, arms[i].rest, arms[i].point);
+		covers.push(cover);
+		series.push(arms[i].point);
 	}
 
     chart.hover = function (fin, fout) {
@@ -121,11 +117,18 @@ Raphael.fn.g.radar = function (cx, cy, r, values, opts) {
                     max: max,
                     label: that.labels && that.labels[j]
                 };
-                cover.mouseover(function () {
+                o.cover.mouseover(function () {
                     fin.call(o);
                 }).mouseout(function () {
                     fout.call(o);
                 });
+				if (o.label){
+					o.label.mouseover(function () {
+						fin.call(o);
+					}).mouseout(function () {
+						fout.call(o);
+					});
+				}
             })(arms[i], covers[i], i);
         }
         return this;
@@ -171,12 +174,17 @@ Raphael.fn.g.radar = function (cx, cy, r, values, opts) {
                     label: that.labels && that.labels[j]
                 };
                 cover.click(function () { f.call(o); });
+				if (o.label){
+					o.label.click(function () {
+						f.call(o);
+					});
+				}
             })(arms[i], covers[i], i);
         }
         return this;
     };
 
- /*   var legend = function (labels, otherslabel, mark, dir) {
+    var legend = function (labels, otherslabel, mark, dir) {
         var x = cx + r + r / 5,
             y = cy,
             h = y + 10;
@@ -186,13 +194,13 @@ Raphael.fn.g.radar = function (cx, cy, r, values, opts) {
         chart.labels = paper.set();
         for (var i = 0; i < len; i++) {
             var clr = series[i].attr("fill"),
-                j = values[i].order,
+                //j = values[i].order,
                 txt;
             values[i].others && (labels[j] = otherslabel || "Others");
-            labels[j] = paper.g.labelise(labels[j], values[i], total);
+            labels[i] = paper.g.labelise(labels[i], values[i], total);
             chart.labels.push(paper.set());
             chart.labels[i].push(paper.g[mark](x + 5, h, 5).attr({fill: clr, stroke: "none"}));
-            chart.labels[i].push(txt = paper.text(x + 20, h, labels[j] || values[j]).attr(paper.g.txtattr).attr({fill: opts.legendcolor || "#000", "text-anchor": "start"}));
+            chart.labels[i].push(txt = paper.text(x + 20, h, labels[i] || values[i]).attr(paper.g.txtattr).attr({fill: opts.legendcolor || "#000", "text-anchor": "start"}));
             covers[i].label = chart.labels[i];
             h += txt.getBBox().height * 1.2;
         }
@@ -209,8 +217,8 @@ Raphael.fn.g.radar = function (cx, cy, r, values, opts) {
     if (opts.legend) {
         legend(opts.legend, opts.legendothers, opts.legendmark, opts.legendpos);
     }
-    chart.push(series, covers);
+    chart.push(series, covers, middle_point, mesh);
     chart.series = series;
     chart.covers = covers;
-*/    return chart;
+    return chart;
 };
