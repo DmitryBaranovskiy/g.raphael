@@ -146,8 +146,8 @@ Raphael.fn.g.radar = function (cx, cy, r, values, opts) {
                     cover: cover,
                     cx: cx,
                     cy: cy,
-                    mx: arm.x,
-                    my: arm.y,
+                    x: arm.x,
+                    y: arm.y,
                     value: values[j],
                     max: max,
                     label: that.labels && that.labels[j]

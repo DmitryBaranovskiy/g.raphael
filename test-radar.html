@@ -41,7 +41,7 @@
                 }, function () {
                     anim_radar.each(function () {
 						this.arm.stop();
-						this.arm.animate({scale: [1, 1, this.mx, this.my]}, 500);
+						this.arm.animate({scale: [1, 1, this.x, this.y]}, 500);
 					});
 					if (this.label) {
                         this.label[0].animate({scale: 1}, 500, "bounce");
