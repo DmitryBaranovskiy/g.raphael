@@ -120,8 +120,10 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
             X += barhgutter;
         }
     }
-    chart.label = function (labels, isBottom) {
+    chart.label = function (labels, isBottom, rotate) {
         labels = labels || [];
+        isBottom = isBottom == undefined ? true : isBottom;
+	rotate = rotate == undefined ? false : rotate;
         this.labels = paper.set();
         var L, l = -Infinity;
         if (opts.stacked) {
@@ -129,15 +131,18 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
                 var tot = 0;
                 for (var j = 0; j < (multi || 1); j++) {
                     tot += multi ? values[j][i] : values[i];
-                    if (j == multi - 1) {
-                        var label = paper.g.labelise(labels[i], tot, total);
-                        L = paper.g.text(bars[i * (multi || 1) + j].x, y + height - barvgutter / 2, label).insertBefore(covers[i * (multi || 1) + j]);
+                    if (j == 0) {
+                        var label = paper.g.labelise(labels[j][i], tot, total);
+                        L = paper.g.text(bars[j][i].x, isBottom ? y + height - barvgutter / 2 : bars[j][i].y - 10, label);
+			if (rotate) {
+				L.rotate(90);
+			}
                         var bb = L.getBBox();
                         if (bb.x - 7 < l) {
                             L.remove();
                         } else {
                             this.labels.push(L);
-                            l = bb.x + bb.width;
+                            l = bb.x + (rotate ? bb.height : bb.width);
                         }
                     }
                 }
@@ -145,14 +150,22 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
         } else {
             for (var i = 0; i < len; i++) {
                 for (var j = 0; j < (multi || 1); j++) {
-                    var label = paper.g.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total);
-                    L = paper.g.text(bars[i * (multi || 1) + j].x, isBottom ? y + height - barvgutter / 2 : bars[i * (multi || 1) + j].y - 10, label).insertBefore(covers[i * (multi || 1) + j]);
+                    // did not remove the loop because don't yet know whether to accept multi array input for arrays
+                    var label = paper.g.labelise(multi ? labels[0] && labels[0][i] : labels[i], multi ? values[0][i] : values[i], total);
+                     L = paper.g.text(bars[0][i].x, isBottom ? y + 5 + height - barvgutter / 2 : bars[0][i].y - 10, label);
+			if (rotate) {
+				L.rotate(90);
+				// If we rotated it, we need to move it as well. Still have to use the width
+				// to get the "length" of the label, divided it in two and shift down.
+				L.translate(0, (L.getBBox().width / 2));
+			}
                     var bb = L.getBBox();
-                    if (bb.x - 7 < l) {
+//                    if (bb.x - 7 < l) {
+                    if (bb.x - (this.getBBox().width) < l) {
                         L.remove();
                     } else {
                         this.labels.push(L);
-                        l = bb.x + bb.width;
+                        l = bb.x + (rotate ? bb.height : bb.width);
                     }
                 }
             }
