@@ -15,7 +15,8 @@
 
                 static_radar = r.g.radar(
 					320, 240, 200, 
-					[35, 20, 13, 32, 25, 40, 37, 16, 42]
+					[35, 20, 13, 32, 25, 40, 37, 16, 42],
+					{discradius: 8, numbers: false}
 				);
 				
 				r.g.text(960, 20, "Animated Radar Chart").attr({"font-size": 20});
@@ -24,38 +25,38 @@
 					[35, 37, 16, 20, 40, 13, 32, 25, 42, 20	],
 					{	stroke:     "#09f",
 						helplines:  4,
-						discradius: 6,
-						legend: ["Tolle Sache", "Spitze", "Weiß nicht	"], 
+						discradius: 10,
+						legend: ["Value number one", "A second value", "And a third one",
+								 "Always give meaningful titles", "Don't you think?", "This legend rocks!"], 
 						href: ["http://raphaeljs.com", "http://g.raphaeljs.com"]
 				});
 				
                 anim_radar.hover(function () {
                     this.arm.stop();
-                    this.arm.animate({scale: [3, 3, this.mx, this.my]}, 500);
-					//this.arm.scale(3);
+                    this.arm.animate({scale: [2, 2, this.mx, this.my]}, 500);
+					this.number.animate({"font-size": 20}, 500);
 					if (this.label) {
                         this.label[0].stop();
                         this.label[0].scale(2);
-                        this.label[1].attr({"font-weight": 1200});
+                        this.label[1].attr({"font-weight": "bold"});
+                        this.label[2].attr({"font-size": 20});
                     }
                 }, function () {
                     anim_radar.each(function () {
 						this.arm.stop();
 						this.arm.animate({scale: [1, 1, this.x, this.y]}, 500);
+    					this.number.animate({"font-size": 12}, 500);
 					});
 					if (this.label) {
                         this.label[0].animate({scale: 1}, 500, "bounce");
-                        this.label[1].attr({"font-weight": 400});
+                        this.label[1].attr({"font-weight": "normal"});
+                        this.label[2].attr({"font-size": 12});
                     }
                 });
 				
 				anim_radar.click(function () {
-                    //this.arm.animate({scale: [5, 1, this.mx, this.my], cx: this.cx, cy: this.cy}, 500);
                     this.arm.stop();
-                    anim_radar.each(function () {
-						this.arm.stop();
-						this.arm.animate({scale: [this.value/5, this.value/5, this.mx, this.my]}, 500);
-					});
+					window.location.href = "";
                 });
             };
         </script>

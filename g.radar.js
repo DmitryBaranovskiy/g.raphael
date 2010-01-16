@@ -27,12 +27,14 @@ Raphael.fn.g.radar = function (cx, cy, r, values, opts) {
 	
 	// overwrite default values for options with opts
 	var default_opts = {
-		meshwidth:   1,
-		strokewidth: 2,
-		stroke:      "#f90",
-		meshcolor:   "#999",
-		helplines:   5,
-		discradius:  5
+		meshwidth:    1,
+		strokewidth:  2,
+		stroke:       "#f90",
+		meshcolor:    "#999",
+		helplines:    5,
+		discradius:   10,
+		numbers:      true,
+		numberscolor: "#fff"
 	};
     for (var property in opts)
         default_opts[property] = opts[property];
@@ -95,11 +97,17 @@ Raphael.fn.g.radar = function (cx, cy, r, values, opts) {
 							.attr({stroke: opts.meshcolor, "stroke-width": opts.meshwidth});
 		arms[i].point = this.g.disc(arms[i].x, arms[i].y, opts.discradius)
 							.attr({stroke: opts.stroke, fill: opts.stroke });
+		if(opts.numbers){
+			arms[i].number = this.text(arms[i].x, arms[i].y+1, i+1).attr(this.g.txtattr).attr({fill: opts.numberscolor, "text-anchor": "middle"});
+		}
 		var cover = this.set();
 		cover.push(arms[i].path, arms[i].rest, arms[i].point);
+		if (arms[i].number)
+		  cover.push(arms[i].number);
 		covers.push(cover);
 		series.push(arms[i].point);
 	}
+	
 
     chart.hover = function (fin, fout) {
         fout = fout || function () {};
@@ -108,6 +116,7 @@ Raphael.fn.g.radar = function (cx, cy, r, values, opts) {
             (function (arm, cover, j) {
                 var o = {
                     arm: arm.point,
+					number: arm.number,
                     cover: cover,
                     cx: cx,
                     cy: cy,
@@ -143,6 +152,7 @@ Raphael.fn.g.radar = function (cx, cy, r, values, opts) {
             (function (arm, cover, j) {
                 var o = {
                     arm: arm.point,
+					number: arm.number,
                     cover: cover,
                     cx: cx,
                     cy: cy,
@@ -164,6 +174,7 @@ Raphael.fn.g.radar = function (cx, cy, r, values, opts) {
             (function (arm, cover, j) {
                 var o = {
                     arm: arm.point,
+					number: arm.number,
                     cover: cover,
                     cx: cx,
                     cy: cy,
@@ -194,13 +205,15 @@ Raphael.fn.g.radar = function (cx, cy, r, values, opts) {
         chart.labels = paper.set();
         for (var i = 0; i < len; i++) {
             var clr = series[i].attr("fill"),
-                //j = values[i].order,
                 txt;
             values[i].others && (labels[j] = otherslabel || "Others");
             labels[i] = paper.g.labelise(labels[i], values[i], total);
             chart.labels.push(paper.set());
-            chart.labels[i].push(paper.g[mark](x + 5, h, 5).attr({fill: clr, stroke: "none"}));
+            chart.labels[i].push(paper.g[mark](x + 5, h, 8).attr({fill: clr, stroke: "none"}));
             chart.labels[i].push(txt = paper.text(x + 20, h, labels[i] || values[i]).attr(paper.g.txtattr).attr({fill: opts.legendcolor || "#000", "text-anchor": "start"}));
+			if(opts.numbers){
+				chart.labels[i].push(paper.text(x+5, h+1, i+1).attr(paper.g.txtattr).attr({fill: opts.numberscolor, "text-anchor": "middle"}));
+			}
             covers[i].label = chart.labels[i];
             h += txt.getBBox().height * 1.2;
         }
