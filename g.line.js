@@ -1,5 +1,5 @@
-/*
- * g.Raphael 0.4 - Charting library, based on Raphaël
+/*!
+ * g.Raphael 0.4.1 - Charting library, based on Raphaël
  *
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
