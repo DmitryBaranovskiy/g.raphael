@@ -1,5 +1,5 @@
 /*!
- * g.Raphael 0.4.1 - Charting library, based on Raphaël
+ * g.Raphael 0.4.2 - Charting library, based on Raphaël
  *
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
@@ -24,6 +24,25 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
         }
         return res;
     }
+    function getAnchors(p1x, p1y, p2x, p2y, p3x, p3y) {
+        var l1 = (p2x - p1x) / 2,
+            l2 = (p3x - p2x) / 2,
+            a = Math.atan((p2x - p1x) / Math.abs(p2y - p1y)),
+            b = Math.atan((p3x - p2x) / Math.abs(p2y - p3y));
+        a = p1y < p2y ? Math.PI - a : a;
+        b = p3y < p2y ? Math.PI - b : b;
+        var alpha = Math.PI / 2 - ((a + b) % (Math.PI * 2)) / 2,
+            dx1 = l1 * Math.sin(alpha + a),
+            dy1 = l1 * Math.cos(alpha + a),
+            dx2 = l2 * Math.sin(alpha + b),
+            dy2 = l2 * Math.cos(alpha + b);
+        return {
+            x1: p2x - dx1,
+            y1: p2y + dy1,
+            x2: p2x + dx2,
+            y2: p2y + dy2
+        };
+    }
     opts = opts || {};
     if (!this.raphael.is(valuesx[0], "array")) {
         valuesx = [valuesx];
@@ -31,17 +50,7 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
     if (!this.raphael.is(valuesy[0], "array")) {
         valuesy = [valuesy];
     }
-    var allx = Array.prototype.concat.apply([], valuesx),
-        ally = Array.prototype.concat.apply([], valuesy),
-        xdim = this.g.snapEnds(Math.min.apply(Math, allx), Math.max.apply(Math, allx), valuesx[0].length - 1),
-        minx = xdim.from,
-        maxx = xdim.to,
-        gutter = opts.gutter || 10,
-        kx = (width - gutter * 2) / (maxx - minx),
-        ydim = this.g.snapEnds(Math.min.apply(Math, ally), Math.max.apply(Math, ally), valuesy[0].length - 1),
-        miny = ydim.from,
-        maxy = ydim.to,
-        ky = (height - gutter * 2) / (maxy - miny),
+    var gutter = opts.gutter || 10,
         len = Math.max(valuesx[0].length, valuesy[0].length),
         symbol = opts.symbol || "",
         colors = opts.colors || Raphael.fn.g.colors,
@@ -55,7 +64,7 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
         len = Math.max(len, valuesy[i].length);
     }
     var shades = this.set();
-    for (var i = 0, ii = valuesy.length; i < ii; i++) {
+    for (i = 0, ii = valuesy.length; i < ii; i++) {
         if (opts.shade) {
             shades.push(this.path().attr({stroke: "none", fill: colors[i], opacity: opts.nostroke ? 1 : .3}));
         }
@@ -67,6 +76,17 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
             valuesx[i] = shrink(valuesx[i], width - 2 * gutter);
         }
     }
+    var allx = Array.prototype.concat.apply([], valuesx),
+        ally = Array.prototype.concat.apply([], valuesy),
+        xdim = this.g.snapEnds(Math.min.apply(Math, allx), Math.max.apply(Math, allx), valuesx[0].length - 1),
+        minx = xdim.from,
+        maxx = xdim.to,
+        ydim = this.g.snapEnds(Math.min.apply(Math, ally), Math.max.apply(Math, ally), valuesy[0].length - 1),
+        miny = ydim.from,
+        maxy = ydim.to,
+        kx = (width - gutter * 2) / (maxx - minx),
+        ky = (height - gutter * 2) / (maxy - miny);
+
     var axis = this.set();
     if (opts.axis) {
         var ax = (opts.axis + "").split(/[,\s]+/);
@@ -78,7 +98,7 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
     var lines = this.set(),
         symbols = this.set(),
         line;
-    for (var i = 0, ii = valuesy.length; i < ii; i++) {
+    for (i = 0, ii = valuesy.length; i < ii; i++) {
         if (!opts.nostroke) {
             lines.push(line = this.path().attr({
                 stroke: colors[i],
@@ -92,10 +112,27 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
             symset = this.set();
         path = [];
         for (var j = 0, jj = valuesy[i].length; j < jj; j++) {
-            var X = x + gutter + ((valuesx[i] || valuesx[0])[j] - minx) * kx;
-            var Y = y + height - gutter - (valuesy[i][j] - miny) * ky;
+            var X = x + gutter + ((valuesx[i] || valuesx[0])[j] - minx) * kx,
+                Y = y + height - gutter - (valuesy[i][j] - miny) * ky;
             (Raphael.is(sym, "array") ? sym[j] : sym) && symset.push(this.g[Raphael.fn.g.markers[this.raphael.is(sym, "array") ? sym[j] : sym]](X, Y, (opts.width || 2) * 3).attr({fill: colors[i], stroke: "none"}));
-            path = path.concat([j ? "L" : "M", X, Y]);
+            if (opts.smooth) {
+                if (j && j != jj - 1) {
+                    var X0 = x + gutter + ((valuesx[i] || valuesx[0])[j - 1] - minx) * kx,
+                        Y0 = y + height - gutter - (valuesy[i][j - 1] - miny) * ky,
+                        X2 = x + gutter + ((valuesx[i] || valuesx[0])[j + 1] - minx) * kx,
+                        Y2 = y + height - gutter - (valuesy[i][j + 1] - miny) * ky;
+                    var a = getAnchors(X0, Y0, X, Y, X2, Y2);
+                    path = path.concat([a.x1, a.y1, X, Y, a.x2, a.y2]);
+                }
+                if (!j) {
+                    path = ["M", X, Y, "C", X, Y];
+                }
+            } else {
+                path = path.concat([j ? "L" : "M", X, Y]);
+            }
+        }
+        if (opts.smooth) {
+            path = path.concat([X, Y, X, Y]);
         }
         symbols.push(symset);
         if (opts.shade) {
@@ -113,13 +150,13 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
         // remove duplicates
         var Xs2 = [],
             xs = [];
-        for (var i = 0, ii = Xs.length; i < ii; i++) {
+        for (i = 0, ii = Xs.length; i < ii; i++) {
             Xs[i] != Xs[i - 1] && Xs2.push(Xs[i]) && xs.push(x + gutter + (Xs[i] - minx) * kx);
         }
         Xs = Xs2;
         ii = Xs.length;
         var cvrs = f || that.set();
-        for (var i = 0; i < ii; i++) {
+        for (i = 0; i < ii; i++) {
             var X = xs[i] - (xs[i] - (xs[i - 1] || x)) / 2,
                 w = ((xs[i + 1] || x + width) - xs[i]) / 2 + (xs[i] - (xs[i - 1] || x)) / 2,
                 C;
@@ -190,7 +227,7 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
             }
         }
         !columns && createColumns();
-        for (var i = 0, ii = hrefs.length; i < ii; i++) {
+        for (i = 0, ii = hrefs.length; i < ii; i++) {
             columns[i] && columns[i].attr("href", hrefs[i]);
         }
         return this;
