@@ -105,11 +105,31 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
                     total: total,
                     label: that.labels && that.labels[j]
                 };
-                cover.mouseover(function () {
-                    fin.call(o);
-                }).mouseout(function () {
-                    fout.call(o);
-                });
+
+                // Hover modes:
+                // 0 : Callbacks NOT triggered on hover
+                // 1 : Callbacks triggered on hover over SECTOR ONLY
+                // 2 : Callbacks triggered on hover over BOTH LABEL AND SECTOR
+                // 3 : Callbacks triggered on hover over LABEL ONLY
+                if (typeof(opts.hovermode) === 'undefined') 
+                	opts.hovermode = 1; // for backwards compatibility
+                
+                if (opts.hovermode && opts.hovermode < 3) {
+                    cover.mouseover(function () {
+                        fin.call(o);
+                    }).mouseout(function () {
+                        fout.call(o);
+                    });
+                }
+                    
+                if (opts.hovermode && opts.hovermode > 1) {
+                    that.labels[j].mouseover(function () {
+                        fin.call(o);
+                    }).mouseout(function () {
+                        fout.call(o);
+                    });
+                }
+
             })(series[i], covers[i], i);
         }
         return this;
