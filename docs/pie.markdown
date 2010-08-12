@@ -12,17 +12,24 @@ Creates a pie chart.
 
 ## Parameters ##
 
-    1. **x** number **X coordinate of the centre**
-    2. **y** number **Y coordinate of the centre**
-    3. **r** number **radius**
-    4. **[n1,n2...]** array of numbers **Size of the pie sectors**
-    5. **{attr:prop}** associative array of attrs/props **Additional pie attributes (see below)**
+**1. x** number **X coordinate of the centre**
+
+**2. y** number **Y coordinate of the centre**
+
+**3. r** number **radius**
+
+**4. [n1,n2...]** array of numbers **Size of the pie sectors**
+
+**5. {attr:prop}** associative array of attrs/props **Additional pie attributes (see below)**
+
     
 ## Methods ##
 
-    1. **.hover(fin, fout)** - fin/fout: **callbacks to trigger when mouse hovers in and out respectively over the pie sectors.**
-    2. **.click(f)** - f: **callback to trigger on click event.**
-    3. **.each(f)** - 
+**1. .hover(fin, fout)** - fin/fout: **callbacks to trigger when mouse hovers in and out respectively over the pie sectors.**
+
+**2. .click(f)** - f: **callback to trigger on click event.**
+
+**3. .each(f)** - 
 
 
 ## Usage ##
