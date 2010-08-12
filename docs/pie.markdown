@@ -18,9 +18,34 @@ Creates a pie chart.
 
 **3. r** number **radius**
 
-**4. values** array of numbers **Values (more info soon.)**
+**4. values** array of numbers **Values for your sectors.**
 
 **5. opts** object **Options (more info soon.)**
+
+_opts_
+
+**legend**
+
+Values are 
+
+    + legend - e.g. ["apples", "oranges"]
+    + legendothers
+    + legendmark 
+    + legendpos - e.g. "west"
+
+legend is required. If legendpos is omitted, 'east' is assumed. If legendmark is omitted, 'disc' is assumed. The current possible options for legendmark are,
+
+_(shorthand: full name)_
+
+    + o: "disc"
+    + f: "flower"
+    + d: "diamond"
+    + s: "square"
+    + t: "triangle"
+    + *: "star"
+    + x: "cross"
+    + +: "plus"
+    + ->: "arrow"
 
     
 ## Methods ##
@@ -29,7 +54,7 @@ Creates a pie chart.
 
 **2. .click(f)** - f: **callback to trigger on click event.**
 
-**3. .each(f)** - 
+**3. .each(f)** - f: **callback applied to each iteration.**
 
 
 ## Usage ##
@@ -56,18 +81,27 @@ Create legends,
 
 
     // example
-    
+    r.g.piechart(320, 240, 100, [10,20,30,40], {legend:['%% apples', '%% bananas', '%% cherries', '%% durians'], legendmark:"*", legendpos: "south"});
     
 Attach hover event to piechart,
 
 
     // example
-    
+    r.g.piechart(10, 10, 90, [10,20,30]).hover(function() {
+        // when mouse hovers over sector 
+        this.sector.attr({fill:"#FAA"});
+    }, function() {
+        // when mouse hovers out
+        this.sector.attr({fill:"#666"});
+    });
     
 Attach click event to piechart,
 
 
     // example
+    r.g.piechart.click(function() {
+       alert("You clicked on the pie chart!"); 
+    });
     
 ## Additional observations ##
 
