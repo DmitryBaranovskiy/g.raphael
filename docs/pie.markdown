@@ -18,9 +18,9 @@ Creates a pie chart.
 
 **3. r** number **radius**
 
-**4. [n1,n2...]** array of numbers **Size of the pie sectors**
+**4. values** array of numbers **Values (more info soon.)**
 
-**5. {attr:prop}** associative array of attrs/props **Additional pie attributes (see below)**
+**5. opts** object **Options (more info soon.)**
 
     
 ## Methods ##
