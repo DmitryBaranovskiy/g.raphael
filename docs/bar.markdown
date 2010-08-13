@@ -48,11 +48,24 @@ Defaults to false. Use this to stack your bars instead of displaying them side b
 
 ## Methods ##
 
-N/A
+**1. .hover(fin, fout)** - fin/fout: **callbacks to trigger when mouse hovers in and out respectively over the bars.**
 
 ## Usage ##
 
-N/A
+Create a bar chart,
+
+
+    // bare bones
+    var barchart = r.g.barchart(_params);
+    // example
+    var barchart = r.g.barchart(10, 10, 300, 220, [[30, 20, 10]]);
+    
+    
+Create a stacked bar chart,
+
+
+    // example
+    var barchart = r.g.barchart(10, 10, 300, 220, [[30, 20, 10], [44, 66, 88]], {stacked:true});
     
 ## Additional observations ##
 
