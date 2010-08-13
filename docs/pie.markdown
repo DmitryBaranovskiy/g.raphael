@@ -115,14 +115,6 @@ Attach click event to piechart,
        alert("You clicked on the pie chart!"); 
     });
     
-## Additional observations ##
+## Others ##
 
-    
-    
-
-
-    
-    
-
-    
-    
+N/A

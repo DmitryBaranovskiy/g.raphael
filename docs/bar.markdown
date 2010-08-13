@@ -59,6 +59,8 @@ Create a bar chart,
     var barchart = r.g.barchart(_params);
     // example
     var barchart = r.g.barchart(10, 10, 300, 220, [[30, 20, 10]]);
+    // horizontal barchart 
+    var hbarchart = r.g.hbarchart(10, 10, 300, 220, [[30, 20, 10]]);
     
     
 Create a stacked bar chart,
@@ -67,7 +69,17 @@ Create a stacked bar chart,
     // example
     var barchart = r.g.barchart(10, 10, 300, 220, [[30, 20, 10], [44, 66, 88]], {stacked:true});
     
-## Additional observations ##
-
-
     
+Attach hover event to piechart,
+
+
+    // example
+    r.g.barchart.hover(function() {
+        this.bar.attr({fill: "#333"}); 
+    }, function() {
+        this.bar.attr({fill: "#666"});
+    });
+
+## Others ##
+
+N/A
