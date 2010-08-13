@@ -26,7 +26,7 @@ _opts_
 
 **legend**
 
-Values are 
+Values are,
 
     + legend - e.g. ["apples", "oranges"]
     + legendothers
@@ -34,6 +34,10 @@ Values are
     + legendpos - e.g. "west"
 
 legend is required. If legendpos is omitted, 'east' is assumed. If legendmark is omitted, 'disc' is assumed. The current possible options for legendmark are,
+
+**legendmark**
+
+Values are,
 
 _(shorthand: full name)_
 
@@ -47,6 +51,14 @@ _(shorthand: full name)_
     + +: "plus"
     + ->: "arrow"
 
+**legendpos**
+
+Values are,
+
+    + "north"
+    + "south"
+    + "east"
+    + "west"
     
 ## Methods ##
 
