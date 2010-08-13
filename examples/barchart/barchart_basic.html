@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <title>gRaphaël Bar Chart - a simple barchart example</title>
+        <script type="text/javascript" src="../raphael-min.js"></script>
+        <script type="text/javascript" src="../../g.raphael-min.js"></script>
+        <script type="text/javascript" src="../../g.bar-min.js"></script>
+        <script type="text/javascript">
+            window.onload = function() {
+                // Creates canvas 640 × 480 at 10, 50
+                var r = Raphael(10, 50, 640, 480);
+                
+                // Creates a single series barchart at 10, 10
+                // width 300, height 220, data: [55, 20, 13, 32, 5, 1, 2, 10]
+                r.g.barchart(10, 10, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10]]);
+            }
+        </script>
+    </head>
+    <body>   
+    </body>
+</html>

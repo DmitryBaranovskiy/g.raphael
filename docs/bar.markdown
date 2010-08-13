@@ -46,14 +46,6 @@ Values are,
     
 Defaults to false. Use this to stack your bars instead of displaying them side by side.
 
-**stretch**
-
-N/A
-
-**to**
-
-N/A
-
 ## Methods ##
 
 N/A
