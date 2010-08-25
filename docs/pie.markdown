@@ -18,7 +18,7 @@ Creates a pie chart.
 
 **3. r** number **radius**
 
-**4. values** array of numbers **Values for your sectors.**
+**4. values** array of numbers **Values for your slices.**
 
 **5. opts** object **Options (more info soon.)**
 
@@ -68,12 +68,12 @@ Values are,
 
 **3. .each(f)** - f: **callback applied to each iteration.**
 
-.each(f) works by iterating through each of the sectors and returning each as an object to the callback f(). Within the callback, you can access the object returned on each iteration in the context of 'this', for example
+.each(f) works by iterating through each of the slices and returning each as an object to the callback f(). Within the callback, you can access the object returned on each iteration in the context of 'this', for example
 
 
 	var f = function() {
 		
-		console.log(this.r);	// the radius of the sector
+		console.log(this.r);	// the radius of the slice
 
 	}
 
@@ -110,10 +110,10 @@ Attach hover event to piechart,
 
     // example
     r.g.piechart(10, 10, 90, [10,20,30]).hover(function() {
-        // when mouse hovers over sector 
+        // when mouse hovers over slice, change color 
         this.sector.attr({fill:"#FAA"});
     }, function() {
-        // when mouse hovers out
+        // when mouse hovers out, restore color
         this.sector.attr({fill:"#666"});
     });
     
