@@ -13,9 +13,13 @@
                 var pie = r.g.piechart(320, 240, 100, [55, 20, 13, 32, 5, 1, 2]);
                 
                 // revealing the value of each sector by iterating through the piechart with .each
-                var test = pie.each(function() {
-                    alert("I'm a sector and my value is - " + this.sector.value.value);
-                });
+
+				// simple callback that logs each sector received
+				var callback = function() {
+					console.log(this.sector);
+				};
+
+				pie.each(callback);
             }
         </script>
     </head>

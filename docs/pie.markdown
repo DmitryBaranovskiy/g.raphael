@@ -33,7 +33,7 @@ Values are,
     + legendmark 
     + legendpos - e.g. "west"
 
-legend is required. If legendpos is omitted, 'east' is assumed. If legendmark is omitted, 'disc' is assumed. The current possible options for legendmark are,
+legend is required. If legendpos is omitted, 'east' is assumed. If legendmark is omitted, 'disc' is assumed. The current possible options for legendmark and legendpos are,
 
 **legendmark**
 
@@ -67,6 +67,16 @@ Values are,
 **2. .click(f)** - f: **callback to trigger on click event.**
 
 **3. .each(f)** - f: **callback applied to each iteration.**
+
+.each(f) works by iterating through each of the sectors and returning each as an object to the callback f(). Within the callback, you can access the object returned on each iteration in the context of 'this', for example
+
+
+	var f = function() {
+		
+		console.log(this.r);	// the radius of the sector
+
+	}
+
 
 
 ## Usage ##
@@ -117,4 +127,22 @@ Attach click event to piechart,
     
 ## Others ##
 
-N/A
+Each pie chart in g.raphael.js is composed of a 'series', or a collection of slices/sectors. Each slice has its own 'sector' property which carries information like the value, the color and other attributes, as well as its own 'cover' which can be thought of as a layer (really set to opacity 0) to which you attach events like click or hover.
+
+When you iterate through each slice of the pie chart using .each(), the returned slice has the following properties:
+
+	+ sector
+	+ cover
+	+ cx
+	+ cy
+	+ x (middle x coordinate of the sector)
+	+ y (middle y coordinate of the sector)
+	+ mangle
+	+ r (radius)
+	+ value
+	+ total
+	+ label
+
+When you attach a hover event for example, using .hover(), g.raphael.js is essentially iterating through each slice, as it does in .each(), and passing the returned slice to the callbacks to be called, and setting the events to happen by binding mouseover and mouseout events to the covers.
+
+All of this is container within the 'chart' object, which is initialized and returned to you when you first call g.piechart.
