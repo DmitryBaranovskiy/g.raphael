@@ -60,7 +60,7 @@ Value - boolean. If omitted, false is assumed.
 
 **axis**
 
-Value - "_top_ _right_ _bottom_ _left_". If omitted, no axis will be rendered for the line chart. For example, if you wanted axis rendered for the left and bottom, (as in a typical x-y chart), you'll add 'axis:"0 0 1 1"' to opts.
+Value - "_top_ _right_ _bottom_ _left_". If omitted, no axis will be rendered for the line chart. For example, if you wanted axis rendered for the left and bottom, (as in a typical x-y chart), you'll add 'axis:"0 0 1 1"' to opts. The axis is created using g.axis (for more information, see the g documentation).
 
 **smooth**
 
@@ -99,6 +99,43 @@ Value - number. If omitted, value of '10' is assigned. Think of this as a genera
 
 ## Usage ##
 
+Create a Raphael instance, 
+
+
+    // bare bones
+    var r = Raphael();
+    // create at top left corner of #element
+    var r = Raphael('line-chart');
+    
+    
+Create a line chart,
+
+
+    // bare bones
+    var linechart = r.g.linechart(_params);
+    // example
+    var linechart = r.g.linechart(10,10,300,220,[1,2,3,4,5],[10,20,15,35,30], {"colors":["#444"], "symbol":"s", axis:"0 0 1 1"});
+
+
+Attach hover event to linechart,
+
+
+    // example
+	r.g.linechart.hover(function() {
+		this.symbol.attr({'fill':'#CCC'});
+	}, function() {
+		this.symbol.attr({'fill':'#444'});
+	});
+	
+
+Attach click event to linechart,
+
+
+    // example
+    r.g.linechart.click(function() {
+       alert("You clicked on the line chart!"); 
+    });
+
 
 ## Others ##
 
@@ -116,4 +153,3 @@ There's two important internal methods that are used to create and return the ob
 	+ axis
 	
 .hoverColumn(), .clickColumn(), .eachColumn() create and return groupings of data 'dots'. Columns have similar properties to their atomic counterparts but are usually array of values. 
-	
