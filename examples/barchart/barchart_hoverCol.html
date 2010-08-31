@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <title>gRaphaël Bar Chart - a .hoverColumn() example</title>
+        <script type="text/javascript" src="../raphael-min.js"></script>
+        <script type="text/javascript" src="../../g.raphael-min.js"></script>
+        <script type="text/javascript" src="../../g.bar-min.js"></script>
+        <script type="text/javascript">
+            window.onload = function() {
+                // Creates canvas 640 × 480 at 10, 50
+                var r = Raphael(10, 50, 640, 480);
+                
+                // Creates a stacked series barchart at 10, 10
+                // width 300, height 220, data: [55, 20, 13],[16,11,5]
+                r.g.barchart(10, 10, 300, 220, [[55, 20, 13],[16,11,5]], {stacked:true}).hoverColumn(function() { 
+		    	var y = [], res = [];
+                        for (var i = this.bars.length; i--;) {
+                            y.push(this.bars[i].y);
+                            res.push(this.bars[i].value || "0");
+                        }
+                        this.flag = r.g.popup(this.bars[0].x, Math.min.apply(Math, y), res.join(", ")).insertBefore(this);
+                }, function() {
+                    	this.flag.animate({opacity: 0}, 3000, ">", function () {this.remove();});
+                });
+            }
+        </script>
+    </head>
+    <body>   
+    </body>
+</html>
