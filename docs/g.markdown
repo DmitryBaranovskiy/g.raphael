@@ -1,4 +1,4 @@
 # g.raphael.js #
 
-## Methods ##
+_in progress_
 

@@ -77,8 +77,6 @@ Values are,
 
 	}
 
-
-
 ## Usage ##
 
 Create a Raphael instance, 
