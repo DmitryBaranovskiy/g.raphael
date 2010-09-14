@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <title>gRaphaël Pie Chart - rotate your piechart</title>
+        <script type="text/javascript" src="../raphael-min.js"></script>
+        <script type="text/javascript" src="../../g.raphael-min.js"></script>
+        <script type="text/javascript" src="../../g.pie-min.js"></script>
+        <script type="text/javascript">
+            window.onload = function() {
+                // Creates canvas 640 × 480 at 10, 50
+                var r = Raphael(10, 50, 640, 480);
+                // Creates pie chart at with center at 320, 240,
+                // radius 100 and data: [55, 20, 13, 32, 5, 1, 2]
+                var pie = r.g.piechart(320, 240, 100, [55, 20, 13, 32, 5, 1, 2]);
+                var orientation = r.g.line(100, 50, 20).attr({"fill":"#333"});
+                // add a click event to the pie chart and rotate pie 
+                // note: after click event is triggered, the pie no longer seems clickable?
+                pie.click(function() {
+                   pie.each(function(){
+                      this.sector.animate({"opacity": 0,"rotation": "180 320 240"}, 2000, ">");
+                   });
+                   orientation.animate({"stroke-opacity":0.25, "opacity":0.5, "rotation": "180 100 50"}, 2000, ">");
+                });
+            }
+        </script>
+    </head>
+    <body>   
+    </body>
+</html>

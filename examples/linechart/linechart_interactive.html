@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <title>gRaphaël Line Chart - line chart interaction example</title>
+        <script type="text/javascript" src="../raphael-min.js"></script>
+        <script type="text/javascript" src="../../g.raphael-min.js"></script>
+        <script type="text/javascript" src="../../g.line-min.js"></script>
+        <script type="text/javascript">
+            window.onload = function() {
+                // Creates canvas 320 × 300 at 10, 50
+                var r = Raphael('holder');
+                
+                // Creates a simple line chart at 10, 10
+                // width 300, height 220
+                // x-values: [1,2,3,4,5], y-values: [10,20,15,35,30]
+                var linec = r.g.linechart(10,10,300,220,[1,2,3,4,5],[10,20,15,35,30], {"colors":["#444"], "symbol":"s", axis:"0 0 1 1"});
+				linec.hover(function() {
+					this.symbol.attr({'fill':'#CCC'});
+				}, function() {
+					this.symbol.attr({'fill':'#444'});
+				});
+            }
+        </script>
+    </head>
+    <body>
+	   <div id="holder" style="width:320px;height:300px;border:1px dashed #CCC;">
+    </body>
+</html>
