@@ -21,7 +21,7 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
     chart.covers = covers;
     if (len == 1) {
         series.push(this.circle(cx, cy, r).attr({fill: this.g.colors[0], stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth}));
-        covers.push(this.circle(cx, cy, r).attr(this.g.shim));
+        covers.push(this.circle(cx, cy, r).attr({href: opts.href ? opts.href[0] : null}).attr(this.g.shim));
         total = values[0];
         values[0] = {value: values[0], order: 0, valueOf: function () { return this.value; }};
         series[0].middle = {x: cx, y: cy};
