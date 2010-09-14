@@ -61,6 +61,7 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
         len = Math.min(cut + 1, values.length);
         others && values.splice(len) && (values[cut].others = true);
         for (i = 0; i < len; i++) {
+            var valueOrder = values[i].order;
             var mangle = angle - 360 * values[i] / total / 2;
             if (!i) {
                 angle = 90 - mangle;
@@ -70,7 +71,7 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
                 var ipath = sector(cx, cy, 1, angle, angle - 360 * values[i] / total).join(",");
             }
             var path = sector(cx, cy, r, angle, angle -= 360 * values[i] / total);
-            var p = this.path(opts.init ? ipath : path).attr({fill: opts.colors && opts.colors[i] || this.g.colors[i] || "#666", stroke: opts.stroke || "#fff", "stroke-width": (opts.strokewidth == null ? 1 : opts.strokewidth), "stroke-linejoin": "round"});
+            var p = this.path(opts.init ? ipath : path).attr({fill: opts.colors && opts.colors[valueOrder] || this.g.colors[valueOrder] || "#666", stroke: opts.stroke || "#fff", "stroke-width": (opts.strokewidth == null ? 1 : opts.strokewidth), "stroke-linejoin": "round"});
             p.value = values[i];
             p.middle = path.middle;
             p.mangle = mangle;
@@ -80,7 +81,8 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
         }
         for (i = 0; i < len; i++) {
             p = paper.path(sectors[i].attr("path")).attr(this.g.shim);
-            opts.href && opts.href[i] && p.attr({href: opts.href[i]});
+            var valueOrder = values[i].order;
+            opts.href && opts.href[valueOrder] && p.attr({href: opts.href[valueOrder]});
             p.attr = function () {};
             covers.push(p);
             series.push(p);
