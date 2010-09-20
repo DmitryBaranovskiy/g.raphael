@@ -79,11 +79,11 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
     var allx = Array.prototype.concat.apply([], valuesx),
         ally = Array.prototype.concat.apply([], valuesy),
         xdim = this.g.snapEnds(Math.min.apply(Math, allx), Math.max.apply(Math, allx), valuesx[0].length - 1),
-        minx = xdim.from,
-        maxx = xdim.to,
+        minx = +(opts.minx || xdim.from),
+        maxx = +(opts.maxx || xdim.to),
         ydim = this.g.snapEnds(Math.min.apply(Math, ally), Math.max.apply(Math, ally), valuesy[0].length - 1),
-        miny = ydim.from,
-        maxy = ydim.to,
+        miny = +(opts.miny || ydim.from),
+        maxy = +(opts.maxy || ydim.to),
         kx = (width - gutter * 2) / ((maxx - minx) || 1),
         ky = (height - gutter * 2) / ((maxy - miny) || 1);
 
