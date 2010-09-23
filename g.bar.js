@@ -20,8 +20,8 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
         len = values.length;
     if (this.raphael.is(values[0], "array")) {
         total = [];
-        multi = len;
         len = 0;
+        multi = len;
         for (var i = values.length; i--;) {
             bars.push(this.set());
             total.push(Math.max.apply(Math, values[i]));
