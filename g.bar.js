@@ -16,8 +16,8 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
         stacktotal = [],
         paper = this,
         multi = 0,
-        colors = opts.colors || this.g.colors,
         len = values.length;
+        colors = opts.colors || this.g.gencolors(len);
     if (this.raphael.is(values[0], "array")) {
         total = [];
         len = 0;
@@ -219,8 +219,8 @@ Raphael.fn.g.hbarchart = function (x, y, width, height, values, opts) {
         stacktotal = [],
         paper = this,
         multi = 0,
-        colors = opts.colors || this.g.colors,
         len = values.length;
+        colors = opts.colors || this.g.gencolors(len);
     if (this.raphael.is(values[0], "array")) {
         total = [];
         multi = len;

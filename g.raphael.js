@@ -33,14 +33,19 @@
     Raphael.fn.g.shim = {stroke: "none", fill: "#000", "fill-opacity": 0};
     Raphael.fn.g.txtattr = {font: "12px Arial, sans-serif"};
     Raphael.fn.g.colors = [];
-    var hues = [.6, .2, .05, .1333, .75, 0];
-    for (var i = 0; i < 10; i++) {
-        if (i < hues.length) {
-            Raphael.fn.g.colors.push("hsb(" + hues[i] + ", .75, .75)");
-        } else {
-            Raphael.fn.g.colors.push("hsb(" + hues[i - hues.length] + ", 1, .5)");
+    Raphael.fn.g.gencolors = function(numcolors) {
+        var hues = [.6, .2, .05, .1333, .75, 0];
+        var colors = []
+        for (var i = 0; i < numcolors; i++) {
+            if (i < hues.length) {
+                colors.push("hsb(" + hues[i] + ", .75, .75)");
+            } else {
+                colors.push("hsb(" + hues[i - hues.length] + ", 1, .5)");
+            }
         }
+        return colors;
     }
+    Raphael.fn.g.colors = Raphael.fn.g.gencolors(10);
     Raphael.fn.g.text = function (x, y, text) {
         return this.text(x, y, text).attr(this.g.txtattr);
     };
