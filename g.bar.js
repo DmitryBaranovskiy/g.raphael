@@ -1,3 +1,4 @@
+
 /*!
  * g.Raphael 0.4.1 - Charting library, based on Raphaël
  *
@@ -130,7 +131,7 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
                 for (var j = 0; j < (multi || 1); j++) {
                     tot += multi ? values[j][i] : values[i];
                     if (j == multi - 1) {
-                        var label = paper.g.labelise(labels[i], tot, total);
+                      var label = paper.g.labelise(labels[i], tot, total);
                         L = paper.g.text(bars[0][i].x, y + height - barvgutter / 2, label).insertBefore(covers[i * (multi || 1) + j]);
                         var bb = L.getBBox();
                         if (bb.x - 7 < l) {
@@ -317,20 +318,36 @@ Raphael.fn.g.hbarchart = function (x, y, width, height, values, opts) {
             Y += bargutter;
         }
     }
-    chart.label = function (labels, isRight) {
+    chart.label = function (labels, isInside) {
         labels = labels || [];
         this.labels = paper.set();
-        for (var i = 0; i < len; i++) {
-            for (var j = 0; j < multi; j++) {
-                var  label = paper.g.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total);
-                var X = isRight ? bars[i * (multi || 1) + j].x - barheight / 2 + 3 : x + 5,
-                    A = isRight ? "end" : "start",
-                    L;
-                this.labels.push(L = paper.g.text(X, bars[i * (multi || 1) + j].y, label).attr({"text-anchor": A}).insertBefore(covers[0]));
-                if (L.getBBox().x < x + 5) {
-                    L.attr({x: x + 5, "text-anchor": "start"});
-                } else {
-                    bars[i * (multi || 1) + j].label = L;
+        var L, l = -Infinity;
+        if (opts.stacked) {
+            for (var i = 0; i < len; i++) {
+                var tot = 0;
+                for (var j = 0; j < (multi || 1); j++) {
+                    tot += multi ? values[j][i] : values[i];
+                    if (j == multi - 1) {
+                      var label = paper.g.labelise(labels[i], tot, total);
+                      L = paper.g.text(0, bars[j][i].y, label).insertBefore(covers[i * (multi || 1) + j]);
+                      var bb = L.getBBox();
+                      if(isInside)
+                        L.translate(x + bb.width / 2 + 2, bb.height / 4);
+                      else
+                        L.translate(x - bb.width / 2 - 2, bb.height / 4);
+                    }
+                }
+            }
+        } else {
+            for (var i = 0; i < len; i++) {
+                for (var j = 0; j < (multi || 1); j++) {
+                    var label = paper.g.labelise(labels[i], multi ? values[j][i] : values[i], total);
+                    L = paper.g.text(0, bars[j][i].y, label).insertBefore(covers[i * (multi || 1) + j]);
+                    var bb = L.getBBox();
+                    if(isInside)
+                      L.translate(x + bb.width / 2 + 2, bb.height / 4);
+                    else
+                      L.translate(x - bb.width / 2 - 2, bb.height / 4);
                 }
             }
         }
