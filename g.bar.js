@@ -162,6 +162,7 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
     chart.hover = function (fin, fout) {
         covers2.hide();
         covers.show();
+        fout = fout || function () {};
         covers.mouseover(fin).mouseout(fout);
         return this;
     };
