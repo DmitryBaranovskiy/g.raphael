@@ -131,7 +131,7 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
                     tot += multi ? values[j][i] : values[i];
                     if (j == multi - 1) {
                         var label = paper.g.labelise(labels[i], tot, total);
-                        L = paper.g.text(bars[i * (multi || 1) + j].x, y + height - barvgutter / 2, label).insertBefore(covers[i * (multi || 1) + j]);
+                        L = paper.g.text(bars[0][i].x, y + height - barvgutter / 2, label).insertBefore(covers[i * (multi || 1) + j]);
                         var bb = L.getBBox();
                         if (bb.x - 7 < l) {
                             L.remove();
