@@ -145,8 +145,9 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
         } else {
             for (var i = 0; i < len; i++) {
                 for (var j = 0; j < (multi || 1); j++) {
-                    var label = paper.g.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total);
-                    L = paper.g.text(bars[i * (multi || 1) + j].x, isBottom ? y + height - barvgutter / 2 : bars[i * (multi || 1) + j].y - 10, label).insertBefore(covers[i * (multi || 1) + j]);
+                    var label = paper.g.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total),
+                    	bar = multi ? bars[j][i] : bars[i];
+                    L = paper.g.text(bar.x, isBottom ? y + height - barvgutter / 2 : bar.y - 10, label).insertBefore(covers[i * (multi || 1) + j]);
                     var bb = L.getBBox();
                     if (bb.x - 7 < l) {
                         L.remove();
@@ -321,15 +322,16 @@ Raphael.fn.g.hbarchart = function (x, y, width, height, values, opts) {
         this.labels = paper.set();
         for (var i = 0; i < len; i++) {
             for (var j = 0; j < multi; j++) {
-                var  label = paper.g.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total);
-                var X = isRight ? bars[i * (multi || 1) + j].x - barheight / 2 + 3 : x + 5,
+                var label = paper.g.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total),
+                	bar = multi ? bars[j][i] : bars[i];
+                var X = isRight ? bar.x - barheight / 2 + 3 : x + 5,
                     A = isRight ? "end" : "start",
                     L;
-                this.labels.push(L = paper.g.text(X, bars[i * (multi || 1) + j].y, label).attr({"text-anchor": A}).insertBefore(covers[0]));
+                this.labels.push(L = paper.g.text(X, bar.y, label).attr({"text-anchor": A}).insertBefore(covers[0]));
                 if (L.getBBox().x < x + 5) {
                     L.attr({x: x + 5, "text-anchor": "start"});
                 } else {
-                    bars[i * (multi || 1) + j].label = L;
+                    bar.label = L;
                 }
             }
         }
