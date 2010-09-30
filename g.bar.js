@@ -63,7 +63,7 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
         for (var j = 0; j < (multi || 1); j++) {
             var h = Math.round((multi ? values[j][i] : values[i]) * Y),
                 top = y + height - barvgutter - h,
-                bar = this.g.finger(Math.round(X + barwidth / 2), top + h, barwidth, h, true, type).attr({stroke: "none", fill: colors[multi ? j : i]});
+                bar = this.g.finger(Math.round(X + barwidth / 2), top + h, barwidth, h, true, type).attr({stroke: "none", fill: colors[multi ? i : j]});
             if (multi) {
                 bars[j].push(bar);
             } else {
