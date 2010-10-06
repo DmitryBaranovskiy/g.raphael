@@ -182,7 +182,7 @@
     Raphael.fn.g.tag = function (x, y, text, angle, r) {
         angle = angle || 0;
         r = r == null ? 5 : r;
-        text = text == null ? "$9.99" : text;
+				text = (text == null && text != 0) ? "$9.99" : text;
         var R = .5522 * r,
             res = this.set(),
             d = 3;
@@ -228,7 +228,7 @@
     Raphael.fn.g.popup = function (x, y, text, dir, size) {
         dir = dir == null ? 2 : dir > 3 ? 3 : dir;
         size = size || 5;
-        text = text || "$9.99";
+				text = (text == null && text != 0) ? "$9.99" : text;
         var res = this.set(),
             d = 3;
         res.push(this.path().attr({fill: "#000", stroke: "#000"}));
@@ -259,7 +259,7 @@
     };
     Raphael.fn.g.flag = function (x, y, text, angle) {
         angle = angle || 0;
-        text = text || "$9.99";
+				text = (text == null && text != 0) ? "$9.99" : text;
         var res = this.set(),
             d = 3;
         res.push(this.path().attr({fill: "#000", stroke: "#000"}));
