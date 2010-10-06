@@ -43,9 +43,11 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
             total += values[i];
             values[i] = {value: values[i], order: i, valueOf: function () { return this.value; }};
         }
-        values.sort(function (a, b) {
-            return b.value - a.value;
-        });
+				if (opts.sort) {
+	        values.sort(function (a, b) {
+	            return b.value - a.value;
+	        });
+				}
         for (i = 0; i < len; i++) {
             if (defcut && values[i] * 360 / total <= 1.5) {
                 cut = i;
