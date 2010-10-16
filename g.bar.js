@@ -17,6 +17,7 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
         paper = this,
         multi = 0,
         colors = opts.colors || this.g.colors,
+        singleColor = opts.singleColor,
         len = values.length;
     if (this.raphael.is(values[0], "array")) {
         total = [];
@@ -63,7 +64,7 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
         for (var j = 0; j < (multi || 1); j++) {
             var h = Math.round((multi ? values[j][i] : values[i]) * Y),
                 top = y + height - barvgutter - h,
-                bar = this.g.finger(Math.round(X + barwidth / 2), top + h, barwidth, h, true, type).attr({stroke: "none", fill: colors[multi ? j : i]});
+                bar = this.g.finger(Math.round(X + barwidth / 2), top + h, barwidth, h, true, type).attr({stroke: "none", fill: singleColor ? singleColor : (colors[multi ? j : i]) });
             if (multi) {
                 bars[j].push(bar);
             } else {
@@ -219,6 +220,7 @@ Raphael.fn.g.hbarchart = function (x, y, width, height, values, opts) {
         stacktotal = [],
         paper = this,
         multi = 0,
+        singleColor = opts.singleColor,
         colors = opts.colors || this.g.colors,
         len = values.length;
     if (this.raphael.is(values[0], "array")) {
@@ -260,7 +262,7 @@ Raphael.fn.g.hbarchart = function (x, y, width, height, values, opts) {
         stack = [];
         for (var j = 0; j < (multi || 1); j++) {
             var val = multi ? values[j][i] : values[i],
-                bar = this.g.finger(x, Y + barheight / 2, Math.round(val * X), barheight - 1, false, type).attr({stroke: "none", fill: colors[multi ? j : i]});
+                bar = this.g.finger(x, Y + barheight / 2, Math.round(val * X), barheight - 1, false, type).attr({stroke: "none", fill: singleColor ? singleColor : (colors[multi ? j : i])});
             if (multi) {
                 bars[j].push(bar);
             } else {
