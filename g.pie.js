@@ -47,29 +47,21 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
 		values.sort(function (a, b) {
 		    return b.value - a.value;
 		});
+	} 
+	if(!opts.ignoreZeros || opts.ignoreZeros == undefined) {
+		for (i = 0; i < len; i++) {
+		    if (defcut && values[i] * 360 / total <= 1.5) {
+			cut = i;
+			defcut = false;
+		    } 
+		    if (i > cut) {
+			defcut = false;
+			values[cut].value += values[i];
+			values[cut].others = true;
+			others = values[cut].value;
+		    } 
+		}
 	}
-	/* Pre-op testing of an idea
-	tmp = new Array();
-	tmp2 = new Array();
-	for (var i = 0; i < len; i++) {
-		tmp[i] = opts.colors[values[i].order];
-		tmp2[i] = opts.legend[values[i].order];
-	}
-	opts.colors = tmp;
-	opts.legend = tmp2;
-	// end Pre-op */
-        for (i = 0; i < len; i++) {
-            if (defcut && values[i] * 360 / total <= 1.5) {
-                cut = i;
-                defcut = false;
-            }
-            if (i > cut) {
-                defcut = false;
-                values[cut].value += values[i];
-                values[cut].others = true;
-                others = values[cut].value;
-            }
-        }
         len = Math.min(cut + 1, values.length);
         others && values.splice(len) && (values[cut].others = true);
         for (i = 0; i < len; i++) {
