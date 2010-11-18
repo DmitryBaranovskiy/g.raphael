@@ -13,14 +13,14 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
         series = this.set(),
         order = [],
         len = values.length,
-        angle = 0,
+        angle = opts.angle || 0,
         total = 0,
         others = 0,
         cut = 9,
         defcut = true;
     chart.covers = covers;
     if (len == 1) {
-        series.push(this.circle(cx, cy, r).attr({fill: this.g.colors[0], stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth}));
+        series.push(this.circle(cx, cy, r).attr({fill: opts.colors && opts.colors[0] || this.g.colors[0] || "#666" , stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth}));
         covers.push(this.circle(cx, cy, r).attr(this.g.shim));
         total = values[0];
         values[0] = {value: values[0], order: 0, valueOf: function () { return this.value; }};
@@ -43,9 +43,21 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
             total += values[i];
             values[i] = {value: values[i], order: i, valueOf: function () { return this.value; }};
         }
-        values.sort(function (a, b) {
-            return b.value - a.value;
-        });
+	if(opts.sort || opts.sort == undefined) {
+		values.sort(function (a, b) {
+		    return b.value - a.value;
+		});
+	}
+	/* Pre-op testing of an idea
+	tmp = new Array();
+	tmp2 = new Array();
+	for (var i = 0; i < len; i++) {
+		tmp[i] = opts.colors[values[i].order];
+		tmp2[i] = opts.legend[values[i].order];
+	}
+	opts.colors = tmp;
+	opts.legend = tmp2;
+	// end Pre-op */
         for (i = 0; i < len; i++) {
             if (defcut && values[i] * 360 / total <= 1.5) {
                 cut = i;
