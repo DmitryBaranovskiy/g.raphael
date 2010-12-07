@@ -54,6 +54,7 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
         len = Math.max(valuesx[0].length, valuesy[0].length),
         symbol = opts.symbol || "",
         colors = opts.colors || Raphael.fn.g.colors,
+        alpha = opts.alpha || Raphael.fn.g.alpha,
         that = this,
         columns = null,
         dots = null,
@@ -66,7 +67,7 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
     var shades = this.set();
     for (i = 0, ii = valuesy.length; i < ii; i++) {
         if (opts.shade) {
-            shades.push(this.path().attr({stroke: "none", fill: colors[i], opacity: opts.nostroke ? 1 : .3}));
+            shades.push(this.path().attr({stroke: "none", fill: colors[i], opacity: opts.nostroke ? 1 : alpha[i]}));
         }
         if (valuesy[i].length > width - 2 * gutter) {
             valuesy[i] = shrink(valuesy[i], width - 2 * gutter);

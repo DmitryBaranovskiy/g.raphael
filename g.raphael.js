@@ -41,6 +41,9 @@
             Raphael.fn.g.colors.push("hsb(" + hues[i - hues.length] + ", 1, .5)");
         }
     }
+    Raphael.fn.g.alpha = [.3, .3, .3, .3, .3, .3, .3, .3, .3, .3];
+    
+    
     Raphael.fn.g.text = function (x, y, text) {
         return this.text(x, y, text).attr(this.g.txtattr);
     };
