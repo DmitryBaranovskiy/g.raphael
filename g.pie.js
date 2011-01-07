@@ -26,6 +26,10 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
         values[0] = {value: values[0], order: 0, valueOf: function () { return this.value; }};
         series[0].middle = {x: cx, y: cy};
         series[0].mangle = 180;
+        if(opts.href && opts.href[0]){
+          covers[0].attr({href: opts.href[0]});
+          series[0].attr({href: opts.href[0]});
+        }
     } else {
         function sector(cx, cy, r, startAngle, endAngle, fill) {
             var rad = Math.PI / 180,
