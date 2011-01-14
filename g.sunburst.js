@@ -99,7 +99,7 @@ Raphael.fn.g.sunburst = function(cx, cy, values, opts) {
 			endAngle = prevAngle,
 			children = data.children,
 			childIdx = 0;
-		for (var i in children) {
+		for (var i = 0; i < children.length; i++) {
 			startAngle = endAngle;
 			endAngle += children[i].value / total * 360;
 
