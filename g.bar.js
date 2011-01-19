@@ -1,5 +1,5 @@
-/*
- * g.Raphael 0.4 - Charting library, based on Raphaël
+/*!
+ * g.Raphael 0.4.1 - Charting library, based on Raphaël
  *
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
@@ -63,7 +63,7 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
         for (var j = 0; j < (multi || 1); j++) {
             var h = Math.round((multi ? values[j][i] : values[i]) * Y),
                 top = y + height - barvgutter - h,
-                bar = this.g.finger(Math.round(X + barwidth / 2), top + h, barwidth, h, true, type).attr({stroke: colors[multi ? j : i], fill: colors[multi ? j : i]});
+                bar = this.g.finger(Math.round(X + barwidth / 2), top + h, barwidth, h, true, type).attr({stroke: "none", fill: colors[multi ? j : i]});
             if (multi) {
                 bars[j].push(bar);
             } else {
@@ -260,7 +260,7 @@ Raphael.fn.g.hbarchart = function (x, y, width, height, values, opts) {
         stack = [];
         for (var j = 0; j < (multi || 1); j++) {
             var val = multi ? values[j][i] : values[i],
-                bar = this.g.finger(x, Y + barheight / 2, Math.round(val * X), barheight - 1, false, type).attr({stroke: colors[multi ? j : i], fill: colors[multi ? j : i]});
+                bar = this.g.finger(x, Y + barheight / 2, Math.round(val * X), barheight - 1, false, type).attr({stroke: "none", fill: colors[multi ? j : i]});
             if (multi) {
                 bars[j].push(bar);
             } else {
@@ -306,10 +306,11 @@ Raphael.fn.g.hbarchart = function (x, y, width, height, values, opts) {
     Y = y + bargutter;
     if (!opts.stacked) {
         for (var i = 0; i < len; i++) {
-            for (var j = 0; j < multi; j++) {
+            for (var j = 0; j < (multi || 1); j++) {
                 var cover = this.rect(x, Y, width, barheight).attr(this.g.shim);
                 covers.push(cover);
-                cover.bar = bars[j][i];
+                cover.bar = multi ? bars[j][i] : bars[i];
+                cover.value = cover.bar.value;
                 Y += barheight;
             }
             Y += bargutter;
