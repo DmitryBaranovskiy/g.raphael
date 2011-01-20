@@ -69,7 +69,7 @@ Raphael.fn.g.sunburst = function(cx, cy, values, opts) {
 	function getDataSeriesFromObj(rootLabel, values) {
 		var res = {label: rootLabel, value: 0, children: []},
 		    maxDepth = 0;
-		for (var i = 0; i < values.length; i++) {
+		for (var i in values) {
 			var child;
 			if (~~values[i]) {
 				res.value += values[i];
