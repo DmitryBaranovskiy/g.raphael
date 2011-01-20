@@ -11,9 +11,9 @@
 Raphael.fn.g.sunburst = function(cx, cy, values, opts) {
 	opts = opts || {};
 	var paper = this,
-		chart = this.set(),
-		series = this.set(),
-		levelRadii = [];
+	    chart = this.set(),
+	    series = this.set(),
+	    levelRadii = [];
 
 	function levelRadius(level) {
 		if (levelRadii[level])
@@ -32,9 +32,14 @@ Raphael.fn.g.sunburst = function(cx, cy, values, opts) {
 		return res;
 	}
 
-    function sector(cx, cy, ri, ro, startAngle, endAngle, params) {
-		var large = Math.abs(endAngle - startAngle) > 180,
-			rad = Math.PI / 180,
+	function sector(cx, cy, ri, ro, startAngle, endAngle, params) {
+		var sliceAngle = endAngle - startAngle;
+		var full = Math.abs(sliceAngle) >= 360;
+		if (full)
+			endAngle = startAngle + 359.99;
+
+		var large = Math.abs(sliceAngle) > 180,
+		    rad = Math.PI / 180,
 		    xo1 = cx + ro * Math.cos(-startAngle * rad),
 		    yo1 = cy + ro * Math.sin(-startAngle * rad),
 		    xo2 = cx + ro * Math.cos(-endAngle * rad),
@@ -50,9 +55,9 @@ Raphael.fn.g.sunburst = function(cx, cy, values, opts) {
 		    res = paper.path([
 				"M", xi1, yi1,
 				"A", ri, ri, 0, +large, 0, xi2, yi2,
-				"L", xo2, yo2,
+				full ? "M" : "L", xo2, yo2,
 				"A", ro, ro, 0, +large, 1, xo1, yo1,
-				"Z",
+				"Z"
 			]);
 		res.middle = {x: xm, y: ym};
 		res.mangle = halfAngle;
@@ -63,8 +68,8 @@ Raphael.fn.g.sunburst = function(cx, cy, values, opts) {
 
 	function getDataSeriesFromObj(rootLabel, values) {
 		var res = {label: rootLabel, value: 0, children: []},
-			maxDepth = 0;
-		for (var i in values) {
+		    maxDepth = 0;
+		for (var i = 0; i < values.length; i++) {
 			var child;
 			if (~~values[i]) {
 				res.value += values[i];
@@ -96,9 +101,9 @@ Raphael.fn.g.sunburst = function(cx, cy, values, opts) {
 		prevAngle = prevAngle || (opts.offsetAngle || 0);
 		parentIdx = parentIdx || 0;
 		var startAngle,
-			endAngle = prevAngle,
-			children = data.children,
-			childIdx = 0;
+		    endAngle = prevAngle,
+		    children = data.children,
+		    childIdx = 0;
 		for (var i = 0; i < children.length; i++) {
 			startAngle = endAngle;
 			endAngle += children[i].value / total * 360;
@@ -128,33 +133,33 @@ Raphael.fn.g.sunburst = function(cx, cy, values, opts) {
 			sector: sector,
 			cx: cx,
 			cy: cy,
-            mx: sector.middle.x,
-            my: sector.middle.y,
-            mangle: sector.mangle
+			mx: sector.middle.x,
+			my: sector.middle.y,
+			mangle: sector.mangle
 		};
 	}
 
-    chart.hover = function(fin, fout) {
-        fout = fout || function () {};
-        for (var i = 0; i < series.length; i++)
-            (function (sector) {
-                var o = getCallbackContext(sector);
-                sector.mouseover(function () { fin.call(o); });
-                sector.mouseout(function () { fout.call(o); });
-            })(series[i]);
-        return this;
-    };
+	chart.hover = function(fin, fout) {
+		fout = fout || function () {};
+		for (var i = 0; i < series.length; i++)
+			(function (sector) {
+				var o = getCallbackContext(sector);
+				sector.mouseover(function () { fin.call(o); });
+				sector.mouseout(function () { fout.call(o); });
+			})(series[i]);
+		return this;
+	};
 
-    chart.click = function(f) {
-        for (var i = 0; i < series.length; i++)
-            (function (sector) {
-                var o = getCallbackContext(sector);
-                sector.click(function () { f.call(o); });
-            })(series[i]);
-        return this;
-    };
+	chart.click = function(f) {
+		for (var i = 0; i < series.length; i++)
+			(function (sector) {
+				var o = getCallbackContext(sector);
+				sector.click(function () { f.call(o); });
+			})(series[i]);
+		return this;
+	};
 
-    chart.push(series);
-    chart.series = series;
-    return chart;
+	chart.push(series);
+	chart.series = series;
+	return chart;
 };
