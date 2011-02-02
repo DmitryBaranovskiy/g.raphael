@@ -1,8 +1,8 @@
 /*!
  * g.sunburst 0.1 - Sunburst diagrams
- * Needs g.Raphael 0.4.1 - Charting library, based on Raphaël 
+ * Needs g.Raphael 0.4.1 - Charting library, based on Raphaël
  *
- * Copyright (c)2010 zynamics GmbH (http://zynamics.com)
+ * Copyright (c)2011 zynamics GmbH (http://zynamics.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * license.
  *
@@ -33,8 +33,8 @@ Raphael.fn.g.sunburst = function(cx, cy, values, opts) {
 	}
 
 	function sector(cx, cy, ri, ro, startAngle, endAngle, params) {
-		var sliceAngle = endAngle - startAngle;
-		var full = Math.abs(sliceAngle) >= 360;
+		var sliceAngle = endAngle - startAngle,
+		    full = Math.abs(sliceAngle) >= 360;
 		if (full)
 			endAngle = startAngle + 359.99;
 
@@ -68,9 +68,9 @@ Raphael.fn.g.sunburst = function(cx, cy, values, opts) {
 
 	function getDataSeriesFromObj(rootLabel, values) {
 		var res = {label: rootLabel, value: 0, children: []},
-		    maxDepth = 0;
+		    maxDepth = 0,
+		    child;
 		for (var i in values) {
-			var child;
 			if (~~values[i]) {
 				res.value += values[i];
 				child = {label: i, value: values[i], depth: 0, children: []};
@@ -109,9 +109,9 @@ Raphael.fn.g.sunburst = function(cx, cy, values, opts) {
 			endAngle += children[i].value / total * 360;
 
 			var thisIdx = level == 0 ? childIdx : parentIdx,
-				sect = sector(cx, cy, levelRadius(level), levelRadius(level + 1),
-					startAngle, endAngle,
-					colorAttr(!opts.colorizeByLevel ? thisIdx : level, level)).attr({
+			    sect = sector(cx, cy, levelRadius(level), levelRadius(level + 1),
+			    startAngle, endAngle,
+			    colorAttr(!opts.colorizeByLevel ? thisIdx : level, level)).attr({
 						stroke: opts.stroke || "#fff",
 						"stroke-width": opts.strokewidth || 1});
 			sect.level = level;
@@ -125,7 +125,7 @@ Raphael.fn.g.sunburst = function(cx, cy, values, opts) {
 	}
 
 	Raphael.getColor.reset();
-	data = getDataSeriesFromObj(opts.rootLabel, values);
+	var data = getDataSeriesFromObj(opts.rootLabel, values);
 	renderSeries(data, series);
 
 	function getCallbackContext(sector) {
@@ -159,6 +159,7 @@ Raphael.fn.g.sunburst = function(cx, cy, values, opts) {
 		return this;
 	};
 
+	// TODO: Need access functions for individual rings, sectors and items
 	chart.push(series);
 	chart.series = series;
 	return chart;
