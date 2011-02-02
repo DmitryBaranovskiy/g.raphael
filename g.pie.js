@@ -185,7 +185,11 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
             labels[j] = paper.g.labelise(labels[j], values[i], total);
             chart.labels.push(paper.set());
             chart.labels[i].push(paper.g[mark](x + 5, h, 5).attr({fill: clr, stroke: "none"}));
-            chart.labels[i].push(txt = paper.text(x + 20, h, labels[j] || values[j]).attr(paper.g.txtattr).attr({fill: opts.legendcolor || "#000", "text-anchor": "start"}));
+            txt = paper.text(x + 20, h, labels[j] || values[j]).attr(paper.g.txtattr).attr({fill: opts.legendcolor || "#000", "text-anchor": "start"})
+            if(opts.href && opts.href[j]){
+              txt.attr({href: opts.href[j]});
+            }
+            chart.labels[i].push(txt);
             covers[i].label = chart.labels[i];
             h += txt.getBBox().height * 1.2;
         }
