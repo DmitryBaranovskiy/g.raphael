@@ -48,7 +48,9 @@ Raphael.fn.g.venn = function(cx, cy, width, height, values, opts) {
 	}
 
 	// Scale to bounding box
-	s = width <= height ? width / ( dn * r0 + 2 * r1 ) : height / r1 / 2;
+	s = width <= height ?
+		width / ( dn * r0 + 2 * r1 ) :
+		height / Math.max(r0, r1) / 2;
 	r0 *= s;
 	r1 *= s;
 	d = Math.max(dn * r0, 0) - r0 + r1;
