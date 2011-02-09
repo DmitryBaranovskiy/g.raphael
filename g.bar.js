@@ -115,15 +115,19 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
                 covers.push(cover = this.rect(Math.round(X), y + barvgutter, barwidth, height - barvgutter).attr(this.g.shim));
                 cover.bar = multi ? bars[j][i] : bars[i];
                 cover.value = cover.bar.value;
+				cover.index = i;
                 X += barwidth;
             }
             X += barhgutter;
         }
     }
-    chart.label = function (labels, isBottom) {
+    chart.label = function (labels, isBottom, force) {
+		opts = opts || {};
+		force = (force === undefined) ? false : force;
         labels = labels || [];
         this.labels = paper.set();
-        var L, l = -Infinity;
+        var L, l = -Infinity,
+			ldown = false;
         if (opts.stacked) {
             for (var i = 0; i < len; i++) {
                 var tot = 0;
@@ -134,7 +138,18 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
                         L = paper.g.text(bars[i * (multi || 1) + j].x, y + height - barvgutter / 2, label).insertBefore(covers[i * (multi || 1) + j]);
                         var bb = L.getBBox();
                         if (bb.x - 7 < l) {
-                            L.remove();
+							if( !force ) {
+	                            L.remove();
+							} else {
+								if( ldown === false ) {
+									L.translate(0,bb.height);
+									ldown = true;
+								} else {
+									ldown = false;
+								}
+								this.labels.push(L);
+		                        l = bb.x + bb.width;
+							}
                         } else {
                             this.labels.push(L);
                             l = bb.x + bb.width;
@@ -149,7 +164,18 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
                     L = paper.g.text(bars[i * (multi || 1) + j].x, isBottom ? y + height - barvgutter / 2 : bars[i * (multi || 1) + j].y - 10, label).insertBefore(covers[i * (multi || 1) + j]);
                     var bb = L.getBBox();
                     if (bb.x - 7 < l) {
-                        L.remove();
+						if( !force ) {
+	                        L.remove();
+						} else {
+							if( ldown === false ) {
+								L.translate(0,bb.height);
+								ldown = true;
+							} else {
+								ldown = false;
+							}
+							this.labels.push(L);
+	                        l = bb.x + bb.width;
+						}
                     } else {
                         this.labels.push(L);
                         l = bb.x + bb.width;
@@ -317,6 +343,7 @@ Raphael.fn.g.hbarchart = function (x, y, width, height, values, opts) {
         }
     }
     chart.label = function (labels, isRight) {
+		console.log(labels);
         labels = labels || [];
         this.labels = paper.set();
         for (var i = 0; i < len; i++) {

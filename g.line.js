@@ -191,6 +191,7 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
                 f ? (C = {}) : cvrs.push(C = that.circle(X, Y, Math.abs(nearX - X) / 2).attr({stroke: "none", fill: "#000", opacity: 0}));
                 C.x = X;
                 C.y = Y;
+				C.index = j;
                 C.value = valuesy[i][j];
                 C.line = chart.lines[i];
                 C.shade = chart.shades[i];
