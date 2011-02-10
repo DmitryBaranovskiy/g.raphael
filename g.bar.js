@@ -17,7 +17,19 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
         paper = this,
         multi = 0,
         colors = opts.colors || this.g.colors,
-        len = values.length;
+        len = values.length,
+		origvalues = values.slice(0),
+		hasneg = Math.min.apply(Math,origvalues) < 0 ? true : false,
+		gheight = height;
+	
+	if (hasneg) {
+		values = [];
+		var l = origvalues.length;
+		for(var i = 0; i < l ; i++ ) {
+			values.push(Math.abs(origvalues[i]));
+		}
+		total = Math.max.apply(Math, values);
+	}
     if (this.raphael.is(values[0], "array")) {
         total = [];
         multi = len;
@@ -43,7 +55,8 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
                 }
             }
         }
-        total = Math.max.apply(Math, opts.stacked ? stacktotal : total);
+        total = Math.max.apply(Math, opts.stacked ? stacktotal : total),
+		hasneg = Math.min.apply(Math, opts.stacked ? stacktotal : total) < 0 ? true : false;
     }
     
     total = (opts.to) || total;
@@ -52,7 +65,11 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
         barvgutter = opts.vgutter == null ? 20 : opts.vgutter,
         stack = [],
         X = x + barhgutter,
-        Y = (height - 2 * barvgutter) / total;
+        Y = (gheight - 2 * barvgutter) / total;
+	if( hasneg ) {
+		gheight = ((gheight+barvgutter*2)/2)+1;
+		Y = ((gheight - 2 * barvgutter ) / (total));
+	}
     if (!opts.stretch) {
         barhgutter = Math.round(barhgutter);
         barwidth = Math.floor(barwidth);
@@ -61,19 +78,23 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
     for (var i = 0; i < len; i++) {
         stack = [];
         for (var j = 0; j < (multi || 1); j++) {
-            var h = Math.round((multi ? values[j][i] : values[i]) * Y),
-                top = y + height - barvgutter - h,
-                bar = this.g.finger(Math.round(X + barwidth / 2), top + h, barwidth, h, true, type).attr({stroke: "none", fill: colors[multi ? j : i]});
+            var h =  Math.round((multi ? values[j][i] : values[i]) * Y),
+                top = y + gheight - barvgutter - Math.abs(h),
+                bar =  this.g.finger(Math.round(X + barwidth / 2), top+Math.abs(h), barwidth, Math.abs(h), true, type);
+			
+			if(hasneg && (origvalues[i] < 0))
+				bar.rotate(180).translate(0,bar.getBBox().height);
+			bar.attr({stroke: "none", fill: colors[multi ? j : i]});
             if (multi) {
                 bars[j].push(bar);
             } else {
                 bars.push(bar);
             }
-            bar.y = top;
+            bar.y = (hasneg && origvalues[i] < 0) ? gheight : top;
             bar.x = Math.round(X + barwidth / 2);
             bar.w = barwidth;
             bar.h = h;
-            bar.value = multi ? values[j][i] : values[i];
+            bar.value = multi ? values[j][i] : hasneg ? origvalues[i] : values[i];
             if (!opts.stacked) {
                 X += barwidth;
             } else {
@@ -343,7 +364,6 @@ Raphael.fn.g.hbarchart = function (x, y, width, height, values, opts) {
         }
     }
     chart.label = function (labels, isRight) {
-		console.log(labels);
         labels = labels || [];
         this.labels = paper.set();
         for (var i = 0; i < len; i++) {
