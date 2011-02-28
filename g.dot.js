@@ -61,7 +61,7 @@ Raphael.fn.g.dotchart = function (x, y, width, height, valuesx, valuesy, size, o
         var sym = this.raphael.is(symbol, "array") ? symbol[i] : symbol,
             X = x + gutter + (valuesx[i] - minx) * kx,
             Y = y + height - gutter - (valuesy[i] - miny) * ky;
-        sym && R[i] && series.push(this.g[sym](X, Y, R[i]).attr({fill: opts.heat ? this.g.colorValue(R[i], maxR) : Raphael.fn.g.colors[0], "fill-opacity": opts.opacity ? R[i] / max : 1, stroke: "none"}));
+        sym && R[i] && series.push(this.g[sym](X, Y, R[i]).attr({fill: opts.heat ? this.g.colorValue(R[i], maxR) : this.raphael.fn.g.colors[0], "fill-opacity": opts.opacity ? R[i] / max : 1, stroke: "none"}));
     }
     var covers = this.set();
     for (var i = 0, ii = valuesy.length; i < ii; i++) {
@@ -89,7 +89,7 @@ Raphael.fn.g.dotchart = function (x, y, width, height, valuesx, valuesy, size, o
         return this;
     };
     res.each = function (f) {
-        if (!Raphael.is(f, "function")) {
+        if (!this.raphael.is(f, "function")) {
             return this;
         }
         for (var i = covers.length; i--;) {

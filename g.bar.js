@@ -179,7 +179,7 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
         return this;
     };
     chart.each = function (f) {
-        if (!Raphael.is(f, "function")) {
+        if (!this.raphael.is(f, "function")) {
             return this;
         }
         for (var i = covers.length; i--;) {
@@ -188,7 +188,7 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
         return this;
     };
     chart.eachColumn = function (f) {
-        if (!Raphael.is(f, "function")) {
+        if (!this.raphael.is(f, "function")) {
             return this;
         }
         for (var i = covers2.length; i--;) {
@@ -350,7 +350,7 @@ Raphael.fn.g.hbarchart = function (x, y, width, height, values, opts) {
         return this;
     };
     chart.each = function (f) {
-        if (!Raphael.is(f, "function")) {
+        if (!this.raphael.is(f, "function")) {
             return this;
         }
         for (var i = covers.length; i--;) {
@@ -359,7 +359,7 @@ Raphael.fn.g.hbarchart = function (x, y, width, height, values, opts) {
         return this;
     };
     chart.eachColumn = function (f) {
-        if (!Raphael.is(f, "function")) {
+        if (!this.raphael.is(f, "function")) {
             return this;
         }
         for (var i = covers2.length; i--;) {
