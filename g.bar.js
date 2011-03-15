@@ -161,13 +161,11 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
             X += barhgutter;
         }
     }
-    chart.label = function (labels, isBottom, force) {
-        opts = opts || {};
-        force = (force === undefined) ? false : force;
+    chart.label = function (labels, isBottom, labelangle) {
+        labelangle = labelangle == null ? 180 : ((labelangle + 360) % 360);
         labels = labels || [];
         this.labels = paper.set();
-        var L, l = -Infinity,
-            ldown = false;
+        var L, l = -Infinity;
         if (opts.stacked) {
             for (var i = 0; i < len; i++) {
                 var tot = 0;
@@ -175,22 +173,15 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
                     tot += multi ? values[j][i] : values[i];
                     if (j == multi - 1) {
                         var label = paper.g.labelise(labels[i], tot, total);
-                        L = paper.g.text(bars[i][j].x, y + height - barvgutter / 2, label).insertBefore(covers[i * (multi || 1) + j]);
+                        L = paper.g.text(bars[i * (multi || 1) + j].x, y + height - barvgutter / 2, label).insertBefore(covers[i * (multi || 1) + j]);
                         var bb = L.getBBox();
-                        if (bb.x - 7 < l) {
-                            if( !force ) {
-                                L.remove();
-                            } else {
-                                if( ldown === false ) {
-                                    L.translate(0,bb.height);
-                                    ldown = true;
-                                } else {
-                                    ldown = false;
-                                }
-                                this.labels.push(L);
-                                l = bb.x + bb.width;
-                            }
+                        if ((bb.x - 7 < l) && (labelangle % 180 === 0 )) {
+                            L.remove();
                         } else {
+                            if(labelangle != 180) {
+                                txt.rotate(labelangle, (labelangle < 180 ? bb.x : bb.x+bb.width), bb.y);
+                                txt.translate((labelangle < 180 ? bb.width/2 : -bb.width/2), 0);
+                            }
                             this.labels.push(L);
                             l = bb.x + bb.width;
                         }
@@ -200,23 +191,16 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
         } else {
             for (var i = 0; i < len; i++) {
                 for (var j = 0; j < (multi || 1); j++) {
-                    var label = paper.g.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? origvalues[j][i] : origvalues[i], total);
-                    L = paper.g.text(bars[j][i].x, isBottom ? y + height - barvgutter / 2 : bars[j][i].y - 10, label).insertBefore(covers[i * (multi || 1) + j]);
+                    var label = paper.g.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total);
+                    L = paper.g.text(bars[i * (multi || 1) + j].x, isBottom ? y + height - barvgutter / 2 : bars[i * (multi || 1) + j].y - 10, label).insertBefore(covers[i * (multi || 1) + j]);
                     var bb = L.getBBox();
-                    if (bb.x - 7 < l) {
-                        if( !force ) {
-                            L.remove();
-                        } else {
-                            if( ldown === false ) {
-                                L.translate(0,bb.height);
-                                ldown = true;
-                            } else {
-                                ldown = false;
-                            }
-                            this.labels.push(L);
-                            l = bb.x + bb.width;
-                        }
+                    if ((bb.x - 7 < l) && (labelangle % 180 === 0 )) {
+                        L.remove();
                     } else {
+                        if(labelangle != 180) {
+                            L.rotate(labelangle, (labelangle < 180 ? bb.x : bb.x+bb.width), bb.y);
+                            L.translate((labelangle < 180 ? bb.width/2 : -bb.width/2), 0);
+                        }
                         this.labels.push(L);
                         l = bb.x + bb.width;
                     }
