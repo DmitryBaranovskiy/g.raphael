@@ -165,6 +165,7 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
             C.symbols = that.set();
             C.y = [];
             C.x = xs[i];
+            C.pos = i;
             C.axis = Xs[i];
             for (var j = 0, jj = valuesy.length; j < jj; j++) {
                 Xs2 = valuesx[j] || valuesx[0];
@@ -191,6 +192,7 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
                 f ? (C = {}) : cvrs.push(C = that.circle(X, Y, Math.abs(nearX - X) / 2).attr({stroke: "none", fill: "#000", opacity: 0}));
                 C.x = X;
                 C.y = Y;
+                C.pos = j;
                 C.value = valuesy[i][j];
                 C.line = chart.lines[i];
                 C.shade = chart.shades[i];

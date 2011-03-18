@@ -73,6 +73,7 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
             bar.x = Math.round(X + barwidth / 2);
             bar.w = barwidth;
             bar.h = h;
+            bar.pos = i;
             bar.value = multi ? values[j][i] : values[i];
             if (!opts.stacked) {
                 X += barwidth;
@@ -272,6 +273,7 @@ Raphael.fn.g.hbarchart = function (x, y, width, height, values, opts) {
             bar.y = Y + barheight / 2;
             bar.w = Math.round(val * X);
             bar.h = barheight;
+            bar.pos = i;
             bar.value = +val;
             if (!opts.stacked) {
                 Y += barheight;
