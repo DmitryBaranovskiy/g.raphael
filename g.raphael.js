@@ -419,7 +419,7 @@
                 prev = 0;
             while (X <= x + length) {
                 type != "-" && type != " " && (path = path.concat(["M", X + .5, y - (type == "+" ? dashsize : !!orientation * dashsize * 2), "l", 0, dashsize * 2 + 1]));
-                text.push(txt = this.text(X, y + addon, (labels && labels[j++]) || (Math.round(label) == label ? label : +label.toFixed(rnd))).attr(this.g.txtattr).attr({rotation: opts.labelrotate} ));
+                text.push(txt = this.text(X, y + addon, (labels && labels[j++]) || (Math.round(label) == label ? label : +label.toFixed(rnd))).attr(this.g.txtattr));
                 var bb = txt.getBBox();
                	if ((prev >= bb.x - 5) && (labelangle % 180 === 0 )) {
                     text.pop(text.length - 1).remove();

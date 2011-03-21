@@ -109,11 +109,11 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
             } else {
                 bars.push(bar);
             }
-            bar.y = (hasneg && origvalues[i] < 0) ? gheight : top;
+            bar.y = multi ? (origvalues[j][i] < 0 ? gheight : top) : (origvalues[i] < 0 ? gheight : top);
             bar.x = Math.round(X + barwidth / 2);
             bar.w = barwidth;
             bar.h = h;
-            bar.value = multi ? values[j][i] : hasneg ? origvalues[i] : values[i];
+            bar.value = multi ? origvalues[j][i] : hasneg ? origvalues[i] : values[i];
             if (!opts.stacked) {
                 X += barwidth;
             } else {
