@@ -81,7 +81,7 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
         xdim = this.g.snapEnds(Math.min.apply(Math, allx), Math.max.apply(Math, allx), valuesx[0].length - 1),
         minx = xdim.from,
         maxx = xdim.to,
-        ydim = this.g.snapEnds(Math.min.apply(Math, ally), Math.max.apply(Math, ally), valuesy[0].length - 1),
+        ydim = this.g.snapEnds((opts.from === undefined) ? Math.min.apply(Math, ally) : opts.from, (opts.to === undefined ) ? Math.max.apply(Math, ally) : opts.to, valuesy[0].length - 1),
         miny = ydim.from,
         maxy = ydim.to,
         kx = (width - gutter * 2) / ((maxx - minx) || 1),
@@ -191,6 +191,7 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
                 f ? (C = {}) : cvrs.push(C = that.circle(X, Y, Math.abs(nearX - X) / 2).attr({stroke: "none", fill: "#000", opacity: 0}));
                 C.x = X;
                 C.y = Y;
+				C.index = j;
                 C.value = valuesy[i][j];
                 C.line = chart.lines[i];
                 C.shade = chart.shades[i];

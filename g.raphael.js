@@ -379,8 +379,9 @@
         f = round((from - (i > 0 ? 0 : .5)) * Math.pow(10, i)) / Math.pow(10, i);
         return {from: f, to: t, power: i};
     };
-    Raphael.fn.g.axis = function (x, y, length, from, to, steps, orientation, labels, type, dashsize) {
+    Raphael.fn.g.axis = function (x, y, length, from, to, steps, orientation, labels, type, dashsize, labelangle ) {
         dashsize = dashsize == null ? 2 : dashsize;
+        labelangle = labelangle == null ? 180 : ((labelangle+360) % 360);
         type = type || "t";
         steps = steps || 10;
         var path = type == "|" || type == " " ? ["M", x + .5, y, "l", 0, .001] : orientation == 1 || orientation == 3 ? ["M", x + .5, y, "l", 0, -length] : ["M", x, y + .5, "l", length, 0],
@@ -394,6 +395,7 @@
         var label = f,
             rnd = i > 0 ? i : 0;
             dx = length / steps;
+
         if (+orientation == 1 || +orientation == 3) {
             var Y = y,
                 addon = (orientation - 1 ? 1 : -1) * (dashsize + 3 + !!(orientation - 1));
@@ -419,12 +421,16 @@
                 type != "-" && type != " " && (path = path.concat(["M", X + .5, y - (type == "+" ? dashsize : !!orientation * dashsize * 2), "l", 0, dashsize * 2 + 1]));
                 text.push(txt = this.text(X, y + addon, (labels && labels[j++]) || (Math.round(label) == label ? label : +label.toFixed(rnd))).attr(this.g.txtattr));
                 var bb = txt.getBBox();
-                if (prev >= bb.x - 5) {
+               	if ((prev >= bb.x - 5) && (labelangle % 180 === 0 )) {
                     text.pop(text.length - 1).remove();
                 } else {
                     prev = bb.x + bb.width;
                 }
-                label += d;
+                if(labelangle != 180) {
+                    txt.rotate(labelangle, (labelangle < 180 ? bb.x : bb.x+bb.width), bb.y);
+                    txt.translate((labelangle < 180 ? bb.width/2 : -bb.width/2), 0);
+                }
+		        label += d;
                 X += dx;
             }
             if (Math.round(X - dx - x - length)) {

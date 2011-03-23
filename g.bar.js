@@ -8,30 +8,46 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
     opts = opts || {};
     var type = {round: "round", sharp: "sharp", soft: "soft"}[opts.type] || "square",
         gutter = parseFloat(opts.gutter || "20%"),
+        centeraxis = (opts.centeraxis === undefined) ? false : opts.centeraxis,
         chart = this.set(),
         bars = this.set(),
         covers = this.set(),
         covers2 = this.set(),
         total = Math.max.apply(Math, values),
         stacktotal = [],
+        mins = [],
+        negoffset = Math.abs(opts.from),
         paper = this,
         multi = 0,
         colors = opts.colors || this.g.colors,
-        len = values.length;
+        len = values.length,
+        origvalues = values.slice(0),
+        hasneg = Math.min.apply(Math,origvalues) < 0 ? true : false,
+        gheight = height;
+    
     if (this.raphael.is(values[0], "array")) {
         total = [];
         multi = len;
         len = 0;
-        for (var i = values.length; i--;) {
+        values = [];
+        for (var i = origvalues.length; i--;) {
+            values[i] = [];
+            l = origvalues[i].length;
+            for(var j = 0; j < l; j++) {
+                values[i].push(Math.abs(origvalues[i][j]));
+            }
+        }
+        for (var i = values.length; i--;) {         
             bars.push(this.set());
             total.push(Math.max.apply(Math, values[i]));
+            mins.push(Math.min.apply(Math, origvalues[i]));
             len = Math.max(len, values[i].length);
         }
         if (opts.stacked) {
             for (var i = len; i--;) {
                 var tot = 0;
                 for (var j = values.length; j--;) {
-                    tot +=+ values[j][i] || 0;
+                    tot +=+ (values[j][i]) || 0;
                 }
                 stacktotal.push(tot);
             }
@@ -43,7 +59,19 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
                 }
             }
         }
+        hasneg = Math.min.apply(Math, mins) < 0 ? true : false;
         total = Math.max.apply(Math, opts.stacked ? stacktotal : total);
+        negoffset = (negoffset === undefined ? (hasneg ? Math.abs(Math.min.apply(Math, mins)) : 0) : negoffset);
+    } else {
+        if (hasneg) {
+            negoffset = (negoffset === undefined ? Math.abs(Math.min.apply(values)) : negoffset);
+            values = [];
+            var l = origvalues.length;
+            for(var i = 0; i < l ; i++ ) {
+                values.push(Math.abs(origvalues[i]));
+            }
+            total = Math.max.apply(Math, values);
+        }
     }
     
     total = (opts.to) || total;
@@ -52,7 +80,9 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
         barvgutter = opts.vgutter == null ? 20 : opts.vgutter,
         stack = [],
         X = x + barhgutter,
-        Y = (height - 2 * barvgutter) / total;
+        Y;
+    gheight = ((hasneg && centeraxis) ? ((gheight+barvgutter*2)/2)+1 : gheight);
+    Y = ((gheight - 2 * barvgutter) / total);
     if (!opts.stretch) {
         barhgutter = Math.round(barhgutter);
         barwidth = Math.floor(barwidth);
@@ -61,19 +91,29 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
     for (var i = 0; i < len; i++) {
         stack = [];
         for (var j = 0; j < (multi || 1); j++) {
-            var h = Math.round((multi ? values[j][i] : values[i]) * Y),
-                top = y + height - barvgutter - h,
-                bar = this.g.finger(Math.round(X + barwidth / 2), top + h, barwidth, h, true, type).attr({stroke: "none", fill: colors[multi ? j : i]});
+            var h =  Math.round((multi ? values[j][i] : values[i]) * Y),
+                top = y + gheight - barvgutter - Math.abs(h),
+                bar =  this.g.finger(Math.round(X + barwidth / 2), top+Math.abs(h), barwidth, Math.abs(h), true, type);
+            
+            if(hasneg && ((multi ? origvalues[j][i] : origvalues[i]) < 0)) {
+                bar.rotate(180);
+                bar.translate(0, bar.getBBox().height);
+            }
+            if(negoffset !== 0 && !centeraxis) {
+                if((multi ? origvalues[j][i] : origvalues[i]) !== 0)
+                    bar.translate(0, -(negoffset*Y));
+            }
+            bar.attr({stroke: "none", fill: colors[multi ? j : i]});
             if (multi) {
                 bars[j].push(bar);
             } else {
                 bars.push(bar);
             }
-            bar.y = top;
+            bar.y = multi ? (origvalues[j][i] < 0 ? gheight : top) : (origvalues[i] < 0 ? gheight : top);
             bar.x = Math.round(X + barwidth / 2);
             bar.w = barwidth;
             bar.h = h;
-            bar.value = multi ? values[j][i] : values[i];
+            bar.value = multi ? origvalues[j][i] : hasneg ? origvalues[i] : values[i];
             if (!opts.stacked) {
                 X += barwidth;
             } else {
@@ -115,15 +155,18 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
                 covers.push(cover = this.rect(Math.round(X), y + barvgutter, barwidth, height - barvgutter).attr(this.g.shim));
                 cover.bar = multi ? bars[j][i] : bars[i];
                 cover.value = cover.bar.value;
+                cover.index = i;
                 X += barwidth;
             }
             X += barhgutter;
         }
     }
-    chart.label = function (labels, isBottom) {
+    chart.label = function (labels, isBottom, labelangle) {
         labels = labels || [];
+        labelangle = labelangle == null ? 180 : ((labelangle + 360) % 360);
         this.labels = paper.set();
-        var L, l = -Infinity;
+        var L, l = -Infinity,
+            ldown = false;
         if (opts.stacked) {
             for (var i = 0; i < len; i++) {
                 var tot = 0;
@@ -131,11 +174,15 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
                     tot += multi ? values[j][i] : values[i];
                     if (j == multi - 1) {
                         var label = paper.g.labelise(labels[i], tot, total);
-                        L = paper.g.text(bars[i * (multi || 1) + j].x, y + height - barvgutter / 2, label).insertBefore(covers[i * (multi || 1) + j]);
+                        L = paper.g.text(bars[i][j].x, y + height - barvgutter / 2, label).insertBefore(covers[i * (multi || 1) + j]);
                         var bb = L.getBBox();
-                        if (bb.x - 7 < l) {
+                        if ((bb.x - 7 < l) && (labelangle % 180 === 0 )) {
                             L.remove();
                         } else {
+                            if(labelangle != 180) {
+                                txt.rotate(labelangle, (labelangle < 180 ? bb.x : bb.x+bb.width), bb.y);
+                                txt.translate((labelangle < 180 ? bb.width/2 : -bb.width/2), 0);
+                            }
                             this.labels.push(L);
                             l = bb.x + bb.width;
                         }
@@ -145,12 +192,16 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
         } else {
             for (var i = 0; i < len; i++) {
                 for (var j = 0; j < (multi || 1); j++) {
-                    var label = paper.g.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total);
-                    L = paper.g.text(bars[i * (multi || 1) + j].x, isBottom ? y + height - barvgutter / 2 : bars[i * (multi || 1) + j].y - 10, label).insertBefore(covers[i * (multi || 1) + j]);
+                    var label = paper.g.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? origvalues[j][i] : origvalues[i], total);
+                    L = paper.g.text(bars[j][i].x, isBottom ? y + height - barvgutter / 2 : bars[j][i].y - 10, label).insertBefore(covers[i * (multi || 1) + j]);
                     var bb = L.getBBox();
-                    if (bb.x - 7 < l) {
+                    if ((bb.x - 7 < l) && (labelangle % 180 === 0 )) {
                         L.remove();
                     } else {
+                        if(labelangle != 180) {
+                            L.rotate(labelangle, (labelangle < 180 ? bb.x : bb.x+bb.width), bb.y);
+                            L.translate((labelangle < 180 ? bb.width/2 : -bb.width/2), 0);
+                        }
                         this.labels.push(L);
                         l = bb.x + bb.width;
                     }
