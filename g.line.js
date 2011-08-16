@@ -114,7 +114,7 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
         for (var j = 0, jj = valuesy[i].length; j < jj; j++) {
             var X = x + gutter + ((valuesx[i] || valuesx[0])[j] - minx) * kx,
                 Y = y + height - gutter - (valuesy[i][j] - miny) * ky;
-            (Raphael.is(sym, "array") ? sym[j] : sym) && symset.push(this.g[Raphael.fn.g.markers[this.raphael.is(sym, "array") ? sym[j] : sym]](X, Y, (opts.width || 2) * 3).attr({fill: colors[i], stroke: "none"}));
+	            (Raphael.is(sym, "array") ? sym[j] : sym) && symset.push(this.g[Raphael.fn.g.markers[this.raphael.is(sym, "array") ? sym[j] : sym]](X, Y, (opts.nodeWidth || 4)).attr({fill: colors[i], stroke: "none"}));
             if (opts.smooth) {
                 if (j && j != jj - 1) {
                     var X0 = x + gutter + ((valuesx[i] || valuesx[0])[j - 1] - minx) * kx,
