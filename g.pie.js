@@ -13,11 +13,11 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
         series = this.set(),
         order = [],
         len = values.length,
-        angle = 0,
+        angle = opts.angle || 0,
         total = 0,
         others = 0,
-        cut = 9,
-        defcut = true;
+        cut = opts.cut || 9,
+        defcut = opts.defcut || true;
     chart.covers = covers;
     if (len == 1) {
         series.push(this.circle(cx, cy, r).attr({fill: this.g.colors[0], stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth}));
