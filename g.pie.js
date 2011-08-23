@@ -17,7 +17,8 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
         total = 0,
         others = 0,
         cut = opts.cut || 9,
-        defcut = opts.defcut || true;
+        defcut = opts.defcut == null ? true : opts.defcut,
+        sorted = opts.sorted == null ? true : opts.sorted;
     chart.covers = covers;
     if (len == 1) {
         series.push(this.circle(cx, cy, r).attr({fill: this.g.colors[0], stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth}));
@@ -43,9 +44,11 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
             total += values[i];
             values[i] = {value: values[i], order: i, valueOf: function () { return this.value; }};
         }
-        values.sort(function (a, b) {
-            return b.value - a.value;
-        });
+        if (sorted) {
+            values.sort(function (a, b) {
+                return b.value - a.value;
+            });
+        }
         for (i = 0; i < len; i++) {
             if (defcut && values[i] * 360 / total <= 1.5) {
                 cut = i;
