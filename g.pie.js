@@ -5,6 +5,7 @@
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
 Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
+    values = values.slice(0);
     opts = opts || {};
     var paper = this,
         sectors = [],
