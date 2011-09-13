@@ -78,9 +78,11 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
             series.push(p);
             opts.init && p.animate({path: path.join(",")}, (+opts.init - 1) || 1000, ">");
         }
-        for (i = 0; i < len; i++) {
-            p = paper.path(sectors[i].attr("path")).attr(this.g.shim);
-            opts.href && opts.href[i] && p.attr({href: opts.href[i]});
+        // fix to issue #4, code courtesy of tbritt, applied by Collymitch
+        for (var i = 0; i < len; i++) {
+            var optsIndex = values[i].order;
+            var p = paper.path(sectors[i].attr("path")).attr(this.g.shim);
+            opts.href && opts.href[optsIndex] && p.attr({href: opts.href[optsIndex]});
             p.attr = function () {};
             covers.push(p);
             series.push(p);
