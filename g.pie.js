@@ -13,7 +13,7 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
         series = this.set(),
         order = [],
         len = values.length,
-        angle = 0,
+        angle = opts.startFromFixedAngle || 0,
         total = 0,
         others = 0,
         cut = 9,
@@ -61,10 +61,15 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
         len = Math.min(cut + 1, values.length);
         others && values.splice(len) && (values[cut].others = true);
         for (i = 0; i < len; i++) {
-            var mangle = angle - 360 * values[i] / total / 2;
-            if (!i) {
-                angle = 90 - mangle;
+            var mangle;
+            if (opts.startFromFixedAngle)
+                mangle = angle + 360 * values[i] / total / 2;
+            else {
                 mangle = angle - 360 * values[i] / total / 2;
+                if (!i) {
+                    angle = 90 - mangle;
+                    mangle = angle - 360 * values[i] / total / 2;
+                }
             }
             if (opts.init) {
                 var ipath = sector(cx, cy, 1, angle, angle - 360 * values[i] / total).join(",");
