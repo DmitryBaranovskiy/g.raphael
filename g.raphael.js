@@ -102,11 +102,6 @@
         }
     };
 
-    // Symbols
-    Raphael.fn.g.disc = function (cx, cy, r) {
-        return this.circle(cx, cy, r);
-    };
-
     // Tooltips
     Raphael.fn.g.tag = function (x, y, text, angle, r) {
         angle = angle || 0;
