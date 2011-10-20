@@ -122,18 +122,6 @@
         set.translate(xy.x - w - bb.x, xy.y - h - bb.y);
         return this.path(p).attr({fill: "#000", stroke: "none"}).insertBefore(set.node ? set : set[0]);
     };
-    Raphael.fn.g.label = function (x, y, text) {
-        var res = this.set();
-        res.push(this.rect(x, y, 10, 10).attr({stroke: "none", fill: "#000"}));
-        res.push(this.text(x, y, text).attr(this.g.txtattr).attr({fill: "#fff"}));
-        res.update = function () {
-            var bb = this[1].getBBox(),
-                r = mmin(bb.width + 10, bb.height + 10) / 2;
-            this[0].attr({x: bb.x - r / 2, y: bb.y - r / 2, width: bb.width + r, height: bb.height + r, r: r});
-        };
-        res.update();
-        return res;
-    };
     Raphael.fn.g.labelit = function (set) {
         var bb = set.getBBox(),
             r = mmin(20, bb.width + 10, bb.height + 10) / 2;
