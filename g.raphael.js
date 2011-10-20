@@ -127,52 +127,6 @@
             r = mmin(20, bb.width + 10, bb.height + 10) / 2;
         return this.rect(bb.x - r / 2, bb.y - r / 2, bb.width + r, bb.height + r, r).attr({stroke: "none", fill: "#000"}).insertBefore(set.node ? set : set[0]);
     };
-    Raphael.fn.g.drop = function (x, y, text, size, angle) {
-        size = size || 30;
-        angle = angle || 0;
-        var res = this.set();
-        res.push(this.path(["M", x, y, "l", size, 0, "A", size * .4, size * .4, 0, 1, 0, x + size * .7, y - size * .7, "z"]).attr({fill: "#000", stroke: "none", rotation: [22.5 - angle, x, y]}));
-        angle = (angle + 90) * Math.PI / 180;
-        res.push(this.text(x + size * Math.sin(angle), y + size * Math.cos(angle), text).attr(this.g.txtattr).attr({"font-size": size * 12 / 30, fill: "#fff"}));
-        res.drop = res[0];
-        res.text = res[1];
-        return res;
-    };
-    Raphael.fn.g.blob = function (x, y, text, angle, size) {
-        angle = (+angle + 1 ? angle : 45) + 90;
-        size = size || 12;
-        var rad = Math.PI / 180,
-            fontSize = size * 12 / 12;
-        var res = this.set();
-        res.push(this.path().attr({fill: "#000", stroke: "none"}));
-        res.push(this.text(x + size * Math.sin((angle) * rad), y + size * Math.cos((angle) * rad) - fontSize / 2, text).attr(this.g.txtattr).attr({"font-size": fontSize, fill: "#fff"}));
-        res.update = function (X, Y, withAnimation) {
-            X = X || x;
-            Y = Y || y;
-            var bb = this[1].getBBox(),
-                w = mmax(bb.width + fontSize, size * 25 / 12),
-                h = mmax(bb.height + fontSize, size * 25 / 12),
-                x2 = X + size * Math.sin((angle - 22.5) * rad),
-                y2 = Y + size * Math.cos((angle - 22.5) * rad),
-                x1 = X + size * Math.sin((angle + 22.5) * rad),
-                y1 = Y + size * Math.cos((angle + 22.5) * rad),
-                dx = (x1 - x2) / 2,
-                dy = (y1 - y2) / 2,
-                rx = w / 2,
-                ry = h / 2,
-                k = -Math.sqrt(Math.abs(rx * rx * ry * ry - rx * rx * dy * dy - ry * ry * dx * dx) / (rx * rx * dy * dy + ry * ry * dx * dx)),
-                cx = k * rx * dy / ry + (x1 + x2) / 2,
-                cy = k * -ry * dx / rx + (y1 + y2) / 2;
-            if (withAnimation) {
-                this.animate({x: cx, y: cy, path: ["M", x, y, "L", x1, y1, "A", rx, ry, 0, 1, 1, x2, y2, "z"].join(",")}, 500, ">");
-            } else {
-                this.attr({x: cx, y: cy, path: ["M", x, y, "L", x1, y1, "A", rx, ry, 0, 1, 1, x2, y2, "z"].join(",")});
-            }
-            return this;
-        };
-        res.update(x, y);
-        return res;
-    };
 
     Raphael.fn.g.colorValue = function (value, total, s, b) {
         return "hsb(" + [mmin((1 - value / total) * .4, 1), s || .75, b || .75] + ")";
