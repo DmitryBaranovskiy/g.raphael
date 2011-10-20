@@ -126,57 +126,6 @@
     Raphael.fn.g.disc = function (cx, cy, r) {
         return this.circle(cx, cy, r);
     };
-    Raphael.fn.g.line = function (cx, cy, r) {
-        return this.rect(cx - r, cy - r / 5, 2 * r, 2 * r / 5);
-    };
-    Raphael.fn.g.square = function (cx, cy, r) {
-        r = r * .7;
-        return this.rect(cx - r, cy - r, 2 * r, 2 * r);
-    };
-    Raphael.fn.g.triangle = function (cx, cy, r) {
-        r *= 1.75;
-        return this.path("M".concat(cx, ",", cy, "m0-", r * .58, "l", r * .5, ",", r * .87, "-", r, ",0z"));
-    };
-    Raphael.fn.g.diamond = function (cx, cy, r) {
-        return this.path(["M", cx, cy - r, "l", r, r, -r, r, -r, -r, r, -r, "z"]);
-    };
-    Raphael.fn.g.flower = function (cx, cy, r, n) {
-        r = r * 1.25;
-        var rout = r,
-            rin = rout * .5;
-        n = +n < 3 || !n ? 5 : n;
-        var points = ["M", cx, cy + rin, "Q"],
-            R;
-        for (var i = 1; i < n * 2 + 1; i++) {
-            R = i % 2 ? rout : rin;
-            points = points.concat([+(cx + R * Math.sin(i * Math.PI / n)).toFixed(3), +(cy + R * Math.cos(i * Math.PI / n)).toFixed(3)]);
-        }
-        points.push("z");
-        return this.path(points.join(","));
-    };
-    Raphael.fn.g.star = function (cx, cy, r, r2, rays) {
-        r2 = r2 || r * .382;
-        rays = rays || 5;
-        var points = ["M", cx, cy + r2, "L"],
-            R;
-        for (var i = 1; i < rays * 2; i++) {
-            R = i % 2 ? r : r2;
-            points = points.concat([(cx + R * Math.sin(i * Math.PI / rays)), (cy + R * Math.cos(i * Math.PI / rays))]);
-        }
-        points.push("z");
-        return this.path(points.join(","));
-    };
-    Raphael.fn.g.cross = function (cx, cy, r) {
-        r = r / 2.5;
-        return this.path("M".concat(cx - r, ",", cy, "l", [-r, -r, r, -r, r, r, r, -r, r, r, -r, r, r, r, -r, r, -r, -r, -r, r, -r, -r, "z"]));
-    };
-    Raphael.fn.g.plus = function (cx, cy, r) {
-        r = r / 2;
-        return this.path("M".concat(cx - r / 2, ",", cy - r / 2, "l", [0, -r, r, 0, 0, r, r, 0, 0, r, -r, 0, 0, r, -r, 0, 0, -r, -r, 0, 0, -r, "z"]));
-    };
-    Raphael.fn.g.arrow = function (cx, cy, r) {
-        return this.path("M".concat(cx - r * .7, ",", cy - r * .4, "l", [r * .6, 0, 0, -r * .4, r, r * .8, -r, r * .8, 0, -r * .4, -r * .6, 0], "z"));
-    };
 
     // Tooltips
     Raphael.fn.g.tag = function (x, y, text, angle, r) {
