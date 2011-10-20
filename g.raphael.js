@@ -10,26 +10,6 @@
     var mmax = Math.max,
         mmin = Math.min;
     Raphael.fn.g = Raphael.fn.g || {};
-    Raphael.fn.g.markers = {
-        disc: "disc",
-        o: "disc",
-        flower: "flower",
-        f: "flower",
-        diamond: "diamond",
-        d: "diamond",
-        square: "square",
-        s: "square",
-        triangle: "triangle",
-        t: "triangle",
-        star: "star",
-        "*": "star",
-        cross: "cross",
-        x: "cross",
-        plus: "plus",
-        "+": "plus",
-        arrow: "arrow",
-        "->": "arrow"
-    };
     Raphael.fn.g.shim = {stroke: "none", fill: "#000", "fill-opacity": 0};
     Raphael.fn.g.txtattr = {font: "12px Arial, sans-serif"};
     Raphael.fn.g.colors = [];
