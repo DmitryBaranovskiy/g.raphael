@@ -1,29 +1,31 @@
-/*!
- * g.Raphael 0.4.1 - Charting library, based on Raphaël
+﻿/*!
+ * g.Raphael 0.5 - Charting library, based on Raphaël
  *
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
+ * Copyright (c) 2011 Karol Kowalski
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
-Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
+Raphael.fn.g.fn.barchart = function (x, y, width, height, values, opts) {
     opts = opts || {};
-    var type = {round: "round", sharp: "sharp", soft: "soft"}[opts.type] || "square",
+    var graph = this,
+        paper = this.paper,
+        type = {round: "round", sharp: "sharp", soft: "soft"}[opts.type] || "square",
         gutter = parseFloat(opts.gutter || "20%"),
-        chart = this.set(),
-        bars = this.set(),
-        covers = this.set(),
-        covers2 = this.set(),
+        chart = paper.set(),
+        bars = paper.set(),
+        covers = paper.set(),
+        covers2 = paper.set(),
         total = Math.max.apply(Math, values),
         stacktotal = [],
-        paper = this,
         multi = 0,
-        colors = opts.colors || this.g.colors,
+        colors = opts.colors || graph.colors,
         len = values.length;
-    if (this.raphael.is(values[0], "array")) {
+    if (paper.raphael.is(values[0], "array")) {
         total = [];
         multi = len;
         len = 0;
         for (var i = values.length; i--;) {
-            bars.push(this.set());
+            bars.push(paper.set());
             total.push(Math.max.apply(Math, values[i]));
             len = Math.max(len, values[i].length);
         }
@@ -63,7 +65,7 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
         for (var j = 0; j < (multi || 1); j++) {
             var h = Math.round((multi ? values[j][i] : values[i]) * Y),
                 top = y + height - barvgutter - h,
-                bar = this.g.finger(Math.round(X + barwidth / 2), top + h, barwidth, h, true, type).attr({stroke: "none", fill: colors[multi ? j : i]});
+                bar = graph.finger(Math.round(X + barwidth / 2), top + h, barwidth, h, true, type).attr({stroke: "none", fill: colors[multi ? j : i]});
             if (multi) {
                 bars[j].push(bar);
             } else {
@@ -82,8 +84,8 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
         }
         if (opts.stacked) {
             var cvr;
-            covers2.push(cvr = this.rect(stack[0].x - stack[0].w / 2, y, barwidth, height).attr(this.g.shim));
-            cvr.bars = this.set();
+            covers2.push(cvr = paper.rect(stack[0].x - stack[0].w / 2, y, barwidth, height).attr(graph.shim));
+            cvr.bars = paper.set();
             var size = 0;
             for (var s = stack.length; s--;) {
                 stack[s].toFront();
@@ -92,12 +94,12 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
                 var bar = stack[s],
                     cover,
                     h = (size + bar.value) * Y,
-                    path = this.g.finger(bar.x, y + height - barvgutter - !!size * .5, barwidth, h, true, type, 1);
+                    path = graph.finger(bar.x, y + height - barvgutter - !!size * .5, barwidth, h, true, type, 1);
                 cvr.bars.push(bar);
                 size && bar.attr({path: path});
                 bar.h = h;
                 bar.y = y + height - barvgutter - !!size * .5 - h;
-                covers.push(cover = this.rect(bar.x - bar.w / 2, bar.y, barwidth, bar.value * Y).attr(this.g.shim));
+                covers.push(cover = paper.rect(bar.x - bar.w / 2, bar.y, barwidth, bar.value * Y).attr(graph.shim));
                 cover.bar = bar;
                 cover.value = bar.value;
                 size += bar.value;
@@ -112,7 +114,7 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
         for (var i = 0; i < len; i++) {
             for (var j = 0; j < (multi || 1); j++) {
                 var cover;
-                covers.push(cover = this.rect(Math.round(X), y + barvgutter, barwidth, height - barvgutter).attr(this.g.shim));
+                covers.push(cover = paper.rect(Math.round(X), y + barvgutter, barwidth, height - barvgutter).attr(graph.shim));
                 cover.bar = multi ? bars[j][i] : bars[i];
                 cover.value = cover.bar.value;
                 X += barwidth;
@@ -207,26 +209,27 @@ Raphael.fn.g.barchart = function (x, y, width, height, values, opts) {
     chart.covers = covers;
     return chart;
 };
-Raphael.fn.g.hbarchart = function (x, y, width, height, values, opts) {
+Raphael.fn.g.fn.hbarchart = function (x, y, width, height, values, opts) {
     opts = opts || {};
-    var type = {round: "round", sharp: "sharp", soft: "soft"}[opts.type] || "square",
+    var graph = this,
+        paper = this.paper,
+        type = {round: "round", sharp: "sharp", soft: "soft"}[opts.type] || "square",
         gutter = parseFloat(opts.gutter || "20%"),
-        chart = this.set(),
-        bars = this.set(),
-        covers = this.set(),
-        covers2 = this.set(),
+        chart = paper.set(),
+        bars = paper.set(),
+        covers = paper.set(),
+        covers2 = paper.set(),
         total = Math.max.apply(Math, values),
         stacktotal = [],
-        paper = this,
         multi = 0,
-        colors = opts.colors || this.g.colors,
+        colors = opts.colors || graph.colors,
         len = values.length;
-    if (this.raphael.is(values[0], "array")) {
+    if (paper.raphael.is(values[0], "array")) {
         total = [];
         multi = len;
         len = 0;
         for (var i = values.length; i--;) {
-            bars.push(this.set());
+            bars.push(paper.set());
             total.push(Math.max.apply(Math, values[i]));
             len = Math.max(len, values[i].length);
         }
@@ -260,7 +263,8 @@ Raphael.fn.g.hbarchart = function (x, y, width, height, values, opts) {
         stack = [];
         for (var j = 0; j < (multi || 1); j++) {
             var val = multi ? values[j][i] : values[i],
-                bar = this.g.finger(x, Y + barheight / 2, Math.round(val * X), barheight - 1, false, type).attr({stroke: "none", fill: colors[multi ? j : i]});
+                bar_w = Math.round(val * X) || 1,
+                bar = graph.finger(x, Y + barheight / 2, bar_w, barheight - 1, false, type).attr({stroke: "none", fill: colors[multi ? j : i]});
             if (multi) {
                 bars[j].push(bar);
             } else {
@@ -278,9 +282,9 @@ Raphael.fn.g.hbarchart = function (x, y, width, height, values, opts) {
             }
         }
         if (opts.stacked) {
-            var cvr = this.rect(x, stack[0].y - stack[0].h / 2, width, barheight).attr(this.g.shim);
+            var cvr = paper.rect(x, stack[0].y - stack[0].h / 2, width, barheight).attr(graph.shim);
             covers2.push(cvr);
-            cvr.bars = this.set();
+            cvr.bars = paper.set();
             var size = 0;
             for (var s = stack.length; s--;) {
                 stack[s].toFront();
@@ -289,12 +293,12 @@ Raphael.fn.g.hbarchart = function (x, y, width, height, values, opts) {
                 var bar = stack[s],
                     cover,
                     val = Math.round((size + bar.value) * X),
-                    path = this.g.finger(x, bar.y, val, barheight - 1, false, type, 1);
+                    path = graph.finger(x, bar.y, val, barheight - 1, false, type, 1);
                 cvr.bars.push(bar);
                 size && bar.attr({path: path});
                 bar.w = val;
                 bar.x = x + val;
-                covers.push(cover = this.rect(x + size * X, bar.y - bar.h / 2, bar.value * X, barheight).attr(this.g.shim));
+                covers.push(cover = paper.rect(x + size * X, bar.y - bar.h / 2, bar.value * X, barheight).attr(graph.shim));
                 cover.bar = bar;
                 size += bar.value;
             }
@@ -307,7 +311,7 @@ Raphael.fn.g.hbarchart = function (x, y, width, height, values, opts) {
     if (!opts.stacked) {
         for (var i = 0; i < len; i++) {
             for (var j = 0; j < (multi || 1); j++) {
-                var cover = this.rect(x, Y, width, barheight).attr(this.g.shim);
+                var cover = paper.rect(x, Y, width, barheight).attr(graph.shim);
                 covers.push(cover);
                 cover.bar = multi ? bars[j][i] : bars[i];
                 cover.value = cover.bar.value;

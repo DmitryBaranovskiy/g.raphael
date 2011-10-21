@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+    <head>
+        <title>gRaphaël Primitives &amp; Labels</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="author" content="Dmitry Baranovskiy">
+        <meta name="description" content="Charting JavaScript Library">
+        <link rel="stylesheet" href="demo.css" type="text/css" media="screen" charset="utf-8">
+        <link rel="stylesheet" href="demo-print.css" type="text/css" media="print" charset="utf-8">
+        <script src="../raphael.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../g.raphael.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+            window.onload = function () {
+                var r = Raphael("holder");
+                r.g().txtattr.font = "12px 'Fontin Sans', Fontin-Sans, sans-serif";
+                
+                var s = r.set();
+                s.push(r.g().flower(0, 50, 20),
+                    r.g().disc(50, 50, 20),
+                    r.g().line(100, 50, 20),
+                    r.g().square(150, 50, 20),
+                    r.g().triangle(200, 50, 20),
+                    r.g().star(250, 50, 20),
+                    r.g().cross(300, 50, 20),
+                    r.g().plus(350, 50, 20),
+                    r.g().arrow(400, 50, 20),
+                    r.g().diamond(450, 50, 20));
+                s.attr({fill: "#000", stroke: "none", transform: "t100,100"});
+                s = r.set();
+                s.push(r.g().disc(0, 50, 20),
+                    r.g().disc(50, 50, 20),
+                    r.g().disc(100, 50, 20),
+                    r.g().disc(150, 50, 20),
+                    r.g().disc(200, 50, 20),
+                    r.g().disc(250, 50, 20),
+                    r.g().disc(300, 50, 20),
+                    r.g().disc(350, 50, 20),
+                    r.g().disc(400, 50, 20),
+                    r.g().disc(450, 50, 20));
+                s.attr({stroke: "#c00", transform: "t100,100"});
+                
+                r.path("M30,150l290,0M50,130l0,40 M100,130l0,40 M150,130l0,40 M200,130l0,40 M250,130l0,40 M300,130l0,40").attr({stroke: "#c00", transform: 't150.5,100.5'});
+                
+                s = r.set();
+                s.push(r.g().tag(200, 250, "$9.99", 130),
+                    r.g().popup(250, 250, "$9.99"),
+                    r.g().flag(300, 250, "$9.99", 60),
+                    r.g().label(350, 250, "$9.99"),
+                    r.g().drop(400, 250, "$10"),
+                    r.g().blob(450, 250, "$9.99"));
+            };
+        </script>
+    </head>
+    <body class="raphael" id="g.raphael.dmitry.baranovskiy.com">
+        <div id="holder"></div>
+        <p>
+            Primitives: paper.g().flower(), paper.g().disc(), paper.g().line(), paper.g().square(), paper.g().triangle(), paper.g().star(), paper.g().cross(), paper.g().plus(), paper.g().arrow() and paper.g().diamond()<br>
+            Labels: paper.g().tag(), paper.g().popup(), paper.g().flag(), paper.g().label(), paper.g().drop() and paper.g().blob()
+        </p>
+        <p>
+            Demo of <a href="http://g.raphaeljs.com/">gRaphaël</a> JavaScript library.
+        </p>
+    </body>
+</html>

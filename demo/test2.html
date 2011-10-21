@@ -9,12 +9,12 @@
         <link rel="stylesheet" href="demo.css" type="text/css" media="screen" charset="utf-8">
         <link rel="stylesheet" href="demo-print.css" type="text/css" media="print" charset="utf-8">
         <script src="../raphael.js" type="text/javascript" charset="utf-8"></script>
-        <script src="g.raphael.js" type="text/javascript" charset="utf-8"></script>
-        <script src="g.line.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../g.raphael.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../g.line.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" charset="utf-8">
             window.onload = function () {
                 var r = Raphael("holder");
-                r.g.txtattr.font = "12px 'Fontin Sans', Fontin-Sans, sans-serif";
+                r.g().txtattr.font = "12px 'Fontin Sans', Fontin-Sans, sans-serif";
                 
                 var x = [], y = [], y2 = [], y3 = [];
                 for (var i = 0; i < 500; i++) {
@@ -24,18 +24,18 @@
                     y3[i] = (y3[i - 1] || 300) + (Math.random() * 7) - 4;
                 }
 
-                r.g.text(160, 10, "Simple Line Chart");
-                r.g.text(480, 10, "shade = true");
-                r.g.text(160, 250, "shade = true & nostroke = true");
-                r.g.text(480, 250, "Symbols, axis and hover effect");
+                r.g().text(160, 10, "Simple Line Chart");
+                r.g().text(480, 10, "shade = true");
+                r.g().text(160, 250, "shade = true & nostroke = true");
+                r.g().text(480, 250, "Symbols, axis and hover effect");
 
-                r.g.linechart(10, 10, 300, 220, x, [y, y2, y3]);
-                r.g.linechart(330, 10, 300, 220, x, [y, y2, y3], {shade: true});
-                r.g.linechart(10, 250, 300, 220, x, [y, y2, y3], {nostroke: true, shade: true});
-                var lines = r.g.linechart(330, 250, 300, 220, [[1, 2, 3, 4, 5, 6, 7],[3.5, 4.5, 5.5, 6.5, 7, 8]], [[12, 32, 23, 15, 17, 27, 22], [10, 20, 30, 25, 15, 28]], {nostroke: false, axis: "0 0 1 1", symbol: "o"}).hoverColumn(function () {
+                r.g().linechart(10, 10, 300, 220, x, [y, y2, y3]);
+                r.g().linechart(330, 10, 300, 220, x, [y, y2, y3], {shade: true});
+                r.g().linechart(10, 250, 300, 220, x, [y, y2, y3], {nostroke: true, shade: true});
+                var lines = r.g().linechart(330, 250, 300, 220, [[1, 2, 3, 4, 5, 6, 7],[3.5, 4.5, 5.5, 6.5, 7, 8]], [[12, 32, 23, 15, 17, 27, 22], [10, 20, 30, 25, 15, 28]], {nostroke: false, axis: "0 0 1 1", symbol: "o"}).hoverColumn(function () {
                     this.tags = r.set();
                     for (var i = 0, ii = this.y.length; i < ii; i++) {
-                        this.tags.push(r.g.tag(this.x, this.y[i], this.values[i], 160, 10).insertBefore(this).attr([{fill: "#fff"}, {fill: this.symbols[i].attr("fill")}]));
+                        this.tags.push(r.g().tag(this.x, this.y[i], this.values[i], 160, 10).insertBefore(this).attr([{fill: "#fff"}, {fill: this.symbols[i].attr("fill")}]));
                     }
                 }, function () {
                     this.tags && this.tags.remove();
