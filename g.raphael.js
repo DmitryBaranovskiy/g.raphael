@@ -102,31 +102,7 @@
         }
     };
 
-    // Tooltips
-    Raphael.fn.g.popupit = function (x, y, set, dir, size) {
-        dir = dir == null ? 2 : dir;
-        size = size || 5;
-        x = Math.round(x);
-        y = Math.round(y);
-        var bb = set.getBBox(),
-            w = Math.round(bb.width / 2),
-            h = Math.round(bb.height / 2),
-            dx = [0, w + size * 2, 0, -w - size * 2],
-            dy = [-h * 2 - size * 3, -h - size, 0, -h - size],
-            p = ["M", x - dx[dir], y - dy[dir], "l", -size, (dir == 2) * -size, -mmax(w - size, 0), 0, "a", size, size, 0, 0, 1, -size, -size,
-                "l", 0, -mmax(h - size, 0), (dir == 3) * -size, -size, (dir == 3) * size, -size, 0, -mmax(h - size, 0), "a", size, size, 0, 0, 1, size, -size,
-                "l", mmax(w - size, 0), 0, size, !dir * -size, size, !dir * size, mmax(w - size, 0), 0, "a", size, size, 0, 0, 1, size, size,
-                "l", 0, mmax(h - size, 0), (dir == 1) * size, size, (dir == 1) * -size, size, 0, mmax(h - size, 0), "a", size, size, 0, 0, 1, -size, size,
-                "l", -mmax(w - size, 0), 0, "z"].join(","),
-            xy = [{x: x, y: y + size * 2 + h}, {x: x - size * 2 - w, y: y}, {x: x, y: y - size * 2 - h}, {x: x + size * 2 + w, y: y}][dir];
-        set.translate(xy.x - w - bb.x, xy.y - h - bb.y);
-        return this.path(p).attr({fill: "#000", stroke: "none"}).insertBefore(set.node ? set : set[0]);
-    };
-    Raphael.fn.g.labelit = function (set) {
-        var bb = set.getBBox(),
-            r = mmin(20, bb.width + 10, bb.height + 10) / 2;
-        return this.rect(bb.x - r / 2, bb.y - r / 2, bb.width + r, bb.height + r, r).attr({stroke: "none", fill: "#000"}).insertBefore(set.node ? set : set[0]);
-    };
+
 
     Raphael.fn.g.colorValue = function (value, total, s, b) {
         return "hsb(" + [mmin((1 - value / total) * .4, 1), s || .75, b || .75] + ")";
