@@ -1,0 +1,6 @@
+TODO
+- port blob to be on Element prototype
+- port drop to be on Element prototype
+- fix piechart2 legend animations
+- port linechart
+- port dotchart
