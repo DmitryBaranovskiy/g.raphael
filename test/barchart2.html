@@ -3,15 +3,11 @@
 <html lang="en">
     <head>
         <title>gRaphaël Dynamic Bar Chart</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <meta name="author" content="Dmitry Baranovskiy">
-        <meta name="description" content="Charting JavaScript Library">
-        <link rel="stylesheet" href="demo.css" type="text/css" media="screen" charset="utf-8">
-        <link rel="stylesheet" href="demo-print.css" type="text/css" media="print" charset="utf-8">
-        <script src="raphael/raphael.js" type="text/javascript" charset="utf-8"></script>
-        <script src="raphael/plugins/raphael.tooltips.js" type="text/javascript"></script>
-        <script src="g.raphael.js" type="text/javascript" charset="utf-8"></script>
-        <script src="g.bar.js" type="text/javascript" charset="utf-8"></script>
+        <link rel="stylesheet" href="css/demo.css" type="text/css" media="screen" charset="utf-8">
+        <link rel="stylesheet" href="css/demo-print.css" type="text/css" media="print" charset="utf-8">
+        <script src="../raphael/raphael.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../raphael/plugins/raphael.tooltips.js" type="text/javascript"></script>
+        <script src="../g.bar.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" charset="utf-8">
             window.onload = function () {
                 var r = Raphael("holder"),
@@ -42,9 +38,7 @@
                 r.barchart(10, 10, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10]]).hover(fin, fout);
                 //r.g.hbarchart(330, 10, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55]], {stacked: true}).hover(fin, fout);
                 //r.g.hbarchart(10, 250, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55]]).hover(fin, fout);
-                var c = r.barchart(330, 250, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55]], {stacked: true, type: "soft"}).hoverColumn(fin2, fout2).eachColumn(function () {
-                    this.bars[1].attr({stroke: "#000"});
-                });
+                var c = r.barchart(330, 250, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55]], {stacked: true, type: "soft"}).hoverColumn(fin2, fout2);
             };
         </script>
     </head>
