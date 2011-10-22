@@ -7,11 +7,10 @@
  
  
 (function () {
-    var mmax = Math.max,
-        mmin = Math.min;
-    Raphael.fn.g = Raphael.fn.g || {};
-    Raphael.fn.g.shim = {stroke: "none", fill: "#000", "fill-opacity": 0};
-    Raphael.fn.g.txtattr = {font: "12px Arial, sans-serif"};
+    //Raphael.fn.g.shim = {stroke: "none", fill: "#000", "fill-opacity": 0}; //TODO: shim style alias
+    //Raphael.fn.g.txtattr = {font: "12px Arial, sans-serif"}; //TODO: used for the text function below
+/*
+ * TODO: This just generates a bunch of hues
     Raphael.fn.g.colors = [];
     var hues = [.6, .2, .05, .1333, .75, 0];
     for (var i = 0; i < 10; i++) {
@@ -21,9 +20,16 @@
             Raphael.fn.g.colors.push("hsb(" + hues[i - hues.length] + ", 1, .5)");
         }
     }
+*/
+    /*
+     * TODO: This is kind of useless here. It is only used to alias text styles
+     * it is only used by bar.js and the line graph test
     Raphael.fn.g.text = function (x, y, text) {
         return this.text(x, y, text).attr(this.g.txtattr);
     };
+    */
+    /*
+     * TODO: this is used by bar and pie
     Raphael.fn.g.labelise = function (label, val, total) {
         if (label) {
             return (label + "").replace(/(##+(?:\.#+)?)|(%%+(?:\.%+)?)/g, function (all, value, percent) {
@@ -38,7 +44,10 @@
             return (+val).toFixed(0);
         }
     };
+     */
 
+    /*
+     * TODO: This is only used by barcharts
     Raphael.fn.g.finger = function (x, y, width, height, dir, ending, isPath) {
         // dir 0 for horisontal and 1 for vertical
         if ((dir && !height) || (!dir && !width)) {
@@ -107,7 +116,10 @@
     Raphael.fn.g.colorValue = function (value, total, s, b) {
         return "hsb(" + [mmin((1 - value / total) * .4, 1), s || .75, b || .75] + ")";
     };
+*/
 
+/*
+ * TODO: snapEnds is used by dotcharts and linecharts and the axis function below
     Raphael.fn.g.snapEnds = function (from, to, steps) {
         var f = from,
             t = to;
@@ -142,6 +154,10 @@
         f = round((from - (i > 0 ? 0 : .5)) * Math.pow(10, i)) / Math.pow(10, i);
         return {from: f, to: t, power: i};
     };
+*/
+
+/*
+ * TODO: axis function is used by linechart and dotchart
     Raphael.fn.g.axis = function (x, y, length, from, to, steps, orientation, labels, type, dashsize) {
         dashsize = dashsize == null ? 2 : dashsize;
         type = type || "t";
@@ -204,7 +220,9 @@
         };
         return res;
     };
-
+*/
+/*
+ * TODO: these aren't used by any of the graphs
     Raphael.el.lighter = function (times) {
         times = times || 2;
         var fs = [this.attrs.fill, this.attrs.stroke];
@@ -235,4 +253,5 @@
             delete this.fs;
         }
     };
+*/
 })();
