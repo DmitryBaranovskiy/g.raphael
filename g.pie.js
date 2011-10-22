@@ -53,6 +53,25 @@
             cut = 9,
             defcut = true;
 
+        function sector(cx, cy, r, startAngle, endAngle, fill) {
+            var rad = Math.PI / 180,
+                x1 = cx + r * Math.cos(-startAngle * rad),
+                x2 = cx + r * Math.cos(-endAngle * rad),
+                xm = cx + r / 2 * Math.cos(-(startAngle + (endAngle - startAngle) / 2) * rad),
+                y1 = cy + r * Math.sin(-startAngle * rad),
+                y2 = cy + r * Math.sin(-endAngle * rad),
+                ym = cy + r / 2 * Math.sin(-(startAngle + (endAngle - startAngle) / 2) * rad),
+                res = [
+                    "M", cx, cy,
+                    "L", x1, y1,
+                    "A", r, r, 0, +(Math.abs(endAngle - startAngle) > 180), 1, x2, y2,
+                    "z"
+                ];
+
+            res.middle = { x: xm, y: ym };
+            return res;
+        }
+
         chart.covers = covers;
 
         if (len == 1) {
@@ -63,25 +82,6 @@
             series[0].middle = {x: cx, y: cy};
             series[0].mangle = 180;
         } else {
-            function sector(cx, cy, r, startAngle, endAngle, fill) {
-                var rad = Math.PI / 180,
-                    x1 = cx + r * Math.cos(-startAngle * rad),
-                    x2 = cx + r * Math.cos(-endAngle * rad),
-                    xm = cx + r / 2 * Math.cos(-(startAngle + (endAngle - startAngle) / 2) * rad),
-                    y1 = cy + r * Math.sin(-startAngle * rad),
-                    y2 = cy + r * Math.sin(-endAngle * rad),
-                    ym = cy + r / 2 * Math.sin(-(startAngle + (endAngle - startAngle) / 2) * rad),
-                    res = [
-                        "M", cx, cy,
-                        "L", x1, y1,
-                        "A", r, r, 0, +(Math.abs(endAngle - startAngle) > 180), 1, x2, y2,
-                        "z"
-                    ];
-
-                res.middle = { x: xm, y: ym };
-                return res;
-            }
-
             for (var i = 0; i < len; i++) {
                 total += values[i];
                 values[i] = { value: values[i], order: i, valueOf: function () { return this.value; } };
