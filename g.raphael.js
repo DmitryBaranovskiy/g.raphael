@@ -7,27 +7,6 @@
  
  
 (function () {
-    //Raphael.fn.g.shim = {stroke: "none", fill: "#000", "fill-opacity": 0}; //TODO: shim style alias
-    //Raphael.fn.g.txtattr = {font: "12px Arial, sans-serif"}; //TODO: used for the text function below
-/*
- * TODO: This just generates a bunch of hues
-    Raphael.fn.g.colors = [];
-    var hues = [.6, .2, .05, .1333, .75, 0];
-    for (var i = 0; i < 10; i++) {
-        if (i < hues.length) {
-            Raphael.fn.g.colors.push("hsb(" + hues[i] + ", .75, .75)");
-        } else {
-            Raphael.fn.g.colors.push("hsb(" + hues[i - hues.length] + ", 1, .5)");
-        }
-    }
-*/
-    /*
-     * TODO: This is kind of useless here. It is only used to alias text styles
-     * it is only used by bar.js and the line graph test
-    Raphael.fn.g.text = function (x, y, text) {
-        return this.text(x, y, text).attr(this.g.txtattr);
-    };
-    */
     /*
      * TODO: this is used by bar and pie
     Raphael.fn.g.labelise = function (label, val, total) {
@@ -45,74 +24,8 @@
         }
     };
      */
-
-    /*
-     * TODO: This is only used by barcharts
-    Raphael.fn.g.finger = function (x, y, width, height, dir, ending, isPath) {
-        // dir 0 for horisontal and 1 for vertical
-        if ((dir && !height) || (!dir && !width)) {
-            return isPath ? "" : this.path();
-        }
-        ending = {square: "square", sharp: "sharp", soft: "soft"}[ending] || "round";
-        var path;
-        height = Math.round(height);
-        width = Math.round(width);
-        x = Math.round(x);
-        y = Math.round(y);
-        switch (ending) {
-            case "round":
-            if (!dir) {
-                var r = ~~(height / 2);
-                if (width < r) {
-                    r = width;
-                    path = ["M", x + .5, y + .5 - ~~(height / 2), "l", 0, 0, "a", r, ~~(height / 2), 0, 0, 1, 0, height, "l", 0, 0, "z"];
-                } else {
-                    path = ["M", x + .5, y + .5 - r, "l", width - r, 0, "a", r, r, 0, 1, 1, 0, height, "l", r - width, 0, "z"];
-                }
-            } else {
-                r = ~~(width / 2);
-                if (height < r) {
-                    r = height;
-                    path = ["M", x - ~~(width / 2), y, "l", 0, 0, "a", ~~(width / 2), r, 0, 0, 1, width, 0, "l", 0, 0, "z"];
-                } else {
-                    path = ["M", x - r, y, "l", 0, r - height, "a", r, r, 0, 1, 1, width, 0, "l", 0, height - r, "z"];
-                }
-            }
-            break;
-            case "sharp":
-            if (!dir) {
-                var half = ~~(height / 2);
-                path = ["M", x, y + half, "l", 0, -height, mmax(width - half, 0), 0, mmin(half, width), half, -mmin(half, width), half + (half * 2 < height), "z"];
-            } else {
-                half = ~~(width / 2);
-                path = ["M", x + half, y, "l", -width, 0, 0, -mmax(height - half, 0), half, -mmin(half, height), half, mmin(half, height), half, "z"];
-            }
-            break;
-            case "square":
-            if (!dir) {
-                path = ["M", x, y + ~~(height / 2), "l", 0, -height, width, 0, 0, height, "z"];
-            } else {
-                path = ["M", x + ~~(width / 2), y, "l", 1 - width, 0, 0, -height, width - 1, 0, "z"];
-            }
-            break;
-            case "soft":
-            if (!dir) {
-                r = mmin(width, Math.round(height / 5));
-                path = ["M", x + .5, y + .5 - ~~(height / 2), "l", width - r, 0, "a", r, r, 0, 0, 1, r, r, "l", 0, height - r * 2, "a", r, r, 0, 0, 1, -r, r, "l", r - width, 0, "z"];
-            } else {
-                r = mmin(Math.round(width / 5), height);
-                path = ["M", x - ~~(width / 2), y, "l", 0, r - height, "a", r, r, 0, 0, 1, r, -r, "l", width - 2 * r, 0, "a", r, r, 0, 0, 1, r, r, "l", 0, height - r, "z"];
-            }
-        }
-        if (isPath) {
-            return path.join(",");
-        } else {
-            return this.path(path);
-        }
-    };
-
-
-
+/*
+    TODO: where is this used?
     Raphael.fn.g.colorValue = function (value, total, s, b) {
         return "hsb(" + [mmin((1 - value / total) * .4, 1), s || .75, b || .75] + ")";
     };

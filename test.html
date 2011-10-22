@@ -15,7 +15,6 @@
             window.onload = function () {
                 var r = Raphael("holder"),
                     fin = function () {
-                        console.log(this);
                         this.flag = r.g.popup(this.bar.x, this.bar.y, this.bar.value || "0").insertBefore(this);
                     },
                     fout = function () {
@@ -31,21 +30,20 @@
                     },
                     fout2 = function () {
                         this.flag.animate({opacity: 0}, 300, function () {this.remove();});
-                    };
-                r.g.txtattr.font = "12px 'Fontin Sans', Fontin-Sans, sans-serif";
+                    },
+                    txtattr = { font: "12px 'Fontin Sans', Fontin-Sans, sans-serif" };
                 
-                r.g.text(160, 10, "Single Series Chart");
-                r.g.text(480, 10, "Multiline Series Stacked Chart");
-                r.g.text(160, 250, "Multiple Series Chart");
-                r.g.text(480, 250, "Multiline Series Stacked Chart\nColumn Hover");
+                r.text(160, 10, "Single Series Chart").attr(txtattr);
+                r.text(480, 10, "Multiline Series Stacked Chart").attr(txtattr);
+                r.text(160, 250, "Multiple Series Chart").attr(txtattr);
+                r.text(480, 250, "Multiline Series Stacked Chart\nColumn Hover").attr(txtattr);
                 
-                r.g.barchart(10, 10, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10]]).hover(fin, fout);
-                r.g.hbarchart(330, 10, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55]], {stacked: true}).hover(fin, fout);
-                r.g.hbarchart(10, 250, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55]]).hover(fin, fout);
-                var c = r.g.barchart(330, 250, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55]], {stacked: true, type: "soft"}).hoverColumn(fin2, fout2).eachColumn(function () {
+                r.barchart(10, 10, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10]]).hover(fin, fout);
+                //r.g.hbarchart(330, 10, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55]], {stacked: true}).hover(fin, fout);
+                //r.g.hbarchart(10, 250, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55]]).hover(fin, fout);
+                var c = r.barchart(330, 250, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55]], {stacked: true, type: "soft"}).hoverColumn(fin2, fout2).eachColumn(function () {
                     this.bars[1].attr({stroke: "#000"});
                 });
-                // c.bars[1].attr({stroke: "#fff"});
             };
         </script>
     </head>
