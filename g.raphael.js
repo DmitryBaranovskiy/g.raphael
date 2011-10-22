@@ -7,23 +7,6 @@
  
  
 (function () {
-    /*
-     * TODO: this is used by bar and pie
-    Raphael.fn.g.labelise = function (label, val, total) {
-        if (label) {
-            return (label + "").replace(/(##+(?:\.#+)?)|(%%+(?:\.%+)?)/g, function (all, value, percent) {
-                if (value) {
-                    return (+val).toFixed(value.replace(/^#+\.?/g, "").length);
-                }
-                if (percent) {
-                    return (val * 100 / total).toFixed(percent.replace(/^%+\.?/g, "").length) + "%";
-                }
-            });
-        } else {
-            return (+val).toFixed(0);
-        }
-    };
-     */
 /*
     TODO: where is this used?
     Raphael.fn.g.colorValue = function (value, total, s, b) {
