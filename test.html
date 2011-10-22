@@ -8,14 +8,15 @@
         <meta name="description" content="Charting JavaScript Library">
         <link rel="stylesheet" href="demo.css" type="text/css" media="screen" charset="utf-8">
         <link rel="stylesheet" href="demo-print.css" type="text/css" media="print" charset="utf-8">
-        <script src="../raphael.js" type="text/javascript" charset="utf-8"></script>
+        <script src="raphael/raphael.js" type="text/javascript" charset="utf-8"></script>
+        <script src="raphael/plugins/raphael.tooltips.js" type="text/javascript"></script>
         <script src="g.raphael.js" type="text/javascript" charset="utf-8"></script>
         <script src="g.bar.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" charset="utf-8">
             window.onload = function () {
                 var r = Raphael("holder"),
                     fin = function () {
-                        this.flag = r.g.popup(this.bar.x, this.bar.y, this.bar.value || "0").insertBefore(this);
+                        this.flag = r.popup(this.bar.x, this.bar.y, this.bar.value || "0").insertBefore(this);
                     },
                     fout = function () {
                         this.flag.animate({opacity: 0}, 300, function () {this.remove();});
@@ -26,7 +27,7 @@
                             y.push(this.bars[i].y);
                             res.push(this.bars[i].value || "0");
                         }
-                        this.flag = r.g.popup(this.bars[0].x, Math.min.apply(Math, y), res.join(", ")).insertBefore(this);
+                        this.flag = r.popup(this.bars[0].x, Math.min.apply(Math, y), res.join(", ")).insertBefore(this);
                     },
                     fout2 = function () {
                         this.flag.animate({opacity: 0}, 300, function () {this.remove();});
