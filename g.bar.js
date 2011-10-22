@@ -12,6 +12,21 @@ Raphael.fn.barchart = function (x, y, width, height, values, opts) {
 
     opts = opts || {};
 
+    function labelise(label, val, total) {
+        if (label) {
+            return (label + "").replace(/(##+(?:\.#+)?)|(%%+(?:\.%+)?)/g, function (all, value, percent) {
+                if (value) {
+                    return (+val).toFixed(value.replace(/^#+\.?/g, "").length);
+                }
+                if (percent) {
+                    return (val * 100 / total).toFixed(percent.replace(/^%+\.?/g, "").length) + "%";
+                }
+            });
+        } else {
+            return (+val).toFixed(0);
+        }
+    };
+
     function finger(x, y, width, height, dir, ending, isPath) {
         var path;
 
@@ -308,7 +323,7 @@ Raphael.fn.barchart = function (x, y, width, height, values, opts) {
                     tot += multi ? values[j][i] : values[i];
 
                     if (j == multi - 1) {
-                        var label = paper.g.labelise(labels[i], tot, total);
+                        var label = paper.labelise(labels[i], tot, total);
 
                         L = paper.text(bars[i * (multi || 1) + j].x, y + height - barvgutter / 2, label).attr(txtattr).insertBefore(covers[i * (multi || 1) + j]);
 
@@ -326,7 +341,7 @@ Raphael.fn.barchart = function (x, y, width, height, values, opts) {
         } else {
             for (var i = 0; i < len; i++) {
                 for (var j = 0; j < (multi || 1); j++) {
-                    var label = paper.g.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total);
+                    var label = paper.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total);
 
                     L = paper.text(bars[i * (multi || 1) + j].x, isBottom ? y + height - barvgutter / 2 : bars[i * (multi || 1) + j].y - 10, label).attr(txtattr).insertBefore(covers[i * (multi || 1) + j]);
 
