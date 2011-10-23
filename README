@@ -1,2 +1,5 @@
 TODO
-- port blob to be on Element prototype
+- 'tag' does not work on sets
+- 'drop' does not work on sets
+- 'flag' does not work on sets
+
