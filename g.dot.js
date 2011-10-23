@@ -80,7 +80,8 @@
             i = ends.power,
             j = 0,
             txtattr = { font: "11px 'Fontin Sans', Fontin-Sans, sans-serif" },
-            text = paper.set();
+            text = paper.set(),
+            d;
 
         d = (t - f) / steps;
 
