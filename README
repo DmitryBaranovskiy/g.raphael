@@ -3,4 +3,3 @@ TODO
 - port drop to be on Element prototype
 - fix piechart2 legend animations
 - what to do with 'axis' and 'snapEnds'
-- port linechart
