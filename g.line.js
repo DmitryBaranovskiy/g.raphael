@@ -5,145 +5,6 @@
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
 (function () {
-    var defcolors = (function () {
-            var hues = [.6, .2, .05, .1333, .75, 0],
-                colors = [];
-
-            for (var i = 0; i < 10; i++) {
-                if (i < hues.length) {
-                    colors.push('hsb(' + hues[i] + ',.75, .75)');
-                } else {
-                    colors.push('hsb(' + hues[i - hues.length] + ', 1, .5)');
-                }
-            }
-
-            return colors;
-        })();
-
-    function snapEnds(from, to, steps) {
-        var f = from,
-            t = to;
-
-        if (f == t) {
-            return {from: f, to: t, power: 0};
-        }
-
-        function round(a) {
-            return Math.abs(a - .5) < .25 ? ~~(a) + .5 : Math.round(a);
-        }
-
-        var d = (t - f) / steps,
-            r = ~~(d),
-            R = r,
-            i = 0;
-
-        if (r) {
-            while (R) {
-                i--;
-                R = ~~(d * Math.pow(10, i)) / Math.pow(10, i);
-            }
-
-            i ++;
-        } else {
-            while (!r) {
-                i = i || 1;
-                r = ~~(d * Math.pow(10, i)) / Math.pow(10, i);
-                i++;
-            }
-
-            i && i--;
-        }
-
-        t = round(to * Math.pow(10, i)) / Math.pow(10, i);
-
-        if (t < to) {
-            t = round((to + .5) * Math.pow(10, i)) / Math.pow(10, i);
-        }
-
-        f = round((from - (i > 0 ? 0 : .5)) * Math.pow(10, i)) / Math.pow(10, i);
-        return { from: f, to: t, power: i };
-    }
-
-    function _axis(x, y, length, from, to, steps, orientation, labels, type, dashsize, paper) {
-        dashsize = dashsize == null ? 2 : dashsize;
-        type = type || "t";
-        steps = steps || 10;
-        paper = arguments[arguments.length - 1];
-
-        var path = type == "|" || type == " " ? ["M", x + .5, y, "l", 0, .001] : orientation == 1 || orientation == 3 ? ["M", x + .5, y, "l", 0, -length] : ["M", x, y + .5, "l", length, 0],
-            ends = snapEnds(from, to, steps),
-            f = ends.from,
-            t = ends.to,
-            i = ends.power,
-            j = 0,
-            txtattr = { font: "11px 'Fontin Sans', Fontin-Sans, sans-serif" },
-            text = paper.set(),
-            d;
-
-        d = (t - f) / steps;
-
-        var label = f,
-            rnd = i > 0 ? i : 0;
-            dx = length / steps;
-
-        if (+orientation == 1 || +orientation == 3) {
-            var Y = y,
-                addon = (orientation - 1 ? 1 : -1) * (dashsize + 3 + !!(orientation - 1));
-
-            while (Y >= y - length) {
-                type != "-" && type != " " && (path = path.concat(["M", x - (type == "+" || type == "|" ? dashsize : !(orientation - 1) * dashsize * 2), Y + .5, "l", dashsize * 2 + 1, 0]));
-                text.push(paper.text(x + addon, Y, (labels && labels[j++]) || (Math.round(label) == label ? label : +label.toFixed(rnd))).attr(txtattr).attr({ "text-anchor": orientation - 1 ? "start" : "end" }));
-                label += d;
-                Y -= dx;
-            }
-
-            if (Math.round(Y + dx - (y - length))) {
-                type != "-" && type != " " && (path = path.concat(["M", x - (type == "+" || type == "|" ? dashsize : !(orientation - 1) * dashsize * 2), y - length + .5, "l", dashsize * 2 + 1, 0]));
-                text.push(paper.text(x + addon, y - length, (labels && labels[j]) || (Math.round(label) == label ? label : +label.toFixed(rnd))).attr(txtattr).attr({ "text-anchor": orientation - 1 ? "start" : "end" }));
-            }
-        } else {
-            label = f;
-            rnd = (i > 0) * i;
-            addon = (orientation ? -1 : 1) * (dashsize + 9 + !orientation);
-
-            var X = x,
-                dx = length / steps,
-                txt = 0,
-                prev = 0;
-
-            while (X <= x + length) {
-                type != "-" && type != " " && (path = path.concat(["M", X + .5, y - (type == "+" ? dashsize : !!orientation * dashsize * 2), "l", 0, dashsize * 2 + 1]));
-                text.push(txt = paper.text(X, y + addon, (labels && labels[j++]) || (Math.round(label) == label ? label : +label.toFixed(rnd))).attr(txtattr));
-
-                var bb = txt.getBBox();
-
-                if (prev >= bb.x - 5) {
-                    text.pop(text.length - 1).remove();
-                } else {
-                    prev = bb.x + bb.width;
-                }
-
-                label += d;
-                X += dx;
-            }
-
-            if (Math.round(X - dx - x - length)) {
-                type != "-" && type != " " && (path = path.concat(["M", x + length + .5, y - (type == "+" ? dashsize : !!orientation * dashsize * 2), "l", 0, dashsize * 2 + 1]));
-                text.push(paper.text(x + length, y + addon, (labels && labels[j]) || (Math.round(label) == label ? label : +label.toFixed(rnd))).attr(txtattr));
-            }
-        }
-
-        var res = paper.path(path);
-
-        res.text = text;
-        res.all = paper.set([res, text]);
-        res.remove = function () {
-            this.text.remove();
-            this.constructor.prototype.remove.call(this);
-        };
-
-        return res;
-    }
 
     function shrink(values, dim) {
         var k = values.length / dim,
@@ -190,37 +51,38 @@
         };
     }
 
-    Raphael.fn.linechart = function (x, y, width, height, valuesx, valuesy, opts) {
-
+    function Linechart(paper, x, y, width, height, valuesx, valuesy, opts) {
+        
+        var chartinst = this;
+        
         opts = opts || {};
 
-        if (!Raphael.is(valuesx[0], "array")) {
+        if (!paper.raphael.is(valuesx[0], "array")) {
             valuesx = [valuesx];
         }
 
-        if (!Raphael.is(valuesy[0], "array")) {
+        if (!paper.raphael.is(valuesy[0], "array")) {
             valuesy = [valuesy];
         }
 
         var gutter = opts.gutter || 10,
             len = Math.max(valuesx[0].length, valuesy[0].length),
             symbol = opts.symbol || "",
-            colors = opts.colors || defcolors,
-            that = this,
+            colors = opts.colors || chartinst.colors,
             columns = null,
             dots = null,
-            chart = this.set(),
+            chart = paper.set(),
             path = [];
 
         for (var i = 0, ii = valuesy.length; i < ii; i++) {
             len = Math.max(len, valuesy[i].length);
         }
 
-        var shades = this.set();
+        var shades = paper.set();
 
         for (i = 0, ii = valuesy.length; i < ii; i++) {
             if (opts.shade) {
-                shades.push(this.path().attr({ stroke: "none", fill: colors[i], opacity: opts.nostroke ? 1 : .3 }));
+                shades.push(paper.path().attr({ stroke: "none", fill: colors[i], opacity: opts.nostroke ? 1 : .3 }));
             }
 
             if (valuesy[i].length > width - 2 * gutter) {
@@ -235,32 +97,32 @@
 
         var allx = Array.prototype.concat.apply([], valuesx),
             ally = Array.prototype.concat.apply([], valuesy),
-            xdim = snapEnds(Math.min.apply(Math, allx), Math.max.apply(Math, allx), valuesx[0].length - 1),
+            xdim = chartinst.snapEnds(Math.min.apply(Math, allx), Math.max.apply(Math, allx), valuesx[0].length - 1),
             minx = xdim.from,
             maxx = xdim.to,
-            ydim = snapEnds(Math.min.apply(Math, ally), Math.max.apply(Math, ally), valuesy[0].length - 1),
+            ydim = chartinst.snapEnds(Math.min.apply(Math, ally), Math.max.apply(Math, ally), valuesy[0].length - 1),
             miny = ydim.from,
             maxy = ydim.to,
             kx = (width - gutter * 2) / ((maxx - minx) || 1),
             ky = (height - gutter * 2) / ((maxy - miny) || 1);
 
-        var axis = this.set();
+        var axis = paper.set();
 
         if (opts.axis) {
             var ax = (opts.axis + "").split(/[,\s]+/);
-            +ax[0] && axis.push(_axis(x + gutter, y + gutter, width - 2 * gutter, minx, maxx, opts.axisxstep || Math.floor((width - 2 * gutter) / 20), 2, this));
-            +ax[1] && axis.push(_axis(x + width - gutter, y + height - gutter, height - 2 * gutter, miny, maxy, opts.axisystep || Math.floor((height - 2 * gutter) / 20), 3, this));
-            +ax[2] && axis.push(_axis(x + gutter, y + height - gutter, width - 2 * gutter, minx, maxx, opts.axisxstep || Math.floor((width - 2 * gutter) / 20), 0, this));
-            +ax[3] && axis.push(_axis(x + gutter, y + height - gutter, height - 2 * gutter, miny, maxy, opts.axisystep || Math.floor((height - 2 * gutter) / 20), 1, this));
+            +ax[0] && axis.push(chartinst.axis(x + gutter, y + gutter, width - 2 * gutter, minx, maxx, opts.axisxstep || Math.floor((width - 2 * gutter) / 20), 2, paper));
+            +ax[1] && axis.push(chartinst.axis(x + width - gutter, y + height - gutter, height - 2 * gutter, miny, maxy, opts.axisystep || Math.floor((height - 2 * gutter) / 20), 3, paper));
+            +ax[2] && axis.push(chartinst.axis(x + gutter, y + height - gutter, width - 2 * gutter, minx, maxx, opts.axisxstep || Math.floor((width - 2 * gutter) / 20), 0, paper));
+            +ax[3] && axis.push(chartinst.axis(x + gutter, y + height - gutter, height - 2 * gutter, miny, maxy, opts.axisystep || Math.floor((height - 2 * gutter) / 20), 1, paper));
         }
 
-        var lines = this.set(),
-            symbols = this.set(),
+        var lines = paper.set(),
+            symbols = paper.set(),
             line;
 
         for (i = 0, ii = valuesy.length; i < ii; i++) {
             if (!opts.nostroke) {
-                lines.push(line = this.path().attr({
+                lines.push(line = paper.path().attr({
                     stroke: colors[i],
                     "stroke-width": opts.width || 2,
                     "stroke-linejoin": "round",
@@ -270,7 +132,7 @@
             }
 
             var sym = Raphael.is(symbol, "array") ? symbol[i] : symbol,
-                symset = this.set();
+                symset = paper.set();
 
             path = [];
 
@@ -278,7 +140,7 @@
                 var X = x + gutter + ((valuesx[i] || valuesx[0])[j] - minx) * kx,
                     Y = y + height - gutter - (valuesy[i][j] - miny) * ky;
 
-                (Raphael.is(sym, "array") ? sym[j] : sym) && symset.push(this[Raphael.is(sym, "array") ? sym[j] : sym](X, Y, (opts.width || 2) * 3).attr({ fill: colors[i], stroke: "none" }));
+                (Raphael.is(sym, "array") ? sym[j] : sym) && symset.push(paper[Raphael.is(sym, "array") ? sym[j] : sym](X, Y, (opts.width || 2) * 3).attr({ fill: colors[i], stroke: "none" }));
 
                 if (opts.smooth) {
                     if (j && j != jj - 1) {
@@ -333,16 +195,16 @@
             Xs = Xs2;
             ii = Xs.length;
 
-            var cvrs = f || that.set();
+            var cvrs = f || paper.set();
 
             for (i = 0; i < ii; i++) {
                 var X = xs[i] - (xs[i] - (xs[i - 1] || x)) / 2,
                     w = ((xs[i + 1] || x + width) - xs[i]) / 2 + (xs[i] - (xs[i - 1] || x)) / 2,
                     C;
 
-                f ? (C = {}) : cvrs.push(C = that.rect(X - 1, y, Math.max(w + 1, 1), height).attr({ stroke: "none", fill: "#000", opacity: 0 }));
+                f ? (C = {}) : cvrs.push(C = paper.rect(X - 1, y, Math.max(w + 1, 1), height).attr({ stroke: "none", fill: "#000", opacity: 0 }));
                 C.values = [];
-                C.symbols = that.set();
+                C.symbols = paper.set();
                 C.y = [];
                 C.x = xs[i];
                 C.axis = Xs[i];
@@ -366,7 +228,7 @@
         }
 
         function createDots(f) {
-            var cvrs = f || that.set(),
+            var cvrs = f || paper.set(),
                 C;
 
             for (var i = 0, ii = valuesy.length; i < ii; i++) {
@@ -375,7 +237,7 @@
                         nearX = x + gutter + ((valuesx[i] || valuesx[0])[j ? j - 1 : 1] - minx) * kx,
                         Y = y + height - gutter - (valuesy[i][j] - miny) * ky;
 
-                    f ? (C = {}) : cvrs.push(C = that.circle(X, Y, Math.abs(nearX - X) / 2).attr({ stroke: "none", fill: "#000", opacity: 0 }));
+                    f ? (C = {}) : cvrs.push(C = paper.circle(X, Y, Math.abs(nearX - X) / 2).attr({ stroke: "none", fill: "#000", opacity: 0 }));
                     C.x = X;
                     C.y = Y;
                     C.value = valuesy[i][j];
@@ -410,7 +272,7 @@
         };
 
         chart.hrefColumn = function (cols) {
-            var hrefs = that.raphael.is(arguments[0], "array") ? arguments[0] : arguments;
+            var hrefs = paper.raphael.is(arguments[0], "array") ? arguments[0] : arguments;
 
             if (!(arguments.length - 1) && typeof cols == "object") {
                 for (var x in cols) {
@@ -453,4 +315,15 @@
 
         return chart;
     };
+    
+    //inheritance
+    var F = function() {};
+    F.prototype = Raphael.chart
+    Linechart.prototype = new F;
+    
+    //public
+    Raphael.fn.linechart = function(x, y, width, height, valuesx, valuesy, opts) {
+        return new Linechart(this, x, y, width, height, valuesx, valuesy, opts);
+    }
+    
 })();

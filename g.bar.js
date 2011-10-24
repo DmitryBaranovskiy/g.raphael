@@ -6,49 +6,17 @@
  */
 (function () {
     var mmin = Math.min,
-        mmax = Math.max,
-        defcolors = (function () {
-            var hues = [.6, .2, .05, .1333, .75, 0],
-                colors = [];
-
-            for (var i = 0; i < 10; i++) {
-                if (i < hues.length) {
-                    colors.push('hsb(' + hues[i] + ',.75, .75)');
-                } else {
-                    colors.push('hsb(' + hues[i - hues.length] + ', 1, .5)');
-                }
-            }
-
-            return colors;
-        })(),
-        shim = { stroke: 'none', fill: '#000', 'fill-opacity': 0 },
-        txtattr = { font: '12px Arial, sans-serif' },
-        ends = { round: 'round', sharp: 'sharp', soft: 'soft' };
-
-    function labelise(label, val, total) {
-        if (label) {
-            return (label + "").replace(/(##+(?:\.#+)?)|(%%+(?:\.%+)?)/g, function (all, value, percent) {
-                if (value) {
-                    return (+val).toFixed(value.replace(/^#+\.?/g, "").length);
-                }
-                if (percent) {
-                    return (val * 100 / total).toFixed(percent.replace(/^%+\.?/g, "").length) + "%";
-                }
-            });
-        } else {
-            return (+val).toFixed(0);
-        }
-    };
+        mmax = Math.max;
 
     function finger(x, y, width, height, dir, ending, isPath, paper) {
         var path;
 
-        // dir 0 for horisontal and 1 for vertical
+        // dir 0 for horizontal and 1 for vertical
         if ((dir && !height) || (!dir && !width)) {
             return isPath ? "" : paper.path();
         }
 
-        ending = ends[ending] || "round";
+        ending = Raphael.chart.ends[ending] || "round";
         height = Math.round(height);
         width = Math.round(width);
         x = Math.round(x);
@@ -169,20 +137,20 @@
     /*
      * Vertical Barchart
      */
-    Raphael.fn.barchart = function (x, y, width, height, values, opts) {
+    function VBarchart(paper, x, y, width, height, values, opts) {
         opts = opts || {};
 
-        var type = ends[opts.type] || "square",
+        var chartinst = this,
+            type = chartinst.ends[opts.type] || "square",
             gutter = parseFloat(opts.gutter || "20%"),
-            paper = this,
-            chart = this.set(),
-            bars = this.set(),
-            covers = this.set(),
-            covers2 = this.set(),
+            chart = paper.set(),
+            bars = paper.set(),
+            covers = paper.set(),
+            covers2 = paper.set(),
             total = Math.max.apply(Math, values),
             stacktotal = [],
             multi = 0,
-            colors = opts.colors || defcolors,
+            colors = opts.colors || chartinst.colors,
             len = values.length;
 
         if (Raphael.is(values[0], "array")) {
@@ -191,7 +159,7 @@
             len = 0;
 
             for (var i = values.length; i--;) {
-                bars.push(this.set());
+                bars.push(paper.set());
                 total.push(Math.max.apply(Math, values[i]));
                 len = Math.max(len, values[i].length);
             }
@@ -241,7 +209,7 @@
             for (var j = 0; j < (multi || 1); j++) {
                 var h = Math.round((multi ? values[j][i] : values[i]) * Y),
                     top = y + height - barvgutter - h,
-                    bar = finger(Math.round(X + barwidth / 2), top + h, barwidth, h, true, type, null, this).attr({ stroke: "none", fill: colors[multi ? j : i] });
+                    bar = finger(Math.round(X + barwidth / 2), top + h, barwidth, h, true, type, null, paper).attr({ stroke: "none", fill: colors[multi ? j : i] });
 
                 if (multi) {
                     bars[j].push(bar);
@@ -265,8 +233,8 @@
             if (opts.stacked) {
                 var cvr;
 
-                covers2.push(cvr = this.rect(stack[0].x - stack[0].w / 2, y, barwidth, height).attr(shim));
-                cvr.bars = this.set();
+                covers2.push(cvr = paper.rect(stack[0].x - stack[0].w / 2, y, barwidth, height).attr(chartinst.shim));
+                cvr.bars = paper.set();
 
                 var size = 0;
 
@@ -278,13 +246,13 @@
                     var bar = stack[s],
                         cover,
                         h = (size + bar.value) * Y,
-                        path = finger(bar.x, y + height - barvgutter - !!size * .5, barwidth, h, true, type, 1, this);
+                        path = finger(bar.x, y + height - barvgutter - !!size * .5, barwidth, h, true, type, 1, paper);
 
                     cvr.bars.push(bar);
                     size && bar.attr({path: path});
                     bar.h = h;
                     bar.y = y + height - barvgutter - !!size * .5 - h;
-                    covers.push(cover = this.rect(bar.x - bar.w / 2, bar.y, barwidth, bar.value * Y).attr(shim));
+                    covers.push(cover = paper.rect(bar.x - bar.w / 2, bar.y, barwidth, bar.value * Y).attr(chartinst.shim));
                     cover.bar = bar;
                     cover.value = bar.value;
                     size += bar.value;
@@ -304,7 +272,7 @@
                 for (var j = 0; j < (multi || 1); j++) {
                     var cover;
 
-                    covers.push(cover = this.rect(Math.round(X), y + barvgutter, barwidth, height - barvgutter).attr(shim));
+                    covers.push(cover = paper.rect(Math.round(X), y + barvgutter, barwidth, height - barvgutter).attr(chartinst.shim));
                     cover.bar = multi ? bars[j][i] : bars[i];
                     cover.value = cover.bar.value;
                     X += barwidth;
@@ -422,20 +390,20 @@
     /**
      * Horizontal Barchart
      */
-    Raphael.fn.hbarchart = function (x, y, width, height, values, opts) {
+    function HBarchart(paper, x, y, width, height, values, opts) {
         opts = opts || {};
 
-        var type = ends[opts.type] || "square",
+        var chartinst = this,
+            type = chartinst.ends[opts.type] || "square",
             gutter = parseFloat(opts.gutter || "20%"),
-            chart = this.set(),
-            bars = this.set(),
-            covers = this.set(),
-            covers2 = this.set(),
+            chart = paper.set(),
+            bars = paper.set(),
+            covers = paper.set(),
+            covers2 = paper.set(),
             total = Math.max.apply(Math, values),
             stacktotal = [],
-            paper = this,
             multi = 0,
-            colors = opts.colors || defcolors,
+            colors = opts.colors || chartinst.colors,
             len = values.length;
 
         if (Raphael.is(values[0], "array")) {
@@ -444,7 +412,7 @@
             len = 0;
 
             for (var i = values.length; i--;) {
-                bars.push(this.set());
+                bars.push(paper.set());
                 total.push(Math.max.apply(Math, values[i]));
                 len = Math.max(len, values[i].length);
             }
@@ -507,10 +475,10 @@
             }
 
             if (opts.stacked) {
-                var cvr = this.rect(x, stack[0].y - stack[0].h / 2, width, barheight).attr(shim);
+                var cvr = paper.rect(x, stack[0].y - stack[0].h / 2, width, barheight).attr(chartinst.shim);
 
                 covers2.push(cvr);
-                cvr.bars = this.set();
+                cvr.bars = paper.set();
 
                 var size = 0;
 
@@ -528,7 +496,7 @@
                     size && bar.attr({ path: path });
                     bar.w = val;
                     bar.x = x + val;
-                    covers.push(cover = this.rect(x + size * X, bar.y - bar.h / 2, bar.value * X, barheight).attr(shim));
+                    covers.push(cover = paper.rect(x + size * X, bar.y - bar.h / 2, bar.value * X, barheight).attr(chartinst.shim));
                     cover.bar = bar;
                     size += bar.value;
                 }
@@ -545,7 +513,7 @@
         if (!opts.stacked) {
             for (var i = 0; i < len; i++) {
                 for (var j = 0; j < (multi || 1); j++) {
-                    var cover = this.rect(x, Y, width, barheight).attr(shim);
+                    var cover = paper.rect(x, Y, width, barheight).attr(chartinst.shim);
 
                     covers.push(cover);
                     cover.bar = multi ? bars[j][i] : bars[i];
@@ -563,7 +531,7 @@
 
             for (var i = 0; i < len; i++) {
                 for (var j = 0; j < multi; j++) {
-                    var  label = labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total),
+                    var  label = paper.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total),
                         X = isRight ? bars[i * (multi || 1) + j].x - barheight / 2 + 3 : x + 5,
                         A = isRight ? "end" : "start",
                         L;
@@ -636,5 +604,21 @@
         chart.covers = covers;
         return chart;
     };
+    
+    //inheritance
+    var F = function() {};
+    F.prototype = Raphael.chart
+    HBarchart.prototype = VBarchart.prototype = new F;
+    
+    //public
+    Raphael.fn.hbarchart = function(x, y, width, height, values, opts) {
+        return new HBarchart(this, x, y, width, height, values, opts);
+    };
+    
+    Raphael.fn.barchart = function(x, y, width, height, values, opts) {
+        return new VBarchart(this, x, y, width, height, values, opts);
+    };
+    
+    
 })();
 

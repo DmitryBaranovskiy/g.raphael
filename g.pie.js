@@ -5,46 +5,15 @@
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
 (function () {
-    var defcolors = (function () {
-            var hues = [.6, .2, .05, .1333, .75, 0],
-                colors = [];
 
-            for (var i = 0; i < 10; i++) {
-                if (i < hues.length) {
-                    colors.push('hsb(' + hues[i] + ',.75, .75)');
-                } else {
-                    colors.push('hsb(' + hues[i - hues.length] + ', 1, .5)');
-                }
-            }
-
-            return colors;
-        })(),
-        shim = { stroke: 'none', fill: '#000', 'fill-opacity': 0 },
-        txtattr = { font: '12px Arial, sans-serif' };
-
-    function labelise(label, val, total) {
-        if (label) {
-            return (label + "").replace(/(##+(?:\.#+)?)|(%%+(?:\.%+)?)/g, function (all, value, percent) {
-                if (value) {
-                    return (+val).toFixed(value.replace(/^#+\.?/g, "").length);
-                }
-                if (percent) {
-                    return (val * 100 / total).toFixed(percent.replace(/^%+\.?/g, "").length) + "%";
-                }
-            });
-        } else {
-            return (+val).toFixed(0);
-        }
-    };
-
-    Raphael.fn.piechart = function (cx, cy, r, values, opts) {
+    function Piechart(paper, cx, cy, r, values, opts) {
         opts = opts || {};
 
-        var paper = this,
+        var chartinst = this,
             sectors = [],
-            covers = this.set(),
-            chart = this.set(),
-            series = this.set(),
+            covers = paper.set(),
+            chart = paper.set(),
+            series = paper.set(),
             order = [],
             len = values.length,
             angle = 0,
@@ -75,8 +44,8 @@
         chart.covers = covers;
 
         if (len == 1) {
-            series.push(this.circle(cx, cy, r).attr({ fill: defcolors[0], stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth }));
-            covers.push(this.circle(cx, cy, r).attr(shim));
+            series.push(paper.circle(cx, cy, r).attr({ fill: chartinst.colors[0], stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth }));
+            covers.push(paper.circle(cx, cy, r).attr(chartinst.shim));
             total = values[0];
             values[0] = { value: values[0], order: 0, valueOf: function () { return this.value; } };
             series[0].middle = {x: cx, y: cy};
@@ -121,7 +90,7 @@
                 }
 
                 var path = sector(cx, cy, r, angle, angle -= 360 * values[i] / total);
-                var p = this.path(opts.init ? ipath : path).attr({ fill: opts.colors && opts.colors[i] || defcolors[i] || "#666", stroke: opts.stroke || "#fff", "stroke-width": (opts.strokewidth == null ? 1 : opts.strokewidth), "stroke-linejoin": "round" });
+                var p = paper.path(opts.init ? ipath : path).attr({ fill: opts.colors && opts.colors[i] || chartinst.colors[i] || "#666", stroke: opts.stroke || "#fff", "stroke-width": (opts.strokewidth == null ? 1 : opts.strokewidth), "stroke-linejoin": "round" });
 
                 p.value = values[i];
                 p.middle = path.middle;
@@ -132,7 +101,7 @@
             }
 
             for (i = 0; i < len; i++) {
-                p = paper.path(sectors[i].attr("path")).attr(shim);
+                p = paper.path(sectors[i].attr("path")).attr(chartinst.shim);
                 opts.href && opts.href[i] && p.attr({ href: opts.href[i] });
                 p.attr = function () {};
                 covers.push(p);
@@ -242,10 +211,10 @@
                     txt;
 
                 values[i].others && (labels[j] = otherslabel || "Others");
-                labels[j] = labelise(labels[j], values[i], total);
+                labels[j] = chartinst.labelise(labels[j], values[i], total);
                 chart.labels.push(paper.set());
                 chart.labels[i].push(paper[mark](x + 5, h, 5).attr({ fill: clr, stroke: "none" }));
-                chart.labels[i].push(txt = paper.text(x + 20, h, labels[j] || values[j]).attr(txtattr).attr({ fill: opts.legendcolor || "#000", "text-anchor": "start"}));
+                chart.labels[i].push(txt = paper.text(x + 20, h, labels[j] || values[j]).attr(chartinst.txtattr).attr({ fill: opts.legendcolor || "#000", "text-anchor": "start"}));
                 covers[i].label = chart.labels[i];
                 h += txt.getBBox().height * 1.2;
             }
@@ -272,4 +241,15 @@
 
         return chart;
     };
+    
+    //inheritance
+    var F = function() {};
+    F.prototype = Raphael.chart
+    Piechart.prototype = new F;
+    
+    //public
+    Raphael.fn.piechart = function(cx, cy, r, values, opts) {
+        return new Piechart(this, cx, cy, r, values, opts);
+    }
+    
 })();
