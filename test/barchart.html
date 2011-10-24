@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+    <head>
+        <title>g·Raphaël Static Bar Charts</title>
+        <link rel="stylesheet" href="css/demo.css" type="text/css" media="screen" charset="utf-8">
+        <link rel="stylesheet" href="css/demo-print.css" type="text/css" media="print" charset="utf-8">
+        <script src="../raphael.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../g.bar.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+            window.onload = function () {
+                var r = Raphael("holder"),
+                    data1 = [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55], [12, 20, 30]],
+                    data2 = [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55], [12, 20, 30]],
+                    data3 = [[55, 20, 13, 32, 5, 1, 2, 10], [10, 2, 1, 5, 32, 13, 20, 55], [12, 20, 30]],
+                    txtattr = { font: "12px 'Fontin Sans', Fontin-Sans, sans-serif" };
+                
+                r.text(160, 10, "Single Series Chart").attr(txtattr);
+                r.text(480, 10, "Multiline Series Chart").attr(txtattr);
+                r.text(160, 250, "Multiple Series Stacked Chart").attr(txtattr);
+                r.text(480, 250, 'Multiline Series Stacked Vertical Chart. Type "round"').attr(txtattr);
+                
+                r.barchart(10, 10, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10]], 0, {type: "sharp"});
+                r.barchart(330, 10, 300, 220, data1);
+                r.barchart(10, 250, 300, 220, data2, {stacked: true});
+                r.barchart(330, 250, 300, 220, data3, {stacked: true, type: "round"});
+            };
+        </script>
+    </head>
+    <body class="raphael" id="g.raphael.dmitry.baranovskiy.com">
+        <div id="holder"></div>
+        <p>
+            Demo of <a href="http://g.raphaeljs.com/">g·Raphaël</a> JavaScript library.
+        </p>
+    </body>
+</html>
