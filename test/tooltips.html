@@ -3,7 +3,7 @@
 <html lang="en">
     <head>
         <title>Raphael Tooltips</title>
-        <script src="../raphael.js" type="text/javascript"></script>
+        <script src="../raphael-min.js" type="text/javascript"></script>
         <script src="../g.raphael.js" type="text/javascript"></script>
         <script type="text/javascript">
             window.onload = function () {
@@ -30,25 +30,25 @@
                     r.label(150, 150, "$9.99"),
                     r.flag(200, 150, "$9.99", 60),
                     r.flag(250, 150, "$9.99", 240),
-                    r.popup(300, 150, "$9.99", 'left'),
+                    r.popup(300, 150, "$9.99", 'left', 20),
                     r.popup(350, 150, "$9.99", 'right'),
                     r.drop(400, 150, "$10", 60),
                     r.rect(450, 150, 15, 15).attr({fill:'90-#fff-#000'}).drop(),
                     r.blob(500, 150, "$9.99", 60),
                     r.blob(550, 150, "$9.99", 270),
                     r.circle(600, 150, 10).attr({fill:'#ff0000'}).label(),
-                    r.circle(650, 150, 10).attr({fill:'#ff0000'}).popup(), //can be used without x,y args
-                    r.circle(700, 150, 10).attr({fill:'#ff0000'}).popup(700, 150, 'down'),
-                    r.circle(800, 150, 10).attr({fill:'#ff0000'}).tag(750, 150, 130),
+                    r.circle(650, 150, 10).attr({fill:'#ff0000'}).popup(),
+                    r.circle(700, 150, 10).attr({fill:'#ff0000'}).popup('down'),
+                    r.circle(800, 150, 10).attr({fill:'#ff0000'}).tag(130, null, 750),
                     r.circle(800, 150, 10).attr({fill:'#ff0000'}).tag(),
                     r.circle(900, 150, 10).attr({fill:'#ff0000'}).blob(),
-                    r.circle(800, 150, 10).attr({fill:'#ff0000'}).blob(850, 150, 270)
+                    r.circle(800, 150, 10).attr({fill:'#ff0000'}).blob(270, 850)
                 );
 
                 for (var i = 0; i < 30; i++) {
-                    //t.push(r.text(800, 350, "$9.99").attr({fill:'#ff0000'}).tag(50 * (i + 1), 350, 360 / 30 * i));
-                    //t.push(r.circle(800, 350, 10).attr({fill:'90-#fff-#000'}).drop(50 * (i + 1), 350, 360 / 30 * i));
-                    t.push(r.rect(800, 350, 20, 20).attr({fill:'90-#ff0000-#0000ff'}).drop(50 * (i + 1), 350, 360 / 30 * i));
+                    //t.push(r.text(800, 350, "$9.99").attr({fill:'#ff0000'}).tag(360 / 30 * i, 50 * (i + 1)));
+                    //t.push(r.circle(800, 350, 10).attr({fill:'90-#fff-#000'}).drop(360 / 30 * i, 50 * (i + 1)));
+                    t.push(r.rect(800, 350, 20, 20).attr({fill:'90-#ff0000-#0000ff'}).drop(360 / 30 * i, 50 * (i + 1)));
                 }
 
                 ref(t.length, 350);
@@ -57,13 +57,13 @@
                 u.push(
                     r.circle(100, 850, 10).attr({fill: '#00ff00'}),
                     r.circle(110, 800, 10).attr({fill: '#0000ff'})
-                ).drop(null, null, 130);
+                ).drop(130);
 
                 var a = r.set();
                 a.push(
                     r.circle(200, 850, 10).attr({fill: '#00ff00'}),
                     r.circle(210, 800, 10).attr({fill: '#0000ff'})
-                ).drop(null, null, 30);
+                ).drop(30);
 
                 ref(s.length, 150);
 
@@ -71,9 +71,9 @@
                 var v = r.set();
 
                 for (var i = 0; i < 30; i++) {
-                    //v.push(r.circle(0, 0, 10).attr({fill:'90-#fff-#000'}).blob(50 * (i + 1), 550, 360 / 30 * i));
-                    v.push(r.rect(0, 0, 20, 20).attr({fill:'90-#fff-#000'}).blob(50 * (i + 1), 550, 360 / 30 * i));
-                    //v.push(r.text(0, 0, 'Hello').attr({fill:'90-#fff-#000'}).blob(50 * (i + 1), 550, 360 / 30 * i));
+                    //v.push(r.circle(0, 0, 10).attr({fill:'90-#fff-#000'}).blob(360 / 30 * i, 50 * (i + 1), 550));
+                    v.push(r.rect(0, 0, 20, 20).attr({fill:'90-#fff-#000'}).blob(360 / 30 * i, 50 * (i + 1), 550));
+                    //v.push(r.text(0, 0, 'Hello').attr({fill:'90-#fff-#000'}).blob(360 / 30 * i, 50 * (i + 1), 550));
                 }
 
                 ref(v.length, 550);

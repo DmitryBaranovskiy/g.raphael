@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<!-- Generated with Dr.js -->
+<html lang="en"><head><meta charset="utf-8"><title>g.Raphaël Reference</title><link rel="stylesheet" href="dr.css" media="screen"><link rel="stylesheet" href="dr-print.css" media="print"></head><body id="dr-js"><div id="dr"><ol class="dr-toc" id="dr-toc"><li class="dr-lvl0"><a href="#Element" class="{clas}"><span>Element</span></a></li><li class="dr-lvl1"><a href="#Element.blob" class="dr-method"><span>Element.blob()</span></a></li><li class="dr-lvl1"><a href="#Element.darker" class="dr-method"><span>Element.darker()</span></a></li><li class="dr-lvl1"><a href="#Element.drop" class="dr-method"><span>Element.drop()</span></a></li><li class="dr-lvl1"><a href="#Element.flag" class="dr-method"><span>Element.flag()</span></a></li><li class="dr-lvl1"><a href="#Element.label" class="dr-method"><span>Element.label()</span></a></li><li class="dr-lvl1"><a href="#Element.lighter" class="dr-method"><span>Element.lighter()</span></a></li><li class="dr-lvl1"><a href="#Element.popup" class="dr-method"><span>Element.popup()</span></a></li><li class="dr-lvl1"><a href="#Element.resetBrightness" class="dr-method"><span>Element.resetBrightness()</span></a></li><li class="dr-lvl1"><a href="#Element.tag" class="dr-method"><span>Element.tag()</span></a></li><li class="dr-lvl0"><a href="#Paper" class="{clas}"><span>Paper</span></a></li><li class="dr-lvl1"><a href="#Paper.blob" class="dr-method"><span>Paper.blob()</span></a></li><li class="dr-lvl1"><a href="#Paper.drop" class="dr-method"><span>Paper.drop()</span></a></li><li class="dr-lvl1"><a href="#Paper.flag" class="dr-method"><span>Paper.flag()</span></a></li><li class="dr-lvl1"><a href="#Paper.label" class="dr-method"><span>Paper.label()</span></a></li><li class="dr-lvl1"><a href="#Paper.popup" class="dr-method"><span>Paper.popup()</span></a></li><li class="dr-lvl1"><a href="#Paper.tag" class="dr-method"><span>Paper.tag()</span></a></li></ol><div class="dr-doc"><h1>g.Raphaël Reference</h1><div class="Element-section"><h2 id="Element" class="undefined"><i class="dr-trixie">&#160;</i>Element<a href="#Element" title="Link to this section" class="dr-hash">&#x2693;</a></h2>
+<div class="extra" id="Element-extra"></div></div><div class="Element-blob-section"><h3 id="Element.blob" class="dr-method"><i class="dr-trixie">&#160;</i>Element.blob(angle, x, y)<a href="#Element.blob" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 323 in the source" href="https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.raphael.js#L323">&#x27ad;</a></h3>
+<div class="extra" id="Element.blob-extra"></div></div><div class="dr-method"><p>Puts the context Element in a 'blob' tooltip. Can also be used on sets.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">angle</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">angle of orientation in degrees [default: <code>0</code>]</dd>
+<dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x coordinate of the blob's tail [default: Element's <code>x</code> or <code>cx</code>]</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y coordinate of the blob's tail [default: Element's <code>x</code> or <code>cx</code>]</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">path element of the blob</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code>paper.circle(<span class="d">50</span>, <span class="d">50</span>, <span class="d">8</span>).attr({
+    stroke: <i>"#fff"</i>,
+    fill: <i>"<span class="d">0</span>-#c9de96-#8ab66b:<span class="d">44</span>-#<span class="d">398235</span>"</i>
+}).blob(<span class="d">60</span>);
+</code></pre>
+</div><div class="Element-darker-section"><h3 id="Element.darker" class="dr-method"><i class="dr-trixie">&#160;</i>Element.darker(times)<a href="#Element.darker" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 581 in the source" href="https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.raphael.js#L581">&#x27ad;</a></h3>
+<div class="extra" id="Element.darker-extra"></div></div><div class="dr-method"><p>Makes the context element darker by decreasing the brightness and increasing the saturation by a given factor. Can be called on Sets.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">times</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">adjustment factor [default: <code>2</code>]</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">Element</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code>paper.circle(<span class="d">50</span>, <span class="d">50</span>, <span class="d">20</span>).attr({
+    fill: <i>"#ff0000"</i>,
+    stroke: <i>"#fff"</i>,
+    <i>"stroke-width"</i>: <span class="d">2</span>
+}).darker(<span class="d">6</span>);
+</code></pre>
+</div><div class="Element-drop-section"><h3 id="Element.drop" class="dr-method"><i class="dr-trixie">&#160;</i>Element.drop(angle, x, y)<a href="#Element.drop" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 178 in the source" href="https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.raphael.js#L178">&#x27ad;</a></h3>
+<div class="extra" id="Element.drop-extra"></div></div><div class="dr-method"><p>Puts the context Element in a 'drop' tooltip. Can also be used on sets.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">angle</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">angle of orientation in degrees [default: <code>0</code>]</dd>
+<dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x coordinate of the drop's point [default: Element's <code>x</code> or <code>cx</code>]</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y coordinate of the drop's point [default: Element's <code>x</code> or <code>cx</code>]</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">path element of the drop</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code>paper.circle(<span class="d">50</span>, <span class="d">50</span>, <span class="d">8</span>).attr({
+    stroke: <i>"#fff"</i>,
+    fill: <i>"<span class="d">0</span>-#c9de96-#8ab66b:<span class="d">44</span>-#<span class="d">398235</span>"</i>
+}).drop(<span class="d">60</span>);
+</code></pre>
+</div><div class="Element-flag-section"><h3 id="Element.flag" class="dr-method"><i class="dr-trixie">&#160;</i>Element.flag(angle, x, y)<a href="#Element.flag" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 234 in the source" href="https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.raphael.js#L234">&#x27ad;</a></h3>
+<div class="extra" id="Element.flag-extra"></div></div><div class="dr-method"><p>Puts the context Element in a 'flag' tooltip. Can also be used on sets.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">angle</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">angle of orientation in degrees [default: <code>0</code>]</dd>
+<dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x coordinate of the flag's point [default: Element's <code>x</code> or <code>cx</code>]</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y coordinate of the flag's point [default: Element's <code>x</code> or <code>cx</code>]</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">path element of the flag</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code>paper.circle(<span class="d">50</span>, <span class="d">50</span>, <span class="d">10</span>).attr({
+    stroke: <i>"#fff"</i>,
+    fill: <i>"<span class="d">0</span>-#c9de96-#8ab66b:<span class="d">44</span>-#<span class="d">398235</span>"</i>
+}).flag(<span class="d">60</span>);
+</code></pre>
+</div><div class="Element-label-section"><h3 id="Element.label" class="dr-method"><i class="dr-trixie">&#160;</i>Element.label()<a href="#Element.label" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 294 in the source" href="https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.raphael.js#L294">&#x27ad;</a></h3>
+<div class="extra" id="Element.label-extra"></div></div><div class="dr-method"><p>Puts the context Element in a 'label' tooltip. Can also be used on sets.
+</p>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">path element of the label.</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code>paper.circle(<span class="d">50</span>, <span class="d">50</span>, <span class="d">10</span>).attr({
+    stroke: <i>"#fff"</i>,
+    fill: <i>"<span class="d">0</span>-#c9de96-#8ab66b:<span class="d">44</span>-#<span class="d">398235</span>"</i>
+}).label();
+</code></pre>
+</div><div class="Element-lighter-section"><h3 id="Element.lighter" class="dr-method"><i class="dr-trixie">&#160;</i>Element.lighter(times)<a href="#Element.lighter" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 545 in the source" href="https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.raphael.js#L545">&#x27ad;</a></h3>
+<div class="extra" id="Element.lighter-extra"></div></div><div class="dr-method"><p>Makes the context element lighter by increasing the brightness and reducing the saturation by a given factor. Can be called on Sets.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">times</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">adjustment factor [default: <code>2</code>]</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">Element</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code>paper.circle(<span class="d">50</span>, <span class="d">50</span>, <span class="d">20</span>).attr({
+    fill: <i>"#ff0000"</i>,
+    stroke: <i>"#fff"</i>,
+    <i>"stroke-width"</i>: <span class="d">2</span>
+}).lighter(<span class="d">6</span>);
+</code></pre>
+</div><div class="Element-popup-section"><h3 id="Element.popup" class="dr-method"><i class="dr-trixie">&#160;</i>Element.popup(dir, size, x, y)<a href="#Element.popup" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 24 in the source" href="https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.raphael.js#L24">&#x27ad;</a></h3>
+<div class="extra" id="Element.popup-extra"></div></div><div class="dr-method"><p>Puts the context Element in a 'popup' tooltip. Can also be used on sets.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">dir</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">location of Element relative to the tail: <code>'down'</code>, <code>'left'</code>, <code>'up'</code> [default], or <code>'right'</code>.</dd>
+<dt class="dr-param">size</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">amount of padding around the Element [default: <code>5</code>]</dd>
+<dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x coordinate of the popup's tail [default: Element's <code>x</code> or <code>cx</code>]</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y coordinate of the popup's tail [default: Element's <code>y</code> or <code>cy</code>]</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">path element of the popup</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code>paper.circle(<span class="d">50</span>, <span class="d">50</span>, <span class="d">5</span>).attr({
+    stroke: <i>"#fff"</i>,
+    fill: <i>"<span class="d">0</span>-#c9de96-#8ab66b:<span class="d">44</span>-#<span class="d">398235</span>"</i>
+}).popup();
+</code></pre>
+</div><div class="Element-resetBrightness-section"><h3 id="Element.resetBrightness" class="dr-method"><i class="dr-trixie">&#160;</i>Element.resetBrightness(times)<a href="#Element.resetBrightness" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 617 in the source" href="https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.raphael.js#L617">&#x27ad;</a></h3>
+<div class="extra" id="Element.resetBrightness-extra"></div></div><div class="dr-method"><p>Resets brightness and saturation levels to their original values. See <a href="#Element.lighter" class="dr-link">Element.lighter</a> and <a href="#Element.darker" class="dr-link">Element.darker</a>. Can be called on Sets.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">times</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">adjustment factor [default: <code>2</code>]</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">Element</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code>paper.circle(<span class="d">50</span>, <span class="d">50</span>, <span class="d">20</span>).attr({
+    fill: <i>"#ff0000"</i>,
+    stroke: <i>"#fff"</i>,
+    <i>"stroke-width"</i>: <span class="d">2</span>
+}).lighter(<span class="d">6</span>).resetBrightness();
+</code></pre>
+</div><div class="Element-tag-section"><h3 id="Element.tag" class="dr-method"><i class="dr-trixie">&#160;</i>Element.tag(angle, r, x, y)<a href="#Element.tag" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 92 in the source" href="https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.raphael.js#L92">&#x27ad;</a></h3>
+<div class="extra" id="Element.tag-extra"></div></div><div class="dr-method"><p>Puts the context Element in a 'tag' tooltip. Can also be used on sets.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">angle</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">angle of orientation in degrees [default: <code>0</code>]</dd>
+<dt class="dr-param">r</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">radius of the loop [default: <code>5</code>]</dd>
+<dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x coordinate of the center of the tag loop [default: Element's <code>x</code> or <code>cx</code>]</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y coordinate of the center of the tag loop [default: Element's <code>x</code> or <code>cx</code>]</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">path element of the tag</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code>paper.circle(<span class="d">50</span>, <span class="d">50</span>, <span class="d">15</span>).attr({
+    stroke: <i>"#fff"</i>,
+    fill: <i>"<span class="d">0</span>-#c9de96-#8ab66b:<span class="d">44</span>-#<span class="d">398235</span>"</i>
+}).tag(<span class="d">60</span>);
+</code></pre>
+</div><div class="Paper-section"><h2 id="Paper" class="undefined"><i class="dr-trixie">&#160;</i>Paper<a href="#Paper" title="Link to this section" class="dr-hash">&#x2693;</a></h2>
+<div class="extra" id="Paper-extra"></div></div><div class="Paper-blob-section"><h3 id="Paper.blob" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.blob(x, y, text, angle)<a href="#Paper.blob" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 517 in the source" href="https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.raphael.js#L517">&#x27ad;</a></h3>
+<div class="extra" id="Paper.blob-extra"></div></div><div class="dr-method"><p>Puts the given text into a 'blob' tooltip. The text is given a default style according to <a href="#g.txtattr" class="dr-link">g.txtattr</a>. See <a href="#Element.blob" class="dr-link">Element.blob</a>
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x coordinate of the blob's tail</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y coordinate of the blob's tail</dd>
+<dt class="dr-param">text</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">text to place inside the blob</dd>
+<dt class="dr-param">angle</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">angle of orientation in degrees [default: <code>0</code>]</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">set containing the blob path and the text element</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code>paper.blob(<span class="d">50</span>, <span class="d">50</span>, <i>"$<span class="d">9.99</span>"</i>, <span class="d">60</span>);
+</code></pre>
+</div><div class="Paper-drop-section"><h3 id="Paper.drop" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.drop(x, y, text, angle)<a href="#Paper.drop" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 493 in the source" href="https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.raphael.js#L493">&#x27ad;</a></h3>
+<div class="extra" id="Paper.drop-extra"></div></div><div class="dr-method"><p>Puts the given text into a 'drop' tooltip. The text is given a default style according to <a href="#g.txtattr" class="dr-link">g.txtattr</a>. See <a href="#Element.drop" class="dr-link">Element.drop</a>
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x coordinate of the drop's point</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y coordinate of the drop's point</dd>
+<dt class="dr-param">text</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">text to place inside the drop</dd>
+<dt class="dr-param">angle</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">angle of orientation in degrees [default: <code>0</code>]</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">set containing the drop path and the text element</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code>paper.drop(<span class="d">50</span>, <span class="d">50</span>, <i>"$<span class="d">9.99</span>"</i>, <span class="d">60</span>);
+</code></pre>
+</div><div class="Paper-flag-section"><h3 id="Paper.flag" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.flag(x, y, text, angle)<a href="#Paper.flag" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 469 in the source" href="https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.raphael.js#L469">&#x27ad;</a></h3>
+<div class="extra" id="Paper.flag-extra"></div></div><div class="dr-method"><p>Puts the given <code>text</code> into a 'flag' tooltip. The text is given a default style according to <a href="#g.txtattr" class="dr-link">g.txtattr</a>. See <a href="#Element.flag" class="dr-link">Element.flag</a>
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x coordinate of the flag's point</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y coordinate of the flag's point</dd>
+<dt class="dr-param">text</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">text to place inside the flag</dd>
+<dt class="dr-param">angle</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">angle of orientation in degrees [default: <code>0</code>]</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">set containing the flag path and the text element</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code>paper.flag(<span class="d">50</span>, <span class="d">50</span>, <i>"$<span class="d">9.99</span>"</i>, <span class="d">60</span>);
+</code></pre>
+</div><div class="Paper-label-section"><h3 id="Paper.label" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.label(x, y, text)<a href="#Paper.label" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 393 in the source" href="https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.raphael.js#L393">&#x27ad;</a></h3>
+<div class="extra" id="Paper.label-extra"></div></div><div class="dr-method"><p>Puts the given <code>text</code> into a 'label' tooltip. The text is given a default style according to <a href="#g.txtattr" class="dr-link">g.txtattr</a>. See <a href="#Element.label" class="dr-link">Element.label</a>
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x coordinate of the center of the label</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y coordinate of the center of the label</dd>
+<dt class="dr-param">text</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">text to place inside the label</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">set containing the label path and the text element</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code>paper.label(<span class="d">50</span>, <span class="d">50</span>, <i>"$<span class="d">9.99</span>"</i>);
+</code></pre>
+</div><div class="Paper-popup-section"><h3 id="Paper.popup" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.popup(x, y, text, dir, size)<a href="#Paper.popup" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 420 in the source" href="https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.raphael.js#L420">&#x27ad;</a></h3>
+<div class="extra" id="Paper.popup-extra"></div></div><div class="dr-method"><p>Puts the given <code>text</code> into a 'popup' tooltip. The text is given a default style according to <a href="#g.txtattr" class="dr-link">g.txtattr</a>. See <a href="#Element.popup" class="dr-link">Element.popup</a>
+</p>
+<p>Note: The <code>dir</code> parameter has changed from g.Raphael 0.4.1 to 0.5. The options <code>0</code>, <code>1</code>, <code>2</code>, and <code>3</code> has been changed to <code>'down'</code>, <code>'left'</code>, <code>'up'</code>, and <code>'right'</code> respectively.
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x coordinate of the popup's tail</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y coordinate of the popup's tail</dd>
+<dt class="dr-param">text</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">text to place inside the popup</dd>
+<dt class="dr-param">dir</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">location of the text relative to the tail: <code>'down'</code>, <code>'left'</code>, <code>'up'</code> [default], or <code>'right'</code>.</dd>
+<dt class="dr-param">size</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">amount of padding around the Element [default: <code>5</code>]</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">set containing the popup path and the text element</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code>paper.popup(<span class="d">50</span>, <span class="d">50</span>, <i>"$<span class="d">9.99</span>"</i>, <i>'down'</i>);
+</code></pre>
+</div><div class="Paper-tag-section"><h3 id="Paper.tag" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.tag(x, y, text, angle, r)<a href="#Paper.tag" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 445 in the source" href="https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.raphael.js#L445">&#x27ad;</a></h3>
+<div class="extra" id="Paper.tag-extra"></div></div><div class="dr-method"><p>Puts the given text into a 'tag' tooltip. The text is given a default style according to <a href="#g.txtattr" class="dr-link">g.txtattr</a>. See <a href="#Element.tag" class="dr-link">Element.tag</a>
+</p>
+<p class="header">Parameters
+</p>
+<dl class="dr-parameters"><dt class="dr-param">x</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">x coordinate of the center of the tag loop</dd>
+<dt class="dr-param">y</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">y coordinate of the center of the tag loop</dd>
+<dt class="dr-param">text</dt>
+<dd class="dr-type"><em class="dr-type-string">string</em></dd>
+<dd class="dr-description">text to place inside the tag</dd>
+<dt class="dr-param">angle</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">angle of orientation in degrees [default: <code>0</code>]</dd>
+<dt class="dr-param">r</dt>
+<dd class="dr-type"><em class="dr-type-number">number</em></dd>
+<dd class="dr-description">radius of the loop [default: <code>5</code>]</dd>
+</dl>
+<p class="dr-returns"><strong class="dr-title">Returns:</strong> <em class="dr-type-object">object</em> <span class="dr-description">set containing the tag path and the text element</span></p>
+<p class="header">Usage
+</p>
+<pre class="javascript code"><code>paper.tag(<span class="d">50</span>, <span class="d">50</span>, <i>"$<span class="d">9.99</span>"</i>, <span class="d">60</span>);
+</code></pre>
+</div></div></div>
+<script src="../raphael-min.js"></script>
+<script src="../g.raphael.js"></script>
+<script src="reference.js"></script>
+</body></html>
