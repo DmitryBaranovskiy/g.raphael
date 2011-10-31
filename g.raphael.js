@@ -10,7 +10,7 @@
  > Parameters
  **
  - dir (string) location of Element relative to the tail: `'down'`, `'left'`, `'up'` [default], or `'right'`.
- - size (number) amount of padding around the Element [default: `5`]
+ - size (number) amount of bevel/padding around the Element, as well as half the width and height of the tail [default: `5`]
  - x (number) x coordinate of the popup's tail [default: Element's `x` or `cx`]
  - y (number) y coordinate of the popup's tail [default: Element's `y` or `cy`]
  **
@@ -22,10 +22,8 @@
  | }).popup();
  \*/
 Raphael.el.popup = function (dir, size, x, y) {
-    var dirs = { down: 0, left: 1, up: 2, right: 3 },
-        paper = this.paper || this[0].paper,
-        mmax = Math.max,
-        bb, w, h, dx, dy, p, xy, center;
+    var paper = this.paper || this[0].paper,
+        bb, xy, center, cw, ch;
 
     if (!paper) return;
 
@@ -36,37 +34,78 @@ Raphael.el.popup = function (dir, size, x, y) {
         default: center = false;
     }
 
-    dir = dir == null ? 2 : typeof dirs[dir] != 'undefined' ? dirs[dir] : 2;
+    dir = dir == null ? 'up' : dir;
     size = size || 5;
-    bb = this.getBBox(),
-    x = x || (center ? bb.x - bb.width / 2 : bb.x);
-    y = y || (center ? bb.y - bb.height / 2 : bb.y);
-    w = Math.round(bb.width / 2),
-    h = Math.round(bb.height / 2),
-    dx = [0, w + size * 2, 0, -w - size * 2],
-    dy = [-h * 2 - size * 3, -h - size, 0, -h - size],
-    p = [
-        "M", x - dx[dir], y - dy[dir],
-        "l", -size, (dir == 2) * -size, -mmax(w - size, 0), 0,
-        "a", size, size, 0, 0, 1, -size, -size,
-        "l", 0, -mmax(h - size, 0), (dir == 3) * -size, -size, (dir == 3) * size, -size, 0, -mmax(h - size, 0),
-        "a", size, size, 0, 0, 1, size, -size,
-        "l", mmax(w - size, 0), 0, size, !dir * -size, size, !dir * size, mmax(w - size, 0), 0,
-        "a", size, size, 0, 0, 1, size, size,
-        "l", 0, mmax(h - size, 0), (dir == 1) * size, size, (dir == 1) * -size, size, 0, mmax(h - size, 0),
-        "a", size, size, 0, 0, 1, -size, size,
-        "l", -mmax(w - size, 0), 0,
-        "z"
-    ].join(","),
-    xy = [
-        { x: x, y: y + size * 2 + h },
-        { x: x - size * 2 - w, y: y },
-        { x: x, y: y - size * 2 - h },
-        { x: x + size * 2 + w, y: y }
-    ][dir];
+    bb = this.getBBox();
+    x = x || (center ? bb.x + bb.width / 2 : bb.x);
+    y = y || (center ? bb.y + bb.height / 2 : bb.y);
+    cw = Math.max(bb.width / 2 - size, 0);
+    ch = Math.max(bb.height / 2 - size, 0);
 
-    this.translate(xy.x - w - (center ? bb.x - bb.width / 2 : bb.x), xy.y - h - (center ? bb.y - bb.height / 2 : bb.y));
-    return paper.path(p).attr({ fill: "#000", stroke: "none" }).insertBefore(this.node ? this : this[0]);
+    var paths = {
+        up: [
+            'M', x, y,
+            'l', -size, -size, -cw, 0,
+            'a', size, size, 0, 0, 1, -size, -size,
+            'l', 0, -bb.height,
+            'a', size, size, 0, 0, 1, size, -size,
+            'l', size * 2 + cw * 2, 0,
+            'a', size, size, 0, 0, 1, size, size,
+            'l', 0, bb.height,
+            'a', size, size, 0, 0, 1, -size, size,
+            'l', -cw, 0,
+            'z'
+        ].join(','),
+        down: [
+            'M', x, y,
+            'l', size, size, cw, 0,
+            'a', size, size, 0, 0, 1, size, size,
+            'l', 0, bb.height,
+            'a', size, size, 0, 0, 1, -size, size,
+            'l', -(size * 2 + cw * 2), 0,
+            'a', size, size, 0, 0, 1, -size, -size,
+            'l', 0, -bb.height,
+            'a', size, size, 0, 0, 1, size, -size,
+            'l', cw, 0,
+            'z'
+        ].join(','),
+        left: [
+            'M', x, y,
+            'l', -size, size, 0, ch,
+            'a', size, size, 0, 0, 1, -size, size,
+            'l', -bb.width, 0,
+            'a', size, size, 0, 0, 1, -size, -size,
+            'l', 0, -(size * 2 + ch * 2),
+            'a', size, size, 0, 0, 1, size, -size,
+            'l', bb.width, 0,
+            'a', size, size, 0, 0, 1, size, size,
+            'l', 0, ch,
+            'z'
+        ].join(','),
+        right: [
+            'M', x, y,
+            'l', size, -size, 0, -ch,
+            'a', size, size, 0, 0, 1, size, -size,
+            'l', bb.width, 0,
+            'a', size, size, 0, 0, 1, size, size,
+            'l', 0, size * 2 + ch * 2,
+            'a', size, size, 0, 0, 1, -size, size,
+            'l', -bb.width, 0,
+            'a', size, size, 0, 0, 1, -size, -size,
+            'l', 0, -ch,
+            'z'
+        ].join(',')
+    };
+
+    xy = {
+        up: { x: -!center * (bb.width / 2), y: -size * 2 - (center ? bb.height / 2 : bb.height) },
+        down: { x: -!center * (bb.width / 2), y: size * 2 + (center ? bb.height / 2 : bb.height) },
+        left: { x: -size * 2 - (center ? bb.width / 2 : bb.width), y: -!center * (bb.height / 2) },
+        right: { x: size * 2 + (center ? bb.width / 2 : bb.width), y: -!center * (bb.height / 2) }
+    }[dir];
+
+    this.translate(xy.x, xy.y);
+    return paper.path(paths[dir]).attr({ fill: "#000", stroke: "none" }).insertBefore(this.node ? this : this[0]);
 };
 
 /*\
@@ -803,5 +842,4 @@ Raphael.chart = {
             return (+val).toFixed(0);
         }
     }
-
 }
