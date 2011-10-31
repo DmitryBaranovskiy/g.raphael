@@ -191,8 +191,8 @@ Raphael.el.drop = function (angle, x, y) {
 
     angle = angle || 0;
 
-    x = x || bb.x;
-    y = y || bb.y;
+    x = x || (center ? bb.x + bb.width / 2 : bb.x);
+    y = y || (center ? bb.y + bb.height / 2 : bb.y);
     size = Math.max(bb.width, bb.height) + Math.min(bb.width, bb.height);
     p = paper.path([
         "M", x, y,
@@ -601,10 +601,6 @@ Raphael.el.darker = function (times) {
  [ method ]
  **
  * Resets brightness and saturation levels to their original values. See @Element.lighter and @Element.darker. Can be called on Sets.
- **
- > Parameters
- **
- - times (number) adjustment factor [default: `2`]
  **
  = (object) Element
  > Usage
