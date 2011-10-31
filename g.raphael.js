@@ -37,10 +37,14 @@ Raphael.el.popup = function (dir, size, x, y) {
     dir = dir == null ? 'up' : dir;
     size = size || 5;
     bb = this.getBBox();
-    x = x || (center ? bb.x + bb.width / 2 : bb.x);
-    y = y || (center ? bb.y + bb.height / 2 : bb.y);
+
+    x = typeof x == 'number' ? x : (center ? bb.x + bb.width / 2 : bb.x);
+    y = typeof y == 'number' ? y : (center ? bb.y + bb.height / 2 : bb.y);
     cw = Math.max(bb.width / 2 - size, 0);
     ch = Math.max(bb.height / 2 - size, 0);
+
+    this.translate(x - bb.x - (center ? bb.width / 2 : 0), y - bb.y - (center ? bb.height / 2 : 0));
+    bb = this.getBBox();
 
     var paths = {
         up: [
