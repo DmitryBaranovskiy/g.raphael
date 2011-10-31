@@ -664,7 +664,7 @@ Raphael.el.resetBrightness = function () {
 
     for (var f in tooltips) (function (name) {
         Raphael.st[name] = function () {
-            Raphael.el[name].apply(this, arguments);
+            return Raphael.el[name].apply(this, arguments);
         };
     })(tooltips[f]);
 
