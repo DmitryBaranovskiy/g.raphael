@@ -1,3 +1,10 @@
+/*!
+ * g.Raphael 0.5 - Charting library, based on Raphaël
+ *
+ * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ */
+
 /*
  * Tooltips on Element prototype
  */
