@@ -150,8 +150,8 @@ Raphael.el.tag = function (angle, r, x, y) {
     }
 
     angle = angle || 0;
-    x = x || (center ? bb.x + bb.width / 2 : bb.x);
-    y = y || (center ? bb.y + bb.height / 2 : bb.y);
+    x = typeof x == 'number' ? x : (center ? bb.x + bb.width / 2 : bb.x);
+    y = typeof y == 'number' ? y : (center ? bb.y + bb.height / 2 : bb.y);
     r = r == null ? 5 : r;
     R = .5522 * r;
 
@@ -181,20 +181,24 @@ Raphael.el.tag = function (angle, r, x, y) {
         });
     }
 
-    //elements
-    this.attrs && this.attr(this.attrs.x ? 'x' : 'cx', x + r + d + (!center ? this.type == 'text' ? bb.width : 0 : bb.width / 2)).attr('y', center ? y : y - bb.height / 2);
-
     angle = 360 - angle;
-    this.rotate(angle, x, y);
     p.rotate(angle, x, y);
 
-    if (angle > 90 && angle < 270) {
-        this.attrs && this.attr(this.attrs.x ? 'x' : 'cx', x - r - d - (!center ? bb.width : bb.width / 2)).rotate(180, x, y);
-        !this.attrs && this.rotate(180, x, y).translate(x - (2 * r) - (2 * d) - bb.width - bb.x, 0)
+    if (this.attrs) {
+        //elements
+        this.attr(this.attrs.x ? 'x' : 'cx', x + r + d + (!center ? this.type == 'text' ? bb.width : 0 : bb.width / 2)).attr('y', center ? y : y - bb.height / 2);
+        this.rotate(angle, x, y);
+        angle > 90 && angle < 270 && this.attr(this.attrs.x ? 'x' : 'cx', x - r - d - (!center ? bb.width : bb.width / 2)).rotate(180, x, y);
+    } else {
+        //sets
+        if (angle > 90 && angle < 270) {
+            this.translate(x - bb.x - bb.width - r - d, y - bb.y - bb.height / 2);
+            this.rotate(angle - 180, bb.x + bb.width + r + d, bb.y + bb.height / 2);
+        } else {
+            this.translate(x - bb.x + r + d, y - bb.y - bb.height / 2);
+            this.rotate(angle, bb.x - r - d, bb.y + bb.height / 2); 
+        }
     }
-
-    //sets
-    !this.attrs && this.translate((x + r + d - bb.x), (y - bb.height / 2) - bb.y);
 
     return p.insertBefore(this.node ? this : this[0]);
 };
@@ -234,8 +238,8 @@ Raphael.el.drop = function (angle, x, y) {
 
     angle = angle || 0;
 
-    x = x || (center ? bb.x + bb.width / 2 : bb.x);
-    y = y || (center ? bb.y + bb.height / 2 : bb.y);
+    x = typeof x == 'number' ? x : (center ? bb.x + bb.width / 2 : bb.x);
+    y = typeof y == 'number' ? y : (center ? bb.y + bb.height / 2 : bb.y);
     size = Math.max(bb.width, bb.height) + Math.min(bb.width, bb.height);
     p = paper.path([
         "M", x, y,
@@ -293,8 +297,8 @@ Raphael.el.flag = function (angle, x, y) {
     }
 
     angle = angle || 0;
-    x = x || (center ? bb.x + bb.width / 2 : bb.x);
-    y = y || (center ? bb.y + bb.height / 2: bb.y);
+    x = typeof x == 'number' ? x : (center ? bb.x + bb.width / 2 : bb.x);
+    y = typeof y == 'number' ? y : (center ? bb.y + bb.height / 2: bb.y);
 
     p.attr({
         path: [
@@ -304,19 +308,24 @@ Raphael.el.flag = function (angle, x, y) {
         ].join(",")
     });
 
-    //elements
-    this.attrs && this.attr(this.attrs.x ? 'x' : 'cx', x + h + d + (!center ? this.type == 'text' ? bb.width : 0 : bb.width / 2)).attr('y', center ? y : y - bb.height / 2);
-
     angle = 360 - angle;
-    this.rotate(angle, x, y);
     p.rotate(angle, x, y);
 
-    if (angle > 90 && angle < 270) {
-        this.attrs && this.attr(this.attrs.x ? 'x' : 'cx', x - h - d - (!center ? bb.width : bb.width / 2)).rotate(180, x, y);
-        !this.attrs && this.rotate(180, x, y).translate(x - (2 * h) - (2 * d) - bb.width - bb.x, 0)
+    if (this.attrs) {
+        //elements
+        this.attr(this.attrs.x ? 'x' : 'cx', x + h + d + (!center ? this.type == 'text' ? bb.width : 0 : bb.width / 2)).attr('y', center ? y : y - bb.height / 2);
+        this.rotate(angle, x, y);
+        angle > 90 && angle < 270 && this.attr(this.attrs.x ? 'x' : 'cx', x - h - d - (!center ? bb.width : bb.width / 2)).rotate(180, x, y);
+    } else {
+        //sets
+        if (angle > 90 && angle < 270) {
+            this.translate(x - bb.x - bb.width - h - d, y - bb.y - bb.height / 2);
+            this.rotate(angle - 180, bb.x + bb.width + h + d, bb.y + bb.height / 2);
+        } else {
+            this.translate(x - bb.x + h + d, y - bb.y - bb.height / 2);
+            this.rotate(angle, bb.x - h - d, bb.y + bb.height / 2);
+        }
     }
-
-    !this.attrs && this.translate(x + h + d - bb.x, (y - bb.height / 2) - bb.y);
 
     return p.insertBefore(this.node ? this : this[0]);
 };
@@ -381,8 +390,8 @@ Raphael.el.blob = function (angle, x, y) {
     p = paper.path().attr({ fill: "#000", stroke: "none" });
     angle = (+angle + 1 ? angle : 45) + 90;
     size = Math.min(bb.height, bb.width);
-    x = x || (center ? bb.x + bb.width / 2 : bb.x);
-    y = y || (center ? bb.y + bb.height / 2 : bb.y);
+    x = typeof x == 'number' ? x : (center ? bb.x + bb.width / 2 : bb.x);
+    y = typeof y == 'number' ? y : (center ? bb.y + bb.height / 2 : bb.y);
 
     var w = Math.max(bb.width + size, size * 25 / 12),
         h = Math.max(bb.height + size, size * 25 / 12),
@@ -436,7 +445,7 @@ Raphael.el.blob = function (angle, x, y) {
 Raphael.fn.label = function (x, y, text) {
     var set = this.set();
 
-    text = this.text(x, y, text).attr({ fill: '#fff', font: '12px Arial, sans-serif' });
+    text = this.text(x, y, text).attr(Raphael.g.txtattr);
     return set.push(text.label(), text);
 };
 
@@ -463,7 +472,7 @@ Raphael.fn.label = function (x, y, text) {
 Raphael.fn.popup = function (x, y, text, dir, size) {
     var set = this.set();
 
-    text = this.text(x, y, text).attr({ fill: '#fff', font: '12px Arial, sans-serif', 'font-family': 'Helvetica, Arial' });
+    text = this.text(x, y, text).attr(Raphael.g.txtattr);
     return set.push(text.popup(dir, size), text);
 };
 
@@ -488,7 +497,7 @@ Raphael.fn.popup = function (x, y, text, dir, size) {
 Raphael.fn.tag = function (x, y, text, angle, r) {
     var set = this.set();
 
-    text = this.text(x, y, text).attr({ fill: '#fff', font: '12px Arial, sans-serif', 'font-family': 'Helvetica, Arial' });
+    text = this.text(x, y, text).attr(Raphael.g.txtattr);
     return set.push(text.tag(angle, r), text);
 };
 
@@ -512,7 +521,7 @@ Raphael.fn.tag = function (x, y, text, angle, r) {
 Raphael.fn.flag = function (x, y, text, angle) {
     var set = this.set();
 
-    text = this.text(x, y, text).attr({fill: '#fff', font: '12px Arial, sans-serif', 'font-family': 'Helvetica, Arial'});
+    text = this.text(x, y, text).attr(Raphael.g.txtattr);
     return set.push(text.flag(angle), text);
 };
 
@@ -536,7 +545,7 @@ Raphael.fn.flag = function (x, y, text, angle) {
 Raphael.fn.drop = function (x, y, text, angle) {
     var set = this.set();
 
-    text = this.text(x, y, text).attr({ fill: '#fff', font: '12px Arial, sans-serif', 'font-family': 'Helvetica, Arial' });
+    text = this.text(x, y, text).attr(Raphael.g.txtattr);
     return set.push(text.drop(angle), text);
 };
 
@@ -560,7 +569,7 @@ Raphael.fn.drop = function (x, y, text, angle) {
 Raphael.fn.blob = function (x, y, text, angle) {
     var set = this.set();
 
-    text = this.text(x, y, text).attr({ fill: '#fff', font: '12px Arial, sans-serif', 'font-family': 'Helvetica, Arial' });
+    text = this.text(x, y, text).attr(Raphael.g.txtattr);
     return set.push(text.blob(angle), text);
 };
 
@@ -684,11 +693,11 @@ Raphael.el.resetBrightness = function () {
 })();
 
 //chart prototype for storing common functions
-Raphael.chart = {
+Raphael.g = {
     
     shim: { stroke: 'none', fill: '#000', 'fill-opacity': 0 },
     
-    txtattr: { font: '12px Arial, sans-serif' },
+    txtattr: { font: '12px Arial, sans-serif', fill: '#fff' },
     
     colors: (function () {
             var hues = [.6, .2, .05, .1333, .75, 0],

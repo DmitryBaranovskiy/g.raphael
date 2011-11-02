@@ -244,7 +244,7 @@
     
     //inheritance
     var F = function() {};
-    F.prototype = Raphael.chart
+    F.prototype = Raphael.g;
     Piechart.prototype = new F;
     
     //public

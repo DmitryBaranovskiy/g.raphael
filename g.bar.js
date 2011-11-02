@@ -16,7 +16,7 @@
             return isPath ? "" : paper.path();
         }
 
-        ending = Raphael.chart.ends[ending] || "round";
+        ending = Raphael.g.ends[ending] || "round";
         height = Math.round(height);
         width = Math.round(width);
         x = Math.round(x);
@@ -607,10 +607,9 @@
     
     //inheritance
     var F = function() {};
-    F.prototype = Raphael.chart
+    F.prototype = Raphael.g;
     HBarchart.prototype = VBarchart.prototype = new F;
     
-    //public
     Raphael.fn.hbarchart = function(x, y, width, height, values, opts) {
         return new HBarchart(this, x, y, width, height, values, opts);
     };
@@ -618,7 +617,4 @@
     Raphael.fn.barchart = function(x, y, width, height, values, opts) {
         return new VBarchart(this, x, y, width, height, values, opts);
     };
-    
-    
 })();
-

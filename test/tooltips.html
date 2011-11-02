@@ -47,8 +47,8 @@
 
                 for (var i = 0; i < 30; i++) {
                     //t.push(r.text(800, 350, "$9.99").attr({fill:'#ff0000'}).tag(360 / 30 * i, 50 * (i + 1)));
-                    //t.push(r.circle(800, 350, 10).attr({fill:'90-#fff-#000'}).drop(360 / 30 * i, 50 * (i + 1)));
-                    t.push(r.rect(800, 350, 20, 20).attr({fill:'90-#ff0000-#0000ff'}).drop(360 / 30 * i, 50 * (i + 1)));
+                    //t.push(r.circle(800, 350, 10).attr({fill:'90-#fff-#000'}).tag(360 / 30 * i, 5, 50 * (i + 1)));
+                    t.push(r.rect(800, 350, 20, 20).attr({fill:'90-#ff0000-#0000ff'}).flag(360 / 30 * i, 50 * (i + 1)));
                 }
 
                 ref(t.length, 350);
@@ -57,14 +57,13 @@
                 u.push(
                     r.circle(100, 850, 10).attr({fill: '#00ff00'}),
                     r.circle(110, 800, 10).attr({fill: '#0000ff'})
-                ).drop(130);
+                ).flag(130);
 
                 var a = r.set();
                 a.push(
                     r.circle(200, 850, 10).attr({fill: '#00ff00'}),
                     r.circle(210, 800, 10).attr({fill: '#0000ff'})
-                ).drop(30);
-
+                ).flag(30);
                 ref(s.length, 150);
 
 

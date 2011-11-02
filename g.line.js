@@ -318,7 +318,7 @@
     
     //inheritance
     var F = function() {};
-    F.prototype = Raphael.chart
+    F.prototype = Raphael.g;
     Linechart.prototype = new F;
     
     //public

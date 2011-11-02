@@ -146,12 +146,11 @@
     
     //inheritance
     var F = function() {};
-    F.prototype = Raphael.chart
+    F.prototype = Raphael.g
     Dotchart.prototype = new F;
     
     //public
     Raphael.fn.dotchart = function(x, y, width, height, valuesx, valuesy, size, opts) {
         return new Dotchart(this, x, y, width, height, valuesx, valuesy, size, opts);
     }
-    
 })();
