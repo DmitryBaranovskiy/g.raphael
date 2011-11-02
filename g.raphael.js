@@ -694,11 +694,35 @@ Raphael.el.resetBrightness = function () {
 
 //chart prototype for storing common functions
 Raphael.g = {
-    
+    /*\
+     * g.shim
+     [ object ]
+     **
+     * An attribute object that charts will set on all generated shims (shims being the invisible objects that mouse events are bound to)
+     **
+     > Default value
+     | { stroke: 'none', fill: '#000', 'fill-opacity': 0 }
+     \*/
     shim: { stroke: 'none', fill: '#000', 'fill-opacity': 0 },
-    
+
+    /*\
+     * g.txtattr
+     [ object ]
+     **
+     * An attribute object that charts and tooltips will set on any generated text
+     **
+     > Default value
+     | { font: '12px Arial, sans-serif', fill: '#fff' }
+     \*/  
     txtattr: { font: '12px Arial, sans-serif', fill: '#fff' },
-    
+
+    /*\
+     * g.colors
+     [ array ]
+     **
+     * An array of color values that charts will iterate through when drawing chart data values.
+     **
+     \*/
     colors: (function () {
             var hues = [.6, .2, .05, .1333, .75, 0],
                 colors = [];
@@ -714,8 +738,6 @@ Raphael.g = {
             return colors;
     })(),
     
-    ends: { round: 'round', sharp: 'sharp', soft: 'soft', square: 'square' },
-
     snapEnds: function(from, to, steps) {
         var f = from,
             t = to;

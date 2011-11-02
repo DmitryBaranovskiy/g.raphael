@@ -9,14 +9,15 @@
         mmax = Math.max;
 
     function finger(x, y, width, height, dir, ending, isPath, paper) {
-        var path;
+        var path,
+            ends = { round: 'round', sharp: 'sharp', soft: 'soft', square: 'square' };
 
         // dir 0 for horizontal and 1 for vertical
         if ((dir && !height) || (!dir && !width)) {
             return isPath ? "" : paper.path();
         }
 
-        ending = Raphael.g.ends[ending] || "round";
+        ending = ends[ending] || "square";
         height = Math.round(height);
         width = Math.round(width);
         x = Math.round(x);
@@ -141,7 +142,7 @@
         opts = opts || {};
 
         var chartinst = this,
-            type = chartinst.ends[opts.type] || "square",
+            type = opts.type || "square",
             gutter = parseFloat(opts.gutter || "20%"),
             chart = paper.set(),
             bars = paper.set(),
@@ -394,7 +395,7 @@
         opts = opts || {};
 
         var chartinst = this,
-            type = chartinst.ends[opts.type] || "square",
+            type = opts.type || "square",
             gutter = parseFloat(opts.gutter || "20%"),
             chart = paper.set(),
             bars = paper.set(),
