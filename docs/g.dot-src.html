@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<!-- Generated with Dr.js -->
+<html lang="en"><head><meta charset="utf-8"><title>g.dot.js</title><link rel="stylesheet" href="dr.css"></head><body id="src-dr-js"><code id="L1"><span class="ln">1</span><span class="c"><span class="c">/*!</span>
+</span></code><code id="L2"><span class="ln">2</span><span class="c"><span class="s"> * </span>g.Raphael <span class="d">0.5</span><span class="s"> - </span>Charting library, based on Raphaël
+</span></code><code id="L3"><span class="ln">3</span><span class="c"> *
+</span></code><code id="L4"><span class="ln">4</span><span class="c"><span class="s"> * </span>Copyright (c) <span class="d">2009</span> Dmitry Baranovskiy (http:<span class="c">//g.raphaeljs.com)</span>
+</span></code><code id="L5"><span class="ln">5</span><span class="c"><span class="s"> * </span>Licensed under the MIT (http:<span class="c">//www.opensource.org/licenses/mit-license.php) license.</span>
+</span></code><code id="L6"><span class="ln">6</span><span class="c"> */</span>
+</code><code id="L7"><span class="ln">7</span> 
+</code><code id="L8"><span class="ln">8</span><span class="c"> /*
+</span></code><code id="L9"><span class="ln">9</span><span class="c"><span class="s"> * </span>dotchart method on paper
+</span></code><code id="L10"><span class="ln">10</span><span class="c"> */</span>
+</code><code id="L11"><span class="ln">11</span><span class="c"><span class="c">/*\</span>
+</span></code><code id="L12"><span class="ln">12</span><span class="c"><span class="s"> * </span>Paper.dotchart
+</span></code><code id="L13"><span class="ln">13</span><span class="c"> [ method ]
+</span></code><code id="L14"><span class="ln">14</span><span class="c"> **
+</span></code><code id="L15"><span class="ln">15</span><span class="c"><span class="s"> * </span>Creates a dot chart
+</span></code><code id="L16"><span class="ln">16</span><span class="c"> **
+</span></code><code id="L17"><span class="ln">17</span><span class="c"> > Parameters
+</span></code><code id="L18"><span class="ln">18</span><span class="c"> **
+</span></code><code id="L19"><span class="ln">19</span><span class="c"><span class="s"> - </span>x (number) x coordinate of the chart
+</span></code><code id="L20"><span class="ln">20</span><span class="c"><span class="s"> - </span>y (number) y coordinate of the chart
+</span></code><code id="L21"><span class="ln">21</span><span class="c"><span class="s"> - </span>width (number) width of the chart (respected by all elements <b>in</b> the set)
+</span></code><code id="L22"><span class="ln">22</span><span class="c"><span class="s"> - </span>height (number) height of the chart (respected by all elements <b>in</b> the set)
+</span></code><code id="L23"><span class="ln">23</span><span class="c"><span class="s"> - </span>valuesx (array) values used to plot x asis
+</span></code><code id="L24"><span class="ln">24</span><span class="c"><span class="s"> - </span>valuesy (array) values used to plot y asis
+</span></code><code id="L25"><span class="ln">25</span><span class="c"><span class="s"> - </span>size (array) values used as data
+</span></code><code id="L26"><span class="ln">26</span><span class="c"><span class="s"> - </span>opts (object) options <b>for</b> the chart
+</span></code><code id="L27"><span class="ln">27</span><span class="c"> **
+</span></code><code id="L28"><span class="ln">28</span><span class="c"><span class="s"> = </span>(object) path element of the popup
+</span></code><code id="L29"><span class="ln">29</span><span class="c"> > Usage
+</span></code><code id="L30"><span class="ln">30</span><span class="c"><span class="s"> | </span><span class="c">//life, expectancy, country and spending per capita (fixtional data)</span>
+</span></code><code id="L31"><span class="ln">31</span><span class="c"><span class="s"> | </span>r.dotchart(<span class="d">0</span>, <span class="d">0</span>, <span class="d">620</span>, <span class="d">260</span>, [<span class="d">76</span>, <span class="d">70</span>, <span class="d">67</span>, <span class="d">71</span>, <span class="d">69</span>], [<span class="d">0</span>, <span class="d">1</span>, <span class="d">2</span>, <span class="d">3</span>, <span class="d">4</span>], [<span class="d">100</span>, <span class="d">120</span>, <span class="d">140</span>, <span class="d">160</span>, <span class="d">500</span>], {max: <span class="d">10</span>, axisylabels: [<i>'Mexico'</i>, <i>'Argentina'</i>, <i>'Cuba'</i>, <i>'Canada'</i>, <i>'United States of America'</i>], heat: <b>true</b>, axis: <i>"<span class="d">0</span> <span class="d">0</span> <span class="d">1</span> <span class="d">1</span>"</i>})
+</span></code><code id="L32"><span class="ln">32</span><span class="c"> \*/</span>
+</code><code id="L33"><span class="ln">33</span>(<b>function</b> () {
+</code><code id="L34"><span class="ln">34</span>        <b>var</b> colorValue<span class="s"> = </span><b>function</b> (value, total, s, b) {
+</code><code id="L35"><span class="ln">35</span>            <b>return</b> <i>'hsb('</i><span class="s"> + </span>[Math.min((<span class="d">1</span><span class="s"> - </span>value<span class="s"> / </span>total)<span class="s"> * </span><span class="d">.4</span>, <span class="d">1</span>), s<span class="s"> || </span><span class="d">.75</span>, b<span class="s"> || </span><span class="d">.75</span>]<span class="s"> + </span><i>')'</i>;
+</code><code id="L36"><span class="ln">36</span>        };
+</code><code id="L37"><span class="ln">37</span>
+</code><code id="L38"><span class="ln">38</span>    <b>function</b> Dotchart(paper, x, y, width, height, valuesx, valuesy, size, opts) {
+</code><code id="L39"><span class="ln">39</span>        
+</code><code id="L40"><span class="ln">40</span>        <b>var</b> chartinst<span class="s"> = </span><b>this</b>;
+</code><code id="L41"><span class="ln">41</span>        
+</code><code id="L42"><span class="ln">42</span>        <b>function</b> drawAxis(ax) {
+</code><code id="L43"><span class="ln">43</span>            +ax[<span class="d">0</span>]<span class="s"> &amp;&amp; </span>(ax[<span class="d">0</span>]<span class="s"> = </span>chartinst.axis(x<span class="s"> + </span>gutter, y<span class="s"> + </span>gutter, width<span class="s"> - </span><span class="d">2</span><span class="s"> * </span>gutter, minx, maxx, opts.axisxstep<span class="s"> || </span>Math.floor((width<span class="s"> - </span><span class="d">2</span><span class="s"> * </span>gutter)<span class="s"> / </span><span class="d">20</span>), <span class="d">2</span>, opts.axisxlabels<span class="s"> || </span><b>null</b>, opts.axisxtype<span class="s"> || </span><i>"t"</i>, <b>null</b>, paper));
+</code><code id="L44"><span class="ln">44</span>            +ax[<span class="d">1</span>]<span class="s"> &amp;&amp; </span>(ax[<span class="d">1</span>]<span class="s"> = </span>chartinst.axis(x<span class="s"> + </span>width<span class="s"> - </span>gutter, y<span class="s"> + </span>height<span class="s"> - </span>gutter, height<span class="s"> - </span><span class="d">2</span><span class="s"> * </span>gutter, miny, maxy, opts.axisystep<span class="s"> || </span>Math.floor((height<span class="s"> - </span><span class="d">2</span><span class="s"> * </span>gutter)<span class="s"> / </span><span class="d">20</span>), <span class="d">3</span>, opts.axisylabels<span class="s"> || </span><b>null</b>, opts.axisytype<span class="s"> || </span><i>"t"</i>, <b>null</b>, paper));
+</code><code id="L45"><span class="ln">45</span>            +ax[<span class="d">2</span>]<span class="s"> &amp;&amp; </span>(ax[<span class="d">2</span>]<span class="s"> = </span>chartinst.axis(x<span class="s"> + </span>gutter, y<span class="s"> + </span>height<span class="s"> - </span>gutter<span class="s"> + </span>maxR, width<span class="s"> - </span><span class="d">2</span><span class="s"> * </span>gutter, minx, maxx, opts.axisxstep<span class="s"> || </span>Math.floor((width<span class="s"> - </span><span class="d">2</span><span class="s"> * </span>gutter)<span class="s"> / </span><span class="d">20</span>), <span class="d">0</span>, opts.axisxlabels<span class="s"> || </span><b>null</b>, opts.axisxtype<span class="s"> || </span><i>"t"</i>, <b>null</b>, paper));
+</code><code id="L46"><span class="ln">46</span>            +ax[<span class="d">3</span>]<span class="s"> &amp;&amp; </span>(ax[<span class="d">3</span>]<span class="s"> = </span>chartinst.axis(x<span class="s"> + </span>gutter<span class="s"> - </span>maxR, y<span class="s"> + </span>height<span class="s"> - </span>gutter, height<span class="s"> - </span><span class="d">2</span><span class="s"> * </span>gutter, miny, maxy, opts.axisystep<span class="s"> || </span>Math.floor((height<span class="s"> - </span><span class="d">2</span><span class="s"> * </span>gutter)<span class="s"> / </span><span class="d">20</span>), <span class="d">1</span>, opts.axisylabels<span class="s"> || </span><b>null</b>, opts.axisytype<span class="s"> || </span><i>"t"</i>, <b>null</b>, paper));
+</code><code id="L47"><span class="ln">47</span>        }
+</code><code id="L48"><span class="ln">48</span>
+</code><code id="L49"><span class="ln">49</span>        opts<span class="s"> = </span>opts<span class="s"> || </span>{};
+</code><code id="L50"><span class="ln">50</span>        <b>var</b> xdim<span class="s"> = </span>chartinst.snapEnds(Math.min.apply(Math, valuesx), Math.max.apply(Math, valuesx), valuesx.length<span class="s"> - </span><span class="d">1</span>),
+</code><code id="L51"><span class="ln">51</span>            minx<span class="s"> = </span>xdim.from,
+</code><code id="L52"><span class="ln">52</span>            maxx<span class="s"> = </span>xdim.to,
+</code><code id="L53"><span class="ln">53</span>            gutter<span class="s"> = </span>opts.gutter<span class="s"> || </span><span class="d">10</span>,
+</code><code id="L54"><span class="ln">54</span>            ydim<span class="s"> = </span>chartinst.snapEnds(Math.min.apply(Math, valuesy), Math.max.apply(Math, valuesy), valuesy.length<span class="s"> - </span><span class="d">1</span>),
+</code><code id="L55"><span class="ln">55</span>            miny<span class="s"> = </span>ydim.from,
+</code><code id="L56"><span class="ln">56</span>            maxy<span class="s"> = </span>ydim.to,
+</code><code id="L57"><span class="ln">57</span>            len<span class="s"> = </span>Math.max(valuesx.length, valuesy.length, size.length),
+</code><code id="L58"><span class="ln">58</span>            symbol<span class="s"> = </span>paper[opts.symbol]<span class="s"> || </span><i>"circle"</i>,
+</code><code id="L59"><span class="ln">59</span>            res<span class="s"> = </span>paper.set(),
+</code><code id="L60"><span class="ln">60</span>            series<span class="s"> = </span>paper.set(),
+</code><code id="L61"><span class="ln">61</span>            max<span class="s"> = </span>opts.max<span class="s"> || </span><span class="d">100</span>,
+</code><code id="L62"><span class="ln">62</span>            top<span class="s"> = </span>Math.max.apply(Math, size),
+</code><code id="L63"><span class="ln">63</span>            R<span class="s"> = </span>[],
+</code><code id="L64"><span class="ln">64</span>            k<span class="s"> = </span>Math.sqrt(top<span class="s"> / </span>Math.PI)<span class="s"> * </span><span class="d">2</span><span class="s"> / </span>max;
+</code><code id="L65"><span class="ln">65</span>
+</code><code id="L66"><span class="ln">66</span>        <b>for</b> (<b>var</b> i<span class="s"> = </span><span class="d">0</span>; i &lt; len; i++) {
+</code><code id="L67"><span class="ln">67</span>            R[i]<span class="s"> = </span>Math.min(Math.sqrt(size[i]<span class="s"> / </span>Math.PI)<span class="s"> * </span><span class="d">2</span><span class="s"> / </span>k, max);
+</code><code id="L68"><span class="ln">68</span>        }
+</code><code id="L69"><span class="ln">69</span>
+</code><code id="L70"><span class="ln">70</span>        gutter<span class="s"> = </span>Math.max.apply(Math, R.concat(gutter));
+</code><code id="L71"><span class="ln">71</span>
+</code><code id="L72"><span class="ln">72</span>        <b>var</b> axis<span class="s"> = </span>paper.set(),
+</code><code id="L73"><span class="ln">73</span>            maxR<span class="s"> = </span>Math.max.apply(Math, R);
+</code><code id="L74"><span class="ln">74</span>
+</code><code id="L75"><span class="ln">75</span>        <b>if</b> (opts.axis) {
+</code><code id="L76"><span class="ln">76</span>            <b>var</b> ax<span class="s"> = </span>(opts.axis<span class="s"> + </span><i>""</i>).split(/[,\s]+/);
+</code><code id="L77"><span class="ln">77</span>
+</code><code id="L78"><span class="ln">78</span>            drawAxis.call(chartinst, ax);
+</code><code id="L79"><span class="ln">79</span>
+</code><code id="L80"><span class="ln">80</span>            <b>var</b> g<span class="s"> = </span>[], b<span class="s"> = </span>[];
+</code><code id="L81"><span class="ln">81</span>
+</code><code id="L82"><span class="ln">82</span>            <b>for</b> (<b>var</b> i<span class="s"> = </span><span class="d">0</span>, ii<span class="s"> = </span>ax.length; i &lt; ii; i++) {
+</code><code id="L83"><span class="ln">83</span>                <b>var</b> bb<span class="s"> = </span>ax[i].all ? ax[i].all.getBBox()[[<i>"height"</i>, <i>"width"</i>][i<span class="s"> % </span><span class="d">2</span>]] : <span class="d">0</span>;
+</code><code id="L84"><span class="ln">84</span>
+</code><code id="L85"><span class="ln">85</span>                g[i]<span class="s"> = </span>bb<span class="s"> + </span>gutter;
+</code><code id="L86"><span class="ln">86</span>                b[i]<span class="s"> = </span>bb;
+</code><code id="L87"><span class="ln">87</span>            }
+</code><code id="L88"><span class="ln">88</span>
+</code><code id="L89"><span class="ln">89</span>            gutter<span class="s"> = </span>Math.max.apply(Math, g.concat(gutter));
+</code><code id="L90"><span class="ln">90</span>
+</code><code id="L91"><span class="ln">91</span>            <b>for</b> (<b>var</b> i<span class="s"> = </span><span class="d">0</span>, ii<span class="s"> = </span>ax.length; i &lt; ii; i++) <b>if</b> (ax[i].all) {
+</code><code id="L92"><span class="ln">92</span>                ax[i].remove();
+</code><code id="L93"><span class="ln">93</span>                ax[i]<span class="s"> = </span><span class="d">1</span>;
+</code><code id="L94"><span class="ln">94</span>            }
+</code><code id="L95"><span class="ln">95</span>
+</code><code id="L96"><span class="ln">96</span>            drawAxis.call(chartinst, ax);
+</code><code id="L97"><span class="ln">97</span>
+</code><code id="L98"><span class="ln">98</span>            <b>for</b> (<b>var</b> i<span class="s"> = </span><span class="d">0</span>, ii<span class="s"> = </span>ax.length; i &lt; ii; i++) <b>if</b> (ax[i].all) {
+</code><code id="L99"><span class="ln">99</span>                axis.push(ax[i].all);
+</code><code id="L100"><span class="ln">100</span>            }
+</code><code id="L101"><span class="ln">101</span>
+</code><code id="L102"><span class="ln">102</span>            res.axis<span class="s"> = </span>axis;
+</code><code id="L103"><span class="ln">103</span>        }
+</code><code id="L104"><span class="ln">104</span>
+</code><code id="L105"><span class="ln">105</span>        <b>var</b> kx<span class="s"> = </span>(width<span class="s"> - </span>gutter<span class="s"> * </span><span class="d">2</span>)<span class="s"> / </span>((maxx<span class="s"> - </span>minx)<span class="s"> || </span><span class="d">1</span>),
+</code><code id="L106"><span class="ln">106</span>            ky<span class="s"> = </span>(height<span class="s"> - </span>gutter<span class="s"> * </span><span class="d">2</span>)<span class="s"> / </span>((maxy<span class="s"> - </span>miny)<span class="s"> || </span><span class="d">1</span>);
+</code><code id="L107"><span class="ln">107</span>
+</code><code id="L108"><span class="ln">108</span>        <b>for</b> (<b>var</b> i<span class="s"> = </span><span class="d">0</span>, ii<span class="s"> = </span>valuesy.length; i &lt; ii; i++) {
+</code><code id="L109"><span class="ln">109</span>            <b>var</b> sym<span class="s"> = </span>paper.raphael.is(symbol, <i>"array"</i>) ? symbol[i] : symbol,
+</code><code id="L110"><span class="ln">110</span>                X<span class="s"> = </span>x<span class="s"> + </span>gutter<span class="s"> + </span>(valuesx[i]<span class="s"> - </span>minx)<span class="s"> * </span>kx,
+</code><code id="L111"><span class="ln">111</span>                Y<span class="s"> = </span>y<span class="s"> + </span>height<span class="s"> - </span>gutter<span class="s"> - </span>(valuesy[i]<span class="s"> - </span>miny)<span class="s"> * </span>ky;
+</code><code id="L112"><span class="ln">112</span>
+</code><code id="L113"><span class="ln">113</span>            sym<span class="s"> &amp;&amp; </span>R[i]<span class="s"> &amp;&amp; </span>series.push(paper[sym](X, Y, R[i]).attr({ fill: opts.heat ? colorValue(R[i], maxR) : chartinst.colors[<span class="d">0</span>], <i>"fill-opacity"</i>: opts.opacity ? R[i]<span class="s"> / </span>max : <span class="d">1</span>, stroke: <i>"none"</i> }));
+</code><code id="L114"><span class="ln">114</span>        }
+</code><code id="L115"><span class="ln">115</span>
+</code><code id="L116"><span class="ln">116</span>        <b>var</b> covers<span class="s"> = </span>paper.set();
+</code><code id="L117"><span class="ln">117</span>
+</code><code id="L118"><span class="ln">118</span>        <b>for</b> (<b>var</b> i<span class="s"> = </span><span class="d">0</span>, ii<span class="s"> = </span>valuesy.length; i &lt; ii; i++) {
+</code><code id="L119"><span class="ln">119</span>            <b>var</b> X<span class="s"> = </span>x<span class="s"> + </span>gutter<span class="s"> + </span>(valuesx[i]<span class="s"> - </span>minx)<span class="s"> * </span>kx,
+</code><code id="L120"><span class="ln">120</span>                Y<span class="s"> = </span>y<span class="s"> + </span>height<span class="s"> - </span>gutter<span class="s"> - </span>(valuesy[i]<span class="s"> - </span>miny)<span class="s"> * </span>ky;
+</code><code id="L121"><span class="ln">121</span>
+</code><code id="L122"><span class="ln">122</span>            covers.push(paper.circle(X, Y, maxR).attr(chartinst.shim));
+</code><code id="L123"><span class="ln">123</span>            opts.href<span class="s"> &amp;&amp; </span>opts.href[i]<span class="s"> &amp;&amp; </span>covers[i].attr({href: opts.href[i]});
+</code><code id="L124"><span class="ln">124</span>            covers[i].r<span class="s"> = </span>+R[i].toFixed(<span class="d">3</span>);
+</code><code id="L125"><span class="ln">125</span>            covers[i].x<span class="s"> = </span>+X.toFixed(<span class="d">3</span>);
+</code><code id="L126"><span class="ln">126</span>            covers[i].y<span class="s"> = </span>+Y.toFixed(<span class="d">3</span>);
+</code><code id="L127"><span class="ln">127</span>            covers[i].X<span class="s"> = </span>valuesx[i];
+</code><code id="L128"><span class="ln">128</span>            covers[i].Y<span class="s"> = </span>valuesy[i];
+</code><code id="L129"><span class="ln">129</span>            covers[i].value<span class="s"> = </span>size[i]<span class="s"> || </span><span class="d">0</span>;
+</code><code id="L130"><span class="ln">130</span>            covers[i].dot<span class="s"> = </span>series[i];
+</code><code id="L131"><span class="ln">131</span>        }
+</code><code id="L132"><span class="ln">132</span>
+</code><code id="L133"><span class="ln">133</span>        res.covers<span class="s"> = </span>covers;
+</code><code id="L134"><span class="ln">134</span>        res.series<span class="s"> = </span>series;
+</code><code id="L135"><span class="ln">135</span>        res.push(series, axis, covers);
+</code><code id="L136"><span class="ln">136</span>
+</code><code id="L137"><span class="ln">137</span>        res.hover<span class="s"> = </span><b>function</b> (fin, fout) {
+</code><code id="L138"><span class="ln">138</span>            covers.mouseover(fin).mouseout(fout);
+</code><code id="L139"><span class="ln">139</span>            <b>return</b> <b>this</b>;
+</code><code id="L140"><span class="ln">140</span>        };
+</code><code id="L141"><span class="ln">141</span>
+</code><code id="L142"><span class="ln">142</span>        res.click<span class="s"> = </span><b>function</b> (f) {
+</code><code id="L143"><span class="ln">143</span>            covers.click(f);
+</code><code id="L144"><span class="ln">144</span>            <b>return</b> <b>this</b>;
+</code><code id="L145"><span class="ln">145</span>        };
+</code><code id="L146"><span class="ln">146</span>
+</code><code id="L147"><span class="ln">147</span>        res.each<span class="s"> = </span><b>function</b> (f) {
+</code><code id="L148"><span class="ln">148</span>            <b>if</b> (!paper.raphael.is(f, <i>"<b>function</b>"</i>)) {
+</code><code id="L149"><span class="ln">149</span>                <b>return</b> <b>this</b>;
+</code><code id="L150"><span class="ln">150</span>            }
+</code><code id="L151"><span class="ln">151</span>
+</code><code id="L152"><span class="ln">152</span>            <b>for</b> (<b>var</b> i<span class="s"> = </span>covers.length; i--;) {
+</code><code id="L153"><span class="ln">153</span>                f.call(covers[i]);
+</code><code id="L154"><span class="ln">154</span>            }
+</code><code id="L155"><span class="ln">155</span>
+</code><code id="L156"><span class="ln">156</span>            <b>return</b> <b>this</b>;
+</code><code id="L157"><span class="ln">157</span>        };
+</code><code id="L158"><span class="ln">158</span>
+</code><code id="L159"><span class="ln">159</span>        res.href<span class="s"> = </span><b>function</b> (map) {
+</code><code id="L160"><span class="ln">160</span>            <b>var</b> cover;
+</code><code id="L161"><span class="ln">161</span>
+</code><code id="L162"><span class="ln">162</span>            <b>for</b> (<b>var</b> i<span class="s"> = </span>covers.length; i--;) {
+</code><code id="L163"><span class="ln">163</span>                cover<span class="s"> = </span>covers[i];
+</code><code id="L164"><span class="ln">164</span>
+</code><code id="L165"><span class="ln">165</span>                <b>if</b> (cover.X<span class="s"> == </span>map.x<span class="s"> &amp;&amp; </span>cover.Y<span class="s"> == </span>map.y<span class="s"> &amp;&amp; </span>cover.value<span class="s"> == </span>map.value) {
+</code><code id="L166"><span class="ln">166</span>                    cover.attr({href: map.href});
+</code><code id="L167"><span class="ln">167</span>                }
+</code><code id="L168"><span class="ln">168</span>            }
+</code><code id="L169"><span class="ln">169</span>        };
+</code><code id="L170"><span class="ln">170</span>        <b>return</b> res;
+</code><code id="L171"><span class="ln">171</span>    };
+</code><code id="L172"><span class="ln">172</span>    
+</code><code id="L173"><span class="ln">173</span>    <span class="c">//inheritance</span>
+</code><code id="L174"><span class="ln">174</span>    <b>var</b> F<span class="s"> = </span><b>function</b>() {};
+</code><code id="L175"><span class="ln">175</span>    F.prototype<span class="s"> = </span>Raphael.g
+</code><code id="L176"><span class="ln">176</span>    Dotchart.prototype<span class="s"> = </span><b>new</b> F;
+</code><code id="L177"><span class="ln">177</span>    
+</code><code id="L178"><span class="ln">178</span>    <span class="c">//<b>public</b></span>
+</code><code id="L179"><span class="ln">179</span>    Raphael.fn.dotchart<span class="s"> = </span><b>function</b>(x, y, width, height, valuesx, valuesy, size, opts) {
+</code><code id="L180"><span class="ln">180</span>        <b>return</b> <b>new</b> Dotchart(<b>this</b>, x, y, width, height, valuesx, valuesy, size, opts);
+</code><code id="L181"><span class="ln">181</span>    }
+</code><code id="L182"><span class="ln">182</span>})();
+</code><code id="L183"><span class="ln">183</span>
+</code></body></html>

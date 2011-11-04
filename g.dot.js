@@ -4,6 +4,32 @@
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
+ 
+ /*
+ * dotchart method on paper
+ */
+/*\
+ * Paper.dotchart
+ [ method ]
+ **
+ * Creates a dot chart
+ **
+ > Parameters
+ **
+ - x (number) x coordinate of the chart
+ - y (number) y coordinate of the chart
+ - width (number) width of the chart (respected by all elements in the set)
+ - height (number) height of the chart (respected by all elements in the set)
+ - valuesx (array) values used to plot x asis
+ - valuesy (array) values used to plot y asis
+ - size (array) values used as data
+ - opts (object) options for the chart
+ **
+ = (object) path element of the popup
+ > Usage
+ | //life, expectancy, country and spending per capita (fixtional data)
+ | r.dotchart(0, 0, 620, 260, [76, 70, 67, 71, 69], [0, 1, 2, 3, 4], [100, 120, 140, 160, 500], {max: 10, axisylabels: ['Mexico', 'Argentina', 'Cuba', 'Canada', 'United States of America'], heat: true, axis: "0 0 1 1"})
+ \*/
 (function () {
         var colorValue = function (value, total, s, b) {
             return 'hsb(' + [Math.min((1 - value / total) * .4, 1), s || .75, b || .75] + ')';
