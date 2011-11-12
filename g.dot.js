@@ -24,11 +24,23 @@
  - valuesy (array) values used to plot y asis
  - size (array) values used as data
  - opts (object) options for the chart
+    - max (maximum diameter of a dot)
+    - symbol (string) default 'circle'. Which symbol should be used for rendering on the chart. 
+    - gutter (number) default 10
+    - heat (boolean) whether or not to enable coloring dots with warmer color whaen they represent above avg value
+    - opacity (number) (default 1, 0<=number<=1) opacity of the symbols 
+    - href (array) array of URLs to set up click-throughs on the symbols
+    - axis (string) Which axis should be renedered. String of four 0/1 values evaluated in order 'top right bottom left' e.g. '0 0 1 1'.
+    - axisxstep (number) distance between values on axis X
+    - axisystep (number) distance between values on axis Y
+    - axisxlabels (array) labels to be rendered instead of numeric values on axis X
+    - axisylabels labels to be rendered instead of numeric values on axis Y
+    - axisxtype (string) Default 't'
  **
  = (object) path element of the popup
  > Usage
- | //life, expectancy, country and spending per capita (fixtional data)
- | r.dotchart(0, 0, 620, 260, [76, 70, 67, 71, 69], [0, 1, 2, 3, 4], [100, 120, 140, 160, 500], {max: 10, axisylabels: ['Mexico', 'Argentina', 'Cuba', 'Canada', 'United States of America'], heat: true, axis: "0 0 1 1"})
+ | //life, expectancy, country and spending per capita (fictional data)
+ | r.dotchart(0, 0, 620, 260, [76, 70, 67, 71, 69], [0, 1, 2, 3, 4], [100, 120, 140, 160, 500], {max: 10, axisylabels: ['Mexico', 'Argentina', 'Cuba', 'Canada', 'United States of America'], heat: true, axis: '0 0 1 1'})
  \*/
 (function () {
         var colorValue = function (value, total, s, b) {
@@ -37,16 +49,17 @@
 
     function Dotchart(paper, x, y, width, height, valuesx, valuesy, size, opts) {
         
-        var chartinst = this;
-        
         function drawAxis(ax) {
             +ax[0] && (ax[0] = chartinst.axis(x + gutter, y + gutter, width - 2 * gutter, minx, maxx, opts.axisxstep || Math.floor((width - 2 * gutter) / 20), 2, opts.axisxlabels || null, opts.axisxtype || "t", null, paper));
             +ax[1] && (ax[1] = chartinst.axis(x + width - gutter, y + height - gutter, height - 2 * gutter, miny, maxy, opts.axisystep || Math.floor((height - 2 * gutter) / 20), 3, opts.axisylabels || null, opts.axisytype || "t", null, paper));
             +ax[2] && (ax[2] = chartinst.axis(x + gutter, y + height - gutter + maxR, width - 2 * gutter, minx, maxx, opts.axisxstep || Math.floor((width - 2 * gutter) / 20), 0, opts.axisxlabels || null, opts.axisxtype || "t", null, paper));
             +ax[3] && (ax[3] = chartinst.axis(x + gutter - maxR, y + height - gutter, height - 2 * gutter, miny, maxy, opts.axisystep || Math.floor((height - 2 * gutter) / 20), 1, opts.axisylabels || null, opts.axisytype || "t", null, paper));
         }
-
+        
+        //providing defaults
+        
         opts = opts || {};
+        var chartinst = this;
         var xdim = chartinst.snapEnds(Math.min.apply(Math, valuesx), Math.max.apply(Math, valuesx), valuesx.length - 1),
             minx = xdim.from,
             maxx = xdim.to,

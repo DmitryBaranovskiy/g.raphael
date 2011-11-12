@@ -1,9 +1,42 @@
-/*
+/*!
  * g.Raphael 0.5 - Charting library, based on Raphaël
  *
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
+
+ /*
+ * piechart method on paper
+ */
+/*\
+ * Paper.piechart
+ [ method ]
+ **
+ * Creates a pie chart
+ **
+ > Parameters
+ **
+ - cx (number) x coordinate of the chart
+ - cy (number) y coordinate of the chart
+ - r
+ - values (array) values used to plot
+ - opts (object) options for the chart
+    - stroke
+    - strokewidth
+    - init
+    - colors (array)
+    - href (array)
+    - legend
+    - legendcolor
+    - legendothers
+    - legendmark
+    - legendpos
+ **
+ = (object) path element of the popup
+ > Usage
+ | r.piechart(cx, cy, r, values, opts)
+ \*/
+ 
 (function () {
 
     function Piechart(paper, cx, cy, r, values, opts) {

@@ -4,6 +4,42 @@
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
+ 
+ /*
+ * linechart method on paper
+ */
+/*\
+ * Paper.linechart
+ [ method ]
+ **
+ * Creates a pie chart
+ **
+ > Parameters
+ **
+ - x
+ - y
+ - width
+ - height
+ - valuesx
+ - valuesy
+ - opts (object) options for the chart
+    - gutter
+    - symbol
+    - colors (array)
+    - shade
+    - nostroke
+    - width
+    - dash
+    - smooth
+    - axis
+    - axisxstep
+    - axisystep
+ **
+ = (object) path element of the popup
+ > Usage
+ | r.linechart(x, y, width, height, valuesx, valuesy, opts)
+ \*/
+ 
 (function () {
 
     function shrink(values, dim) {
