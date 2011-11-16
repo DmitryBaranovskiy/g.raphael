@@ -4,50 +4,12 @@
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
- 
-/*
- * dotchart method on paper
- */
-/*\
- * Paper.dotchart
- [ method ]
- **
- * Plots a dot chart
- **
- > Parameters
- - x (number) x coordinate of the chart
- - y (number) y coordinate of the chart
- - width (number) width of the chart (respected by all elements in the set)
- - height (number) height of the chart (respected by all elements in the set)
- - valuesx (array) values used to plot x asis
- - valuesy (array) values used to plot y asis
- - size (array) values used as data
- - opts (object) options for the chart
- > Possible options
- o max (number) maximum diameter of a dot
- o symbol (string) default `'circle'`. Which symbol should be used for rendering on the chart. 
- o gutter (number) default 10
- o heat (boolean) whether or not to enable coloring dots with warmer hue when they represent higher value
- o opacity (number) opacity of the symbols (between 0 and 1).
- o href (array) array of URLs to set up click-throughs on the symbols
- o axis (string) Which axes should be renedered. String of four values evaluated in order `'top right bottom left'` e.g. `'0 0 1 1'`.
- o axisxstep (number) distance between values on axis X
- o axisystep (number) distance between values on axis Y
- o axisxlabels (array) labels to be rendered instead of numeric values on axis X
- o axisylabels (array) labels to be rendered instead of numeric values on axis Y
- o axisxtype (string) Default `'t'`. Possible values: `'t'`, `'|'`, `' '`, `'-'`, `'+'`
- o axisytype (string) Default `'t'`. Possible values: `'t'`, `'|'`, `' '`, `'-'`, `'+'`
- **
- = (object) chart object
- > Usage
- | //life, expectancy, country and spending per capita (fictional data)
- | r.dotchart(0, 0, 620, 260, [76, 70, 67, 71, 69], [0, 1, 2, 3, 4], [100, 120, 140, 160, 500], {max: 10, axisylabels: ['Mexico', 'Argentina', 'Cuba', 'Canada', 'United States of America'], heat: true, axis: '0 0 1 1'})
- \*/
+
 (function () {
         var colorValue = function (value, total, s, b) {
             return 'hsb(' + [Math.min((1 - value / total) * .4, 1), s || .75, b || .75] + ')';
         };
-
+ 
     function Dotchart(paper, x, y, width, height, valuesx, valuesy, size, opts) {
         
         function drawAxis(ax) {
@@ -83,6 +45,13 @@
 
         gutter = Math.max.apply(Math, R.concat(gutter));
 
+ /*\
+ * dotchart.axis
+ [ object ]
+ **
+ * Set containing Elements of the chart axis. Only exists if `'axis'` definition string was passed to @Paper.dotchart
+ **
+ \*/
         var axis = paper.set(),
             maxR = Math.max.apply(Math, R);
 
@@ -144,20 +113,65 @@
             covers[i].dot = series[i];
         }
 
+ /*\
+ * dotchart.covers
+ [ object ]
+ **
+ * Set of Elements positioned above the symbols and mirroring them in size and shape. Covers are used as a surface for events capturing. Each cover has a property `'dot'` being a reference to the actual data-representing symbol. 
+ **
+ ** 
+ \*/
         res.covers = covers;
+ /*\
+ * dotchart.series
+ [ object ]
+ **
+ * Set of Elements containing the actual data-representing symbols.
+ **
+ ** 
+ \*/
         res.series = series;
         res.push(series, axis, covers);
 
+ /*\
+ * dotchart.hover
+ [ method ]
+ > Parameters
+ - mouseover handler (function) handler for the event
+ - mouseout handler (function) handler for the event
+ * Conveniece method to set up hover-in and hover-out event handlers
+ = (object) @dotchart object
+ **
+ \*/
         res.hover = function (fin, fout) {
             covers.mouseover(fin).mouseout(fout);
             return this;
         };
 
+ /*\
+ * dotchart.click
+ [ method ]
+ > Parameters
+ - click handler (function) handler for the event
+ * Conveniece method to set up click event handler
+ = (object) @dotchart object
+ **
+ \*/
         res.click = function (f) {
             covers.click(f);
             return this;
         };
 
+ /*\
+ * dotchart.each
+ [ method ]
+ > Parameters
+ - callback (function) called for every item in @dotchart.covers.
+ - this (object) callback is executed in a context of a cover element
+ * Conveniece method iterating on every symbol in the chart
+ = (object) @dotchart object
+ **
+ \*/
         res.each = function (f) {
             if (!paper.raphael.is(f, "function")) {
                 return this;
@@ -170,6 +184,15 @@
             return this;
         };
 
+ /*\
+ * dotchart.href
+ [ method ]
+ > Parameters
+ - map (array) Array of objects `{x: 1, y: 20, value: 15, href: "http://www.raphaeljs.com"}`
+ * Iterates on all @dotchart.covers elements. If x, y and value on the object are the same as on the cover it sets up a link on a symbol using the passef `href`.
+ = (object) @dotchart object
+ **
+ \*/
         res.href = function (map) {
             var cover;
 
@@ -189,24 +212,45 @@
     F.prototype = Raphael.g
     Dotchart.prototype = new F;
     
- /*
- * dotchart object
+/*
+ * dotchart method on paper
  */
 /*\
- * dotchart
- [ object ]
+ * Paper.dotchart
+ [ method ]
  **
- * dotchart object is a Set object with extra properties and methods added by the chart
+ * Plots a dot chart
  **
- > Properties
- - axis (object)
- - covers (object)
- - series (object)
- - hover (function)
- - click (function)
- - each (function)
- - href (function)
+ > Parameters
+ - x (number) x coordinate of the chart
+ - y (number) y coordinate of the chart
+ - width (number) width of the chart (respected by all elements in the set)
+ - height (number) height of the chart (respected by all elements in the set)
+ - valuesx (array) values used to plot x asis
+ - valuesy (array) values used to plot y asis
+ - size (array) values used as data
+ - opts (object) options for the chart
+ > Possible options
+ o {
+ o max (number) maximum diameter of a dot [default: 100]
+ o symbol (string) symbol used for rendering on the chart. The only possible option is `'circle'` [default]
+ o gutter (number) distance between symbols on the chart [default: 10]
+ o heat (boolean) whether or not to enable coloring higher value symbols with warmer hue [default: false]
+ o opacity (number) opacity of the symbols [default: 1]
+ o href (array) array of URLs to set up click-throughs on the symbols
+ o axis (string) Which axes should be renedered. String of four values evaluated in order `'top right bottom left'` e.g. `'0 0 1 1'`.
+ o axisxstep (number) distance between values on axis X
+ o axisystep (number) distance between values on axis Y
+ o axisxlabels (array) labels to be rendered instead of numeric values on axis X
+ o axisylabels (array) labels to be rendered instead of numeric values on axis Y
+ o axisxtype (string) Possible values: `'t'` [default], `'|'`, `' '`, `'-'`, `'+'` 
+ o axisytype (string) Possible values: `'t'` [default], `'|'`, `' '`, `'-'`, `'+'`
+ o }
  **
+ = (object) @dotchart object
+ > Usage
+ | //life, expectancy, country and spending per capita (fictional data)
+ | r.dotchart(0, 0, 620, 260, [76, 70, 67, 71, 69], [0, 1, 2, 3, 4], [100, 120, 140, 160, 500], {max: 10, axisylabels: ['Mexico', 'Argentina', 'Cuba', 'Canada', 'United States of America'], heat: true, axis: '0 0 1 1'})
  \*/
     Raphael.fn.dotchart = function(x, y, width, height, valuesx, valuesy, size, opts) {
         return new Dotchart(this, x, y, width, height, valuesx, valuesy, size, opts);
