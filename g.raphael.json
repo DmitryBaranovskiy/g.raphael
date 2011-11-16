@@ -5,5 +5,8 @@
     "files": [{
         "url": "../g.raphael/g.raphael.js",
         "link": "https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.raphael.js"
+    },{
+        "url": "../g.raphael/g.dot.js",
+        "link": "https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.dot.js"
     }]
 }

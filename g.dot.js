@@ -5,17 +5,16 @@
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
  
- /*
+/*
  * dotchart method on paper
  */
 /*\
  * Paper.dotchart
  [ method ]
  **
- * Creates a dot chart
+ * Plots a dot chart
  **
  > Parameters
- **
  - x (number) x coordinate of the chart
  - y (number) y coordinate of the chart
  - width (number) width of the chart (respected by all elements in the set)
@@ -24,20 +23,22 @@
  - valuesy (array) values used to plot y asis
  - size (array) values used as data
  - opts (object) options for the chart
-    - max (maximum diameter of a dot)
-    - symbol (string) default 'circle'. Which symbol should be used for rendering on the chart. 
-    - gutter (number) default 10
-    - heat (boolean) whether or not to enable coloring dots with warmer color whaen they represent above avg value
-    - opacity (number) (default 1, 0<=number<=1) opacity of the symbols 
-    - href (array) array of URLs to set up click-throughs on the symbols
-    - axis (string) Which axis should be renedered. String of four 0/1 values evaluated in order 'top right bottom left' e.g. '0 0 1 1'.
-    - axisxstep (number) distance between values on axis X
-    - axisystep (number) distance between values on axis Y
-    - axisxlabels (array) labels to be rendered instead of numeric values on axis X
-    - axisylabels labels to be rendered instead of numeric values on axis Y
-    - axisxtype (string) Default 't'
+ > Possible options
+ o max (number) maximum diameter of a dot
+ o symbol (string) default `'circle'`. Which symbol should be used for rendering on the chart. 
+ o gutter (number) default 10
+ o heat (boolean) whether or not to enable coloring dots with warmer hue when they represent higher value
+ o opacity (number) opacity of the symbols (between 0 and 1).
+ o href (array) array of URLs to set up click-throughs on the symbols
+ o axis (string) Which axes should be renedered. String of four values evaluated in order `'top right bottom left'` e.g. `'0 0 1 1'`.
+ o axisxstep (number) distance between values on axis X
+ o axisystep (number) distance between values on axis Y
+ o axisxlabels (array) labels to be rendered instead of numeric values on axis X
+ o axisylabels (array) labels to be rendered instead of numeric values on axis Y
+ o axisxtype (string) Default `'t'`. Possible values: `'t'`, `'|'`, `' '`, `'-'`, `'+'`
+ o axisytype (string) Default `'t'`. Possible values: `'t'`, `'|'`, `' '`, `'-'`, `'+'`
  **
- = (object) path element of the popup
+ = (object) chart object
  > Usage
  | //life, expectancy, country and spending per capita (fictional data)
  | r.dotchart(0, 0, 620, 260, [76, 70, 67, 71, 69], [0, 1, 2, 3, 4], [100, 120, 140, 160, 500], {max: 10, axisylabels: ['Mexico', 'Argentina', 'Cuba', 'Canada', 'United States of America'], heat: true, axis: '0 0 1 1'})
@@ -188,7 +189,25 @@
     F.prototype = Raphael.g
     Dotchart.prototype = new F;
     
-    //public
+ /*
+ * dotchart object
+ */
+/*\
+ * dotchart
+ [ object ]
+ **
+ * dotchart object is a Set object with extra properties and methods added by the chart
+ **
+ > Properties
+ - axis (object)
+ - covers (object)
+ - series (object)
+ - hover (function)
+ - click (function)
+ - each (function)
+ - href (function)
+ **
+ \*/
     Raphael.fn.dotchart = function(x, y, width, height, valuesx, valuesy, size, opts) {
         return new Dotchart(this, x, y, width, height, valuesx, valuesy, size, opts);
     }
