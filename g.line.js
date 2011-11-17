@@ -4,42 +4,7 @@
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
- 
- /*
- * linechart method on paper
- */
-/*\
- * Paper.linechart
- [ method ]
- **
- * Creates a pie chart
- **
- > Parameters
- **
- - x
- - y
- - width
- - height
- - valuesx
- - valuesy
- - opts (object) options for the chart
-    - gutter
-    - symbol
-    - colors (array)
-    - shade
-    - nostroke
-    - width
-    - dash
-    - smooth
-    - axis
-    - axisxstep
-    - axisystep
- **
- = (object) path element of the popup
- > Usage
- | r.linechart(x, y, width, height, valuesx, valuesy, opts)
- \*/
- 
+
 (function () {
 
     function shrink(values, dim) {
@@ -114,6 +79,14 @@
             len = Math.max(len, valuesy[i].length);
         }
 
+ /*\
+ * linechart.shades
+ [ object ]
+ **
+ * Set containing Elements corresponding to shades plotted in the chart.
+ **
+ ** 
+ \*/
         var shades = paper.set();
 
         for (i = 0, ii = valuesy.length; i < ii; i++) {
@@ -142,6 +115,14 @@
             kx = (width - gutter * 2) / ((maxx - minx) || 1),
             ky = (height - gutter * 2) / ((maxy - miny) || 1);
 
+ /*\
+ * linechart.axis
+ [ object ]
+ **
+ * Set containing Elements of the chart axis. The set is populated if `'axis'` definition string was passed to @Paper.linechart 
+ **
+ ** 
+ \*/
         var axis = paper.set();
 
         if (opts.axis) {
@@ -152,7 +133,23 @@
             +ax[3] && axis.push(chartinst.axis(x + gutter, y + height - gutter, height - 2 * gutter, miny, maxy, opts.axisystep || Math.floor((height - 2 * gutter) / 20), 1, paper));
         }
 
+ /*\
+ * linechart.lines
+ [ object ]
+ **
+ * Set containing Elements corresponding to lines plotted in the chart.
+ **
+ ** 
+ \*/
         var lines = paper.set(),
+ /*\
+ * linechart.symbols
+ [ object ]
+ **
+ * Set containing Elements corresponding to symbols plotted in the chart.
+ **
+ ** 
+ \*/
             symbols = paper.set(),
             line;
 
@@ -295,18 +292,47 @@
         chart.symbols = symbols;
         chart.axis = axis;
 
+ /*\
+ * linechart.hoverColumn
+ [ method ]
+ > Parameters
+ - mouseover handler (function) handler for the event
+ - mouseout handler (function) handler for the event
+ * Conveniece method to set up hover-in and hover-out event handlers
+ = (object) @linechart object
+ **
+ \*/
+ 
         chart.hoverColumn = function (fin, fout) {
             !columns && createColumns();
             columns.mouseover(fin).mouseout(fout);
             return this;
         };
 
+ /*\
+ * linechart.clickColumn
+ [ method ]
+ > Parameters
+ - click handler (function) handler for the event
+ * Conveniece method to set up click event handler
+ = (object) @linechart object
+ **
+ \*/
         chart.clickColumn = function (f) {
             !columns && createColumns();
             columns.click(f);
             return this;
         };
 
+ /*\
+ * linechart.hrefColumn
+ [ method ]
+ > Parameters
+ - click handler (function) handler for the event
+ * Conveniece method to set up click event handler
+ = (object) @linechart object
+ **
+ \*/
         chart.hrefColumn = function (cols) {
             var hrefs = paper.raphael.is(arguments[0], "array") ? arguments[0] : arguments;
 
@@ -327,23 +353,63 @@
             return this;
         };
 
+ /*\
+ * linechart.hover
+ [ method ]
+ > Parameters
+ - mouseover handler (function) handler for the event
+ - mouseout handler (function) handler for the event
+ * Conveniece method to set up hover-in and hover-out event handlers
+ = (object) @linechart object
+ **
+ \*/
         chart.hover = function (fin, fout) {
             !dots && createDots();
             dots.mouseover(fin).mouseout(fout);
             return this;
         };
 
+ /*\
+ * linechart.click
+ [ method ]
+ > Parameters
+ - mouseover handler (function) handler for the event
+ - mouseout handler (function) handler for the event
+ * Conveniece method to set up hover-in and hover-out event handlers
+ = (object) @linechart object
+ **
+ \*/
         chart.click = function (f) {
             !dots && createDots();
             dots.click(f);
             return this;
         };
 
+ /*\
+ * dotchart.each
+ [ method ]
+ > Parameters
+ - callback (function) called for every item in @dotchart.covers.
+ - this (object) callback is executed in a context of a cover element
+ * Conveniece method iterating on every symbol in the chart
+ = (object) @dotchart object
+ **
+ \*/
         chart.each = function (f) {
             createDots(f);
             return this;
         };
 
+ /*\
+ * dotchart.eachColumn
+ [ method ]
+ > Parameters
+ - callback (function) called for every item in @dotchart.covers.
+ - this (object) callback is executed in a context of a cover element
+ * Conveniece method iterating on every symbol in the chart
+ = (object) @dotchart object
+ **
+ \*/
         chart.eachColumn = function (f) {
             createColumns(f);
             return this;
@@ -357,7 +423,40 @@
     F.prototype = Raphael.g;
     Linechart.prototype = new F;
     
-    //public
+ /*
+ * linechart method on paper
+ */
+/*\
+ * Paper.linechart
+ [ method ]
+ **
+ * Creates a pie chart
+ **
+ > Parameters
+ **
+ - x (number)
+ - y (number)
+ - width (number)
+ - height (number)
+ - valuesx (array)
+ - valuesy (array)
+ - opts (object) options for the chart
+ o gutter (number)
+ o symbol (string)
+ o colors (array)
+ o shade (boolean)
+ o nostroke (boolean)
+ o width (number)
+ o dash (string)
+ o smooth (boolean)
+ o axis (string) Which axes should be renedered. String of four values evaluated in order `'top right bottom left'` e.g. `'0 0 1 1'`.
+ o axisxstep (number) distance between values on axis X
+ o axisystep (number) distance between values on axis Y
+ **
+ = (object) path element of the popup
+ > Usage
+ | r.linechart(x, y, width, height, valuesx, valuesy, opts)
+ \*/
     Raphael.fn.linechart = function(x, y, width, height, valuesx, valuesy, opts) {
         return new Linechart(this, x, y, width, height, valuesx, valuesy, opts);
     }
