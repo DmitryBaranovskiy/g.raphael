@@ -83,7 +83,7 @@
  * linechart.shades
  [ object ]
  **
- * Set containing Elements corresponding to shades plotted in the chart.
+ * Set containing Elements corresponding to shades plotted in the chart (if `opts.shade` was `true`).
  **
  ** 
  \*/
@@ -298,7 +298,13 @@
  > Parameters
  - mouseover handler (function) handler for the event
  - mouseout handler (function) handler for the event
- * Conveniece method to set up hover-in and hover-out event handlers
+ - this (object) callback is executed in a context of a cover element
+ * Conveniece method to set up hover-in and hover-out event handlers on the entire area of the chart.
+ * The handlers are passed a event object containing 
+ o {
+ o x (number) x coordinate on all lines in the chart
+ o y (array) y coordinates of all lines corresponding to the x
+ o }
  = (object) @linechart object
  **
  \*/
@@ -314,7 +320,13 @@
  [ method ]
  > Parameters
  - click handler (function) handler for the event
- * Conveniece method to set up click event handler
+ - this (object) callback is executed in a context of a cover element
+ * Conveniece method to set up click event handler on the antire area of the chart.
+ * The handler is passed a event object containing 
+ o {
+ o x (number) x coordinate on all lines in the chart
+ o y (array) y coordinates of all lines corresponding to the x
+ o }
  = (object) @linechart object
  **
  \*/
@@ -328,7 +340,7 @@
  * linechart.hrefColumn
  [ method ]
  > Parameters
- - click handler (function) handler for the event
+ - cols (object) object
  * Conveniece method to set up click event handler
  = (object) @linechart object
  **
@@ -359,7 +371,7 @@
  > Parameters
  - mouseover handler (function) handler for the event
  - mouseout handler (function) handler for the event
- * Conveniece method to set up hover-in and hover-out event handlers
+ * Conveniece method to set up hover-in and hover-out event handlers working on the line area only (use @linechart.hoverColumn)
  = (object) @linechart object
  **
  \*/
@@ -430,32 +442,34 @@
  * Paper.linechart
  [ method ]
  **
- * Creates a pie chart
+ * Creates a line chart
  **
  > Parameters
  **
- - x (number)
- - y (number)
- - width (number)
- - height (number)
- - valuesx (array)
- - valuesy (array)
+ - x (number) x coordinate of the chart
+ - y (number) y coordinate of the chart
+ - width (number) width of the chart (including the axis)
+ - height (number) height of the chart (including the axis)
+ - valuesx (array) values to plot on axis x
+ - valuesy (array) values to plot on axis y
  - opts (object) options for the chart
- o gutter (number)
- o symbol (string)
- o colors (array)
- o shade (boolean)
- o nostroke (boolean)
- o width (number)
- o dash (string)
- o smooth (boolean)
+ o {
+ o gutter (number) distance between symbols on the chart
+ o symbol (string) (array) symbol to be plotted as nodes of the chart, if array are passed symbols are printed iteratively. Currently `'circle'` and `''` (no symbol) are the only supported options.
+ o width (number) controls the size of the plotted symbol. Also controls the thickness of the line using a formula stroke-width=width/2. This option is likely to change in the future versions of g.raphael.
+ o colors (array) colors to plot data series. Raphael default colors are used if not passed
+ o shade (boolean) whether or not to plot a shade of the chart [default: false]. Currently only a shade between the line and x axis is supported.
+ o nostroke (boolean) whether or not to plot lines [default: false]. Only practical when shade is enabled. 
+ o dash (string) changes display of the line from continues to dashed or dotted (Possible values are the same as stroke-dasharray attribute, see @Element.attr).
+ o smooth (boolean) changes display of the line from point-to-point straight lines to curves (type C, see @Paper.path).
  o axis (string) Which axes should be renedered. String of four values evaluated in order `'top right bottom left'` e.g. `'0 0 1 1'`.
  o axisxstep (number) distance between values on axis X
  o axisystep (number) distance between values on axis Y
+ o }
  **
  = (object) path element of the popup
  > Usage
- | r.linechart(x, y, width, height, valuesx, valuesy, opts)
+ | r.linechart(0, 0, 99, 99, [1,2,3,4,5], [[1,2,3,4,5], [1,3,9,16,25], [100,50,25,12,6]], {smooth: true, colors: ['#F00', '#0F0', '#FF0'], symbol: 'circle'});
  \*/
     Raphael.fn.linechart = function(x, y, width, height, valuesx, valuesy, opts) {
         return new Linechart(this, x, y, width, height, valuesx, valuesy, opts);

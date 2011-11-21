@@ -167,7 +167,7 @@
  [ method ]
  > Parameters
  - callback (function) called for every item in @dotchart.covers.
- - this (object) callback is executed in a context of a cover element
+ - this (object) callback is executed in a context of a cover element object
  * Conveniece method iterating on every symbol in the chart
  = (object) @dotchart object
  **
@@ -239,8 +239,8 @@
  o opacity (number) opacity of the symbols [default: 1]
  o href (array) array of URLs to set up click-throughs on the symbols
  o axis (string) Which axes should be renedered. String of four values evaluated in order `'top right bottom left'` e.g. `'0 0 1 1'`.
- o axisxstep (number) distance between values on axis X
- o axisystep (number) distance between values on axis Y
+ o axisxstep (number) the number of steps to plot on the axis X
+ o axisystep (number) the number of steps to plot on the axis Y
  o axisxlabels (array) labels to be rendered instead of numeric values on axis X
  o axisylabels (array) labels to be rendered instead of numeric values on axis Y
  o axisxtype (string) Possible values: `'t'` [default], `'|'`, `' '`, `'-'`, `'+'` 
