@@ -44,7 +44,7 @@
         chart.covers = covers;
 
         if (len == 1) {
-            series.push(paper.circle(cx, cy, r).attr({ fill: chartinst.colors[0], stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth }));
+            series.push(paper.circle(cx, cy, r).attr({ fill: opts.colors && opts.colors[0] || chartinst.colors[0], stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth }));
             covers.push(paper.circle(cx, cy, r).attr(chartinst.shim));
             total = values[0];
             values[0] = { value: values[0], order: 0, valueOf: function () { return this.value; } };
