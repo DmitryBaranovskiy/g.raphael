@@ -269,8 +269,7 @@
                     var X = x + gutter + ((valuesx[i] || valuesx[0])[j] - minx) * kx,
                         nearX = x + gutter + ((valuesx[i] || valuesx[0])[j ? j - 1 : 1] - minx) * kx,
                         Y = y + height - gutter - (valuesy[i][j] - miny) * ky;
-
-                    f ? (C = {}) : cvrs.push(C = paper.circle(X, Y, Math.abs(nearX - X) / 2).attr({ stroke: "none", fill: "#000", opacity: 0 }));
+                    f ? (C = {}) : cvrs.push(C = paper.circle(X, Y, Math.abs(nearX - X) / 2).attr({ stroke: "#000", fill: "#000", opacity: 1 }));
                     C.x = X;
                     C.y = Y;
                     C.value = valuesy[i][j];
@@ -340,8 +339,8 @@
  * linechart.hrefColumn
  [ method ]
  > Parameters
- - cols (object) object
- * Conveniece method to set up click event handler
+ - cols (object) object containing values as keys and URLs as values, e.g. {1: 'http://www.raphaeljs.com', 2: 'http://g.raphaeljs.com'}
+ * Creates click-throughs on the whole area of the chart corresponding to x values
  = (object) @linechart object
  **
  \*/
@@ -371,7 +370,8 @@
  > Parameters
  - mouseover handler (function) handler for the event
  - mouseout handler (function) handler for the event
- * Conveniece method to set up hover-in and hover-out event handlers working on the line area only (use @linechart.hoverColumn)
+ * Conveniece method to set up hover-in and hover-out event handlers working on the lines of the chart.
+ * Use @linechart.hoverColumn to work with the entire chart area.
  = (object) @linechart object
  **
  \*/
@@ -385,9 +385,10 @@
  * linechart.click
  [ method ]
  > Parameters
- - mouseover handler (function) handler for the event
- - mouseout handler (function) handler for the event
- * Conveniece method to set up hover-in and hover-out event handlers
+ - click handler (function) handler for the event
+ - this (object) callback is executed in a context of a cover element
+ * Conveniece method to set up click event handler on the lines of the chart
+ * Use @linechart.clickColumn to work with the entire chart area.
  = (object) @linechart object
  **
  \*/
@@ -398,13 +399,18 @@
         };
 
  /*\
- * dotchart.each
+ * linechart.each
  [ method ]
  > Parameters
- - callback (function) called for every item in @dotchart.covers.
- - this (object) callback is executed in a context of a cover element
- * Conveniece method iterating on every symbol in the chart
- = (object) @dotchart object
+ - callback (function) function executed for every data point
+ - this (object) context of the callback function.
+ o {
+ o x (number) x coordinate of the data point
+ o y (number) y coordinate of the data point
+ o value (number) value represented by the data point
+ o }
+ * Iterates over each unique data point plotted on every line on the chart.  
+ = (object) @linechart object
  **
  \*/
         chart.each = function (f) {
@@ -413,13 +419,18 @@
         };
 
  /*\
- * dotchart.eachColumn
+ * linechart.eachColumn
  [ method ]
  > Parameters
- - callback (function) called for every item in @dotchart.covers.
- - this (object) callback is executed in a context of a cover element
- * Conveniece method iterating on every symbol in the chart
- = (object) @dotchart object
+ - callback (function) function executed for every column
+ - this (object) context of the callback function.
+ o {
+ o x (number) x coordinate of the data point
+ o y (array) y coordinates of data points existing for the given x
+ o values (array) values represented by the data points existing for the given x
+ o }
+ * Iterates over each column area (area plotted above the chart).
+ = (object) @linechart object
  **
  \*/
         chart.eachColumn = function (f) {
