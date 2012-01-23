@@ -16,7 +16,7 @@
                 static_radar = r.radarchart(
 					320, 240, 200, 
 					[35, 20, 13, 32, 25, 40, 37, 16, 42],
-					{discradius: 8, numbers: false}
+					{circleradius: 8, numbers: false}
 				);
 				
 				r.text(960, 20, "Animated Radar Chart").attr(txtattr).attr({"font-size": 20});
@@ -25,7 +25,7 @@
 					[35, 37, 16, 20, 40, 13, 32, 25, 42, 20	],
 					{	stroke:     "#09f",
 						helplines:  4,
-						discradius: 10,
+						circleradius: 10,
 						legend: ["Value number one", "A second value", "And a third one",
 								 "Always give meaningful titles", "Don't you think?", "This legend rocks!"], 
 						href: ["http://raphaeljs.com", "http://g.raphaeljs.com"]
