@@ -8,19 +8,19 @@
         <script src="g.radar.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" charset="utf-8">
             window.onload = function () {
-                var r = Raphael("holder");
-                r.g.txtattr.font = "12px 'Fontin Sans', Fontin-Sans, sans-serif";
+                var r = Raphael("holder"),
+                    txtattr = {font: "12px 'Fontin Sans', Fontin-Sans, sans-serif"};
 
-                r.g.text(320, 20, "Static Radar Chart").attr({"font-size": 20});
+                r.text(320, 20, "Static Radar Chart").attr(txtattr).attr({"font-size": 20});
 
-                static_radar = r.g.radar(
+                static_radar = r.radarchart(
 					320, 240, 200, 
 					[35, 20, 13, 32, 25, 40, 37, 16, 42],
 					{discradius: 8, numbers: false}
 				);
 				
-				r.g.text(960, 20, "Animated Radar Chart").attr({"font-size": 20});
-				anim_radar = r.g.radar(
+				r.text(960, 20, "Animated Radar Chart").attr(txtattr).attr({"font-size": 20});
+				anim_radar = r.radarchart(
 					960, 240, 200, 
 					[35, 37, 16, 20, 40, 13, 32, 25, 42, 20	],
 					{	stroke:     "#09f",
