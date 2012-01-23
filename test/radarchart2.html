@@ -30,23 +30,25 @@
                 anim_radar.hover(function () {
                     this.arm.stop();
                     this.arm.animate({scale: [2, 2, this.mx, this.my]}, 500);
-					this.number.animate({"font-size": 20}, 500);
+					this.number.attr({"font-size": 20});
 					if (this.label) {
                         this.label[0].stop();
-                        this.label[0].scale(2, 2);
+                        this.label[0].attr({r: 10});
                         this.label[1].attr({"font-weight": "bold"});
+                        this.label[2].stop();
                         this.label[2].attr({"font-size": 20});
                     }
                 }, function () {
                     anim_radar.each(function () {
 						this.arm.stop();
 						this.arm.animate({scale: [1, 1, this.x, this.y]}, 500);
-    					this.number.animate({"font-size": 12}, 500);
+                        this.number.stop();
+    					this.number.animate({"font-size": 12}, 500, "bounce");
 					});
 					if (this.label) {
-                        this.label[0].animate({scale: 1}, 500, "bounce");
+                        this.label[0].animate({r: 8}, 500, "bounce");
                         this.label[1].attr({"font-weight": "normal"});
-                        this.label[2].attr({"font-size": 12});
+                        this.label[2].animate({"font-size": 12}, 500, "bounce");
                     }
                 });
 				
