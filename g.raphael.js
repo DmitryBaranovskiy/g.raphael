@@ -782,7 +782,7 @@ Raphael.g = {
         t = round(to * Math.pow(10, i)) / Math.pow(10, i);
 
         if (t < to) {
-            t = round((to + .5) * Math.pow(10, i)) / Math.pow(10, i);
+            t = round((to + d) * Math.pow(10, i)) / Math.pow(10, i);
         }
 
         f = round((from - (i > 0 ? 0 : .5)) * Math.pow(10, i)) / Math.pow(10, i);
