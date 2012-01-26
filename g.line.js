@@ -22,7 +22,7 @@
                 sum = values[j++] * -l;
                 l += k;
             } else {
-                sum += values[j++];
+                sum += values[j++] * 1;
             }
         }
         return res;
