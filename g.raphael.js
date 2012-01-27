@@ -770,10 +770,14 @@ Raphael.g = {
 
             i ++;
         } else {
-            while (!r) {
-                i = i || 1;
-                r = ~~(d * Math.pow(10, i)) / Math.pow(10, i);
-                i++;
+            if(d == 0 || isNaN(d)) {
+                i = 1;
+            } else {
+                while (!r) {
+                    i = i || 1;
+                    r = ~~(d * Math.pow(10, i)) / Math.pow(10, i);
+                    i++;
+                }
             }
 
             i && i--;
