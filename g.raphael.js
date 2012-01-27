@@ -770,7 +770,7 @@ Raphael.g = {
 
             i ++;
         } else {
-            if(d == 0 || isNaN(d)) {
+            if(d == 0 || !isFinite(d)) {
                 i = 1;
             } else {
                 while (!r) {
