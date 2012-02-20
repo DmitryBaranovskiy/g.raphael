@@ -42,18 +42,22 @@
         }
 
         chart.covers = covers;
-
+		//at this point we are throwing away passed values array of integers
+		//and mutitating original array to contain objects
+		//this is wrong as it changes the array passed to g.raphael without warning
         if (len == 1) {
             series.push(paper.circle(cx, cy, r).attr({ fill: chartinst.colors[0], stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth }));
             covers.push(paper.circle(cx, cy, r).attr(chartinst.shim));
             total = values[0];
             values[0] = { value: values[0], order: 0, valueOf: function () { return this.value; } };
+            opts.href && opts.href[0]+'' && (values[0].href = opts.href[0]); //attaching href to correct data point
             series[0].middle = {x: cx, y: cy};
             series[0].mangle = 180;
         } else {
             for (var i = 0; i < len; i++) {
                 total += values[i];
                 values[i] = { value: values[i], order: i, valueOf: function () { return this.value; } };
+                opts.href && opts.href[i]+'' && (values[i].href = opts.href[i]); //attaching href to correct data point
             }
 
             values.sort(function (a, b) {
@@ -99,10 +103,10 @@
                 series.push(p);
                 opts.init && p.animate({ path: path.join(",") }, (+opts.init - 1) || 1000, ">");
             }
-
+			
             for (i = 0; i < len; i++) {
                 p = paper.path(sectors[i].attr("path")).attr(chartinst.shim);
-                opts.href && opts.href[i] && p.attr({ href: opts.href[i] });
+                values[i].href && p.attr({ href: values[i].href });
                 p.attr = function () {};
                 covers.push(p);
                 series.push(p);
