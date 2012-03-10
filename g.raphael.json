@@ -1,0 +1,9 @@
+{
+    "title": "g.Raphaël",
+    "output": "../g.raphael/docs/reference.html",
+    "scripts": ["../raphael-min.js", "../g.raphael.js", "reference.js"],
+    "files": [{
+        "url": "../g.raphael/g.raphael.js",
+        "link": "https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.raphael.js"
+    }]
+}
