@@ -80,7 +80,7 @@
             for (i = 0; i < len; i++) {
                 //if all votes are in only one option must draw a circle
                 if (values[i] / total === 1) {
-                    var circle = paper.circle(cx, cy, r).attr({ fill: chartinst.colors[i], stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth })
+                    var circle = paper.circle(cx, cy, r).attr({ fill: chartinst.colors[i], stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth });
                     circle.value = values[i];
                     series.push(circle);
                     sectors.push(circle);
