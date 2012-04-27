@@ -182,7 +182,7 @@
                 Xs = Xs.concat(valuesx[i]);
             }
 
-            Xs.sort();
+            Xs.sort(function(a,b){return a-b;});
             // remove duplicates
 
             var Xs2 = [],
