@@ -214,7 +214,12 @@
                 labels[j] = chartinst.labelise(labels[j], values[i], total);
                 chart.labels.push(paper.set());
                 chart.labels[i].push(paper[mark](x + 5, h, 5).attr({ fill: clr, stroke: "none" }));
-                chart.labels[i].push(txt = paper.text(x + 20, h, labels[j] || values[j]).attr(chartinst.txtattr).attr({ fill: opts.legendcolor || "#000", "text-anchor": "start"}));
+                if (opts.cufont) {
+                    txt = paper.print(x + 20, h, labels[j] || values[j], opts.cufont);
+                } else {
+                    txt = paper.text(x + 20, h, labels[j] || values[j]).attr({ "text-anchor": "start" });
+                }
+                chart.labels[i].push(txt.attr(chartinst.txtattr).attr({ fill: opts.legendcolor || "#000" }));
                 covers[i].label = chart.labels[i];
                 h += txt.getBBox().height * 1.2;
             }
