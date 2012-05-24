@@ -78,26 +78,38 @@
             others && values.splice(len) && (values[cut].others = true);
 
             for (i = 0; i < len; i++) {
-                var mangle = angle - 360 * values[i] / total / 2;
+                //if all votes are in only one option must draw a circle
+                if (values[i] / total === 1) {
+                    var circle = paper.circle(cx, cy, r).attr({ fill: chartinst.colors[i], stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth });
+                    circle.value = values[i];
+                    series.push(circle);
+                    sectors.push(circle);
+                    covers.push(paper.circle(cx, cy, r).attr(chartinst.shim));
+                    total = values[i];
+                    series[i].middle = {x: cx, y: cy};
+                    series[i].mangle = 180;
+                } else {
+                    var mangle = angle - 360 * values[i] / total / 2;
 
-                if (!i) {
-                    angle = 90 - mangle;
-                    mangle = angle - 360 * values[i] / total / 2;
+                    if (!i) {
+                        angle = 90 - mangle;
+                        mangle = angle - 360 * values[i] / total / 2;
+                    }
+
+                    if (opts.init) {
+                        var ipath = sector(cx, cy, 1, angle, angle - 360 * values[i] / total).join(",");
+                    }
+
+                    var path = sector(cx, cy, r, angle, angle -= 360 * values[i] / total);
+                    var p = paper.path(opts.init ? ipath : path).attr({ fill: opts.colors && opts.colors[i] || chartinst.colors[i] || "#666", stroke: opts.stroke || "#fff", "stroke-width": (opts.strokewidth == null ? 1 : opts.strokewidth), "stroke-linejoin": "round" });
+
+                    p.value = values[i];
+                    p.middle = path.middle;
+                    p.mangle = mangle;
+                    sectors.push(p);
+                    series.push(p);
+                    opts.init && p.animate({ path: path.join(",") }, (+opts.init - 1) || 1000, ">");
                 }
-
-                if (opts.init) {
-                    var ipath = sector(cx, cy, 1, angle, angle - 360 * values[i] / total).join(",");
-                }
-
-                var path = sector(cx, cy, r, angle, angle -= 360 * values[i] / total);
-                var p = paper.path(opts.init ? ipath : path).attr({ fill: opts.colors && opts.colors[i] || chartinst.colors[i] || "#666", stroke: opts.stroke || "#fff", "stroke-width": (opts.strokewidth == null ? 1 : opts.strokewidth), "stroke-linejoin": "round" });
-
-                p.value = values[i];
-                p.middle = path.middle;
-                p.mangle = mangle;
-                sectors.push(p);
-                series.push(p);
-                opts.init && p.animate({ path: path.join(",") }, (+opts.init - 1) || 1000, ">");
             }
 
             for (i = 0; i < len; i++) {
