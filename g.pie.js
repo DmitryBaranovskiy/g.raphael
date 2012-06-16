@@ -89,8 +89,17 @@
                     var ipath = sector(cx, cy, 1, angle, angle - 360 * values[i] / total).join(",");
                 }
 
-                var path = sector(cx, cy, r, angle, angle -= 360 * values[i] / total);
-                var p = paper.path(opts.init ? ipath : path).attr({ fill: opts.colors && opts.colors[i] || chartinst.colors[i] || "#666", stroke: opts.stroke || "#fff", "stroke-width": (opts.strokewidth == null ? 1 : opts.strokewidth), "stroke-linejoin": "round" });
+                var p, path = sector(cx, cy, r, angle, angle -= 360 * values[i] / total);
+
+                if (values[i].value < total) {
+                  var strokewidth = 0;
+                  if (values[i].value > 0) {
+                    strokewidth = (opts.strokewidth == null ? 1 : opts.strokewidth);
+                  }
+                  p = paper.path(opts.init ? ipath : path).attr({ fill: opts.colors && opts.colors[i] || chartinst.colors[i] || "#666", stroke: opts.stroke || "#fff", "stroke-width": strokewidth, "stroke-linejoin": "round" });
+                } else {
+                  p = paper.circle(cx, cy, r).attr({ fill: chartinst.colors[0], stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth })
+                }
 
                 p.value = values[i];
                 p.middle = path.middle;
