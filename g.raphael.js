@@ -753,40 +753,23 @@ Raphael.g = {
             return {from: f, to: t, power: 0};
         }
 
-        function round(a) {
-            return Math.abs(a - .5) < .25 ? ~~(a) + .5 : Math.round(a);
-        }
-
         var d = (t - f) / steps,
-            r = ~~(d),
-            R = r,
-            i = 0;
+            mag = Math.floor(Math.log(d) / Math.log(10)),
+            magPow = Math.pow(10, mag),
+            magMsd = Math.floor(d / magPow + 0.5);
 
-        if (r) {
-            while (R) {
-                i--;
-                R = ~~(d * Math.pow(10, i)) / Math.pow(10, i);
-            }
+        // promote the MSD to either 1, 2, or 5
+        if (magMsd > 5.0)
+            magMsd = 10.0;
+        else if (magMsd > 2.0)
+            magMsd = 5.0;
+        else if (magMsd > 1.0)
+            magMsd = 2.0;
 
-            i ++;
-        } else {
-            while (!r) {
-                i = i || 1;
-                r = ~~(d * Math.pow(10, i)) / Math.pow(10, i);
-                i++;
-            }
+        var step = magMsd * magPow;
 
-            i && i--;
-        }
+        return { from: f - (f % step), to: t - (-t % step), i: mag }
 
-        t = round(to * Math.pow(10, i)) / Math.pow(10, i);
-
-        if (t < to) {
-            t = round((to + .5) * Math.pow(10, i)) / Math.pow(10, i);
-        }
-
-        f = round((from - (i > 0 ? 0 : .5)) * Math.pow(10, i)) / Math.pow(10, i);
-        return { from: f, to: t, power: i };
     },
 
     axis: function (x, y, length, from, to, steps, orientation, labels, type, dashsize, paper) {
