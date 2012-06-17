@@ -12,3 +12,6 @@ This branch has made a few modifications to g.pie.js
  * Added an sort flag, opts = {sort: false} will keep the chart from being sorted
  * Added opacity, opts = {opacity: [0.5, ...]}
  * Added an inside radius option, to allow for the creation of donut charts, opts = {insideRadius: 50}
+
+
+Examples can be found at http://wargoats.com/pie/
