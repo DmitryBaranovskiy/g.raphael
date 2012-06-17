@@ -98,9 +98,9 @@
                     if (values[i].value > 0) {
                         strokewidth = (opts.strokewidth == null ? 1 : opts.strokewidth);
                     }
-                    p = paper.path(opts.init ? ipath : path).attr({ fill: opts.colors && opts.colors[i] || chartinst.colors[i] || "#666", stroke: opts.stroke || "#fff", "stroke-width": strokewidth, "stroke-linejoin": "round" });
+                    p = paper.path(opts.init ? ipath : path).attr({ fill: opts.colors && opts.colors[i] || chartinst.colors[i] || "#666", opacity: opts.opacity && opts.opacity[i], stroke: opts.stroke || "#fff", "stroke-width": strokewidth, "stroke-linejoin": "round" });
                 } else {
-                    p = paper.circle(cx, cy, r).attr({ fill: chartinst.colors[0], stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth })
+                    p = paper.circle(cx, cy, r).attr({ fill: chartinst.colors[0], opacity: opts.opacity && opts.opacity[i], stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth })
                 }
 
                 p.value = values[i];
