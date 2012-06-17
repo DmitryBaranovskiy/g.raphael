@@ -23,19 +23,41 @@
             defcut = true;
 
         function sector(cx, cy, r, startAngle, endAngle, fill) {
-            var rad = Math.PI / 180,
-                x1 = cx + r * Math.cos(-startAngle * rad),
-                x2 = cx + r * Math.cos(-endAngle * rad),
-                xm = cx + r / 2 * Math.cos(-(startAngle + (endAngle - startAngle) / 2) * rad),
-                y1 = cy + r * Math.sin(-startAngle * rad),
-                y2 = cy + r * Math.sin(-endAngle * rad),
-                ym = cy + r / 2 * Math.sin(-(startAngle + (endAngle - startAngle) / 2) * rad),
-                res = [
-                    "M", cx, cy,
-                    "L", x1, y1,
-                    "A", r, r, 0, +(Math.abs(endAngle - startAngle) > 180), 1, x2, y2,
-                    "z"
-                ];
+            if (opts.insideRadius && opts.insideRadius > 0) {
+                var ir = opts.insideRadius;
+                var rad = Math.PI / 180,
+                    ox1 = cx + r * Math.cos(-startAngle * rad),
+                    ox2 = cx + r * Math.cos(-endAngle * rad),
+                    ix1 = cx + ir * Math.cos(-startAngle * rad),
+                    ix2 = cx + ir * Math.cos(-endAngle * rad),
+                    xm = cx + r / 2 * Math.cos(-(startAngle + (endAngle - startAngle) / 2) * rad),
+                    oy1 = cy + r * Math.sin(-startAngle * rad),
+                    oy2 = cy + r * Math.sin(-endAngle * rad),
+                    iy1 = cy + ir * Math.sin(-startAngle * rad),
+                    iy2 = cy + ir * Math.sin(-endAngle * rad),
+                    ym = cy + r / 2 * Math.sin(-(startAngle + (endAngle - startAngle) / 2) * rad),
+                    res = [
+                        "M", ix1, iy1,
+                        "A", ir, ir, 0, +(Math.abs(endAngle - startAngle) > 180), 1, ix2, iy2,
+                        "L", ox2, oy2,
+                        "A", r, r, 0, +(Math.abs(endAngle - startAngle) > 180), 0, ox1, oy1,
+                        "z"
+                    ];
+            } else {
+                var rad = Math.PI / 180,
+                    x1 = cx + r * Math.cos(-startAngle * rad),
+                    x2 = cx + r * Math.cos(-endAngle * rad),
+                    xm = cx + r / 2 * Math.cos(-(startAngle + (endAngle - startAngle) / 2) * rad),
+                    y1 = cy + r * Math.sin(-startAngle * rad),
+                    y2 = cy + r * Math.sin(-endAngle * rad),
+                    ym = cy + r / 2 * Math.sin(-(startAngle + (endAngle - startAngle) / 2) * rad),
+                    res = [
+                        "M", cx, cy,
+                        "L", x1, y1,
+                        "A", r, r, 0, +(Math.abs(endAngle - startAngle) > 180), 1, x2, y2,
+                        "z"
+                    ];
+            }
 
             res.middle = { x: xm, y: ym };
             return res;
@@ -56,9 +78,11 @@
                 values[i] = { value: values[i], order: i, valueOf: function () { return this.value; } };
             }
 
-            values.sort(function (a, b) {
-                return b.value - a.value;
-            });
+            if (opts.sort == null || opts.sort) {
+                values.sort(function (a, b) {
+                    return b.value - a.value;
+                });
+            }
 
             for (i = 0; i < len; i++) {
                 if (defcut && values[i] * 360 / total <= 1.5) {
@@ -89,8 +113,17 @@
                     var ipath = sector(cx, cy, 1, angle, angle - 360 * values[i] / total).join(",");
                 }
 
-                var path = sector(cx, cy, r, angle, angle -= 360 * values[i] / total);
-                var p = paper.path(opts.init ? ipath : path).attr({ fill: opts.colors && opts.colors[i] || chartinst.colors[i] || "#666", stroke: opts.stroke || "#fff", "stroke-width": (opts.strokewidth == null ? 1 : opts.strokewidth), "stroke-linejoin": "round" });
+                var p, path = sector(cx, cy, r, angle, angle -= 360 * values[i] / total);
+
+                if (values[i].value < total) {
+                    var strokewidth = 0;
+                    if (values[i].value > 0) {
+                        strokewidth = (opts.strokewidth == null ? 1 : opts.strokewidth);
+                    }
+                    p = paper.path(opts.init ? ipath : path).attr({ fill: opts.colors && opts.colors[i] || chartinst.colors[i] || "#666", opacity: opts.opacity && opts.opacity[i], stroke: opts.stroke || "#fff", "stroke-width": strokewidth, "stroke-linejoin": "round" });
+                } else {
+                    p = paper.circle(cx, cy, r).attr({ fill: chartinst.colors[0], opacity: opts.opacity && opts.opacity[i], stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth })
+                }
 
                 p.value = values[i];
                 p.middle = path.middle;
