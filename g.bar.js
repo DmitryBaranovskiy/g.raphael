@@ -135,9 +135,6 @@
         }
     }
 
- /*
- * vbarchart method on paper
- */
 /*\
  * Paper.vbarchart
  [ method ]
@@ -152,13 +149,15 @@
  - height (number) height of the chart (respected by all elements in the set)
  - values (array) values
  - opts (object) options for the chart
-    - type (string) type of endings of the bar. Default: 'square'. Other options are: 'round', 'sharp', 'soft'.
-    - gutter (number)(string) default '20%' (WHAT DOES IT DO?)
-    - vgutter (number)
-    - colors (array) colors be used repeatedly to plot the bars. If multicolumn bar is used each sequence of bars with use a different color.
-    - stacked (boolean) whether or not to tread values as in a stacked bar chart
-    - to
-    - stretch (boolean)
+ o {
+ o type (string) type of endings of the bar. Default: 'square'. Other options are: 'round', 'sharp', 'soft'.
+ o gutter (number)(string) default '20%' (WHAT DOES IT DO?)
+ o vgutter (number)
+ o colors (array) colors be used repeatedly to plot the bars. If multicolumn bar is used each sequence of bars with use a different color.
+ o stacked (boolean) whether or not to tread values as in a stacked bar chart
+ o to
+ o stretch (boolean)
+ o }
  **
  = (object) path element of the popup
  > Usage
@@ -424,9 +423,6 @@
         return new VBarchart(this, x, y, width, height, values, opts);
     };
     
- /*
- * barchart method on paper
- */
 /*\
  * Paper.barchart
  [ method ]
@@ -441,13 +437,15 @@
  - height (number) height of the chart (respected by all elements in the set)
  - values (array) values
  - opts (object) options for the chart
-    - type (string) type of endings of the bar. Default: 'square'. Other options are: 'round', 'sharp', 'soft'.
-    - gutter (number)(string) default '20%' (WHAT DOES IT DO?)
-    - vgutter (number)
-    - colors (array) colors be used repeatedly to plot the bars. If multicolumn bar is used each sequence of bars with use a different color.
-    - stacked (boolean) whether or not to tread values as in a stacked bar chart
-    - to
-    - stretch (boolean)
+ o {
+ o type (string) type of endings of the bar. Default: 'square'. Other options are: 'round', 'sharp', 'soft'.
+ o gutter (number)(string) default '20%' (WHAT DOES IT DO?)
+ o vgutter (number)
+ o colors (array) colors be used repeatedly to plot the bars. If multicolumn bar is used each sequence of bars with use a different color.
+ o stacked (boolean) whether or not to tread values as in a stacked bar chart
+ o to
+ o stretch (boolean)
+ o }
  **
  = (object) path element of the popup
  > Usage

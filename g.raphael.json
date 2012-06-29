@@ -1,7 +1,7 @@
 {
     "title": "g.Raphaël",
     "output": "../g.raphael/docs/reference.html",
-    "scripts": ["../raphael-min.js", "../g.raphael.js", "../g.dot.js", "../g.line.js", "reference.js"],
+    "scripts": ["../raphael-min.js", "../g.raphael.js", "../g.line.js", "../g.dot.js", "../g.bar.js", "../g.pie.js", "reference.js"],
     "files": [{
         "url": "../g.raphael/g.raphael.js",
         "link": "https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.raphael.js"
@@ -11,5 +11,12 @@
     },{
         "url": "../g.raphael/g.dot.js",
         "link": "https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.dot.js"
+    },{
+        "url": "../g.raphael/g.bar.js",
+        "link": "https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.bar.js"
+    },
+    {
+        "url": "../g.raphael/g.pie.js",
+        "link": "https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.pie.js"
     }]
 }

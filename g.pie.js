@@ -18,19 +18,21 @@
  **
  - cx (number) x coordinate of the chart
  - cy (number) y coordinate of the chart
- - r
+ - r (integer) radius of the chart
  - values (array) values used to plot
  - opts (object) options for the chart
-    - stroke
-    - strokewidth
-    - init
-    - colors (array)
-    - href (array)
-    - legend
-    - legendcolor
-    - legendothers
-    - legendmark
-    - legendpos
+ o {
+ o stroke (string) color of the circle stroke in HTML color format [default `"#FFF"`]
+ o strokewidth (integer) width of the chart stroke [default `1`]
+ o init (boolean) whether or not to show animation when the chart is ready [default `false`]
+ o colors (array) colors be used to plot the chart
+ o href (array) urls to to set up clicks on chart slices
+ o legend (array) array containing strings that will be used in a legend. Other label options work if legend is defined.
+ o legendcolor (string) color of text in legend [default `"#000"`]
+ o legendothers (string) text that will be used in legend to describe options that are collapsed into 1 slice, because they are too small to render [default `"Others"`]
+ o legendmark (string) symbol used as a bullet point in legend that has the same colour as the chart slice [default `"circle"`]
+ o legendpos (string) position of the legend on the chart [default `"east"`]. Other options are `"north"`, `"south"`, `"west"`
+ o }
  **
  = (object) path element of the popup
  > Usage
