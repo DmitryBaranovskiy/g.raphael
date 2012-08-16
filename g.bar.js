@@ -135,9 +135,35 @@
         }
     }
 
-    /*
-     * Vertical Barchart
-     */
+/*\
+ * Paper.vbarchart
+ [ method ]
+ **
+ * Creates a vertical bar chart
+ **
+ > Parameters
+ **
+ - x (number) x coordinate of the chart
+ - y (number) y coordinate of the chart
+ - width (number) width of the chart (respected by all elements in the set)
+ - height (number) height of the chart (respected by all elements in the set)
+ - values (array) values
+ - opts (object) options for the chart
+ o {
+ o type (string) type of endings of the bar. Default: 'square'. Other options are: 'round', 'sharp', 'soft'.
+ o gutter (number)(string) default '20%' (WHAT DOES IT DO?)
+ o vgutter (number)
+ o colors (array) colors be used repeatedly to plot the bars. If multicolumn bar is used each sequence of bars with use a different color.
+ o stacked (boolean) whether or not to tread values as in a stacked bar chart
+ o to
+ o stretch (boolean)
+ o }
+ **
+ = (object) path element of the popup
+ > Usage
+ | r.vbarchart(0, 0, 620, 260, [76, 70, 67, 71, 69], {})
+ \*/
+ 
     function VBarchart(paper, x, y, width, height, values, opts) {
         opts = opts || {};
 
@@ -387,10 +413,45 @@
         chart.covers = covers;
         return chart;
     };
-
-    /**
-     * Horizontal Barchart
-     */
+    
+    //inheritance
+    var F = function() {};
+    F.prototype = Raphael.g;
+    HBarchart.prototype = VBarchart.prototype = new F; //prototype reused by hbarchart
+    
+    Raphael.fn.barchart = function(x, y, width, height, values, opts) {
+        return new VBarchart(this, x, y, width, height, values, opts);
+    };
+    
+/*\
+ * Paper.barchart
+ [ method ]
+ **
+ * Creates a horizontal bar chart
+ **
+ > Parameters
+ **
+ - x (number) x coordinate of the chart
+ - y (number) y coordinate of the chart
+ - width (number) width of the chart (respected by all elements in the set)
+ - height (number) height of the chart (respected by all elements in the set)
+ - values (array) values
+ - opts (object) options for the chart
+ o {
+ o type (string) type of endings of the bar. Default: 'square'. Other options are: 'round', 'sharp', 'soft'.
+ o gutter (number)(string) default '20%' (WHAT DOES IT DO?)
+ o vgutter (number)
+ o colors (array) colors be used repeatedly to plot the bars. If multicolumn bar is used each sequence of bars with use a different color.
+ o stacked (boolean) whether or not to tread values as in a stacked bar chart
+ o to
+ o stretch (boolean)
+ o }
+ **
+ = (object) path element of the popup
+ > Usage
+ | r.barchart(0, 0, 620, 260, [76, 70, 67, 71, 69], {})
+ \*/
+ 
     function HBarchart(paper, x, y, width, height, values, opts) {
         opts = opts || {};
 
@@ -606,16 +667,8 @@
         return chart;
     };
     
-    //inheritance
-    var F = function() {};
-    F.prototype = Raphael.g;
-    HBarchart.prototype = VBarchart.prototype = new F;
-    
     Raphael.fn.hbarchart = function(x, y, width, height, values, opts) {
         return new HBarchart(this, x, y, width, height, values, opts);
     };
     
-    Raphael.fn.barchart = function(x, y, width, height, values, opts) {
-        return new VBarchart(this, x, y, width, height, values, opts);
-    };
 })();
