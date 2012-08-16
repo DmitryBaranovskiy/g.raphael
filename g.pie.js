@@ -48,6 +48,7 @@
             covers.push(paper.circle(cx, cy, r).attr(chartinst.shim));
             total = values[0];
             values[0] = { value: values[0], order: 0, valueOf: function () { return this.value; } };
+            opts.href && opts.href[0] && covers[0].attr({ href: opts.href[0] });
             series[0].middle = {x: cx, y: cy};
             series[0].mangle = 180;
         } else {
