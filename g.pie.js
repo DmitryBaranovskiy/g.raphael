@@ -19,8 +19,9 @@
             angle = 0,
             total = 0,
             others = 0,
-            cut = 9,
-            defcut = true;
+            cut = opts.maxSlices || 100,
+            minPercent = parseFloat(opts.minPercent) || 1,
+            defcut = Boolean( minPercent );
 
         function sector(cx, cy, r, startAngle, endAngle, fill) {
             var rad = Math.PI / 180,
@@ -56,13 +57,14 @@
                 total += values[i];
                 values[i] = { value: values[i], order: i, valueOf: function () { return this.value; } };
             }
-
+            
+            //values are sorted numerically
             values.sort(function (a, b) {
                 return b.value - a.value;
             });
-
+            
             for (i = 0; i < len; i++) {
-                if (defcut && values[i] * 360 / total <= 1.5) {
+                if (defcut && values[i] * 100 / total < minPercent) {
                     cut = i;
                     defcut = false;
                 }
