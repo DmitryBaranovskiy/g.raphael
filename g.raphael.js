@@ -1,7 +1,7 @@
 /*!
- * g.Raphael 0.5 - Charting library, based on Raphaël
+ * g.Raphael 0.51 - Charting library, based on Raphaël
  *
- * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
+ * Copyright (c) 2009-2012 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
 
@@ -22,11 +22,6 @@
  - y (number) y coordinate of the popup's tail [default: Element's `y` or `cy`]
  **
  = (object) path element of the popup
- > Usage
- | paper.circle(50, 50, 5).attr({
- |     stroke: "#fff",
- |     fill: "0-#c9de96-#8ab66b:44-#398235"
- | }).popup();
  \*/
 Raphael.el.popup = function (dir, size, x, y) {
     var paper = this.paper || this[0].paper,
@@ -133,11 +128,6 @@ Raphael.el.popup = function (dir, size, x, y) {
  - y (number) y coordinate of the center of the tag loop [default: Element's `x` or `cx`]
  **
  = (object) path element of the tag
- > Usage
- | paper.circle(50, 50, 15).attr({
- |     stroke: "#fff",
- |     fill: "0-#c9de96-#8ab66b:44-#398235"
- | }).tag(60);
  \*/
 Raphael.el.tag = function (angle, r, x, y) {
     var d = 3,
@@ -223,11 +213,6 @@ Raphael.el.tag = function (angle, r, x, y) {
  - y (number) y coordinate of the drop's point [default: Element's `x` or `cx`]
  **
  = (object) path element of the drop
- > Usage
- | paper.circle(50, 50, 8).attr({
- |     stroke: "#fff",
- |     fill: "0-#c9de96-#8ab66b:44-#398235"
- | }).drop(60);
  \*/
 Raphael.el.drop = function (angle, x, y) {
     var bb = this.getBBox(),
@@ -279,11 +264,6 @@ Raphael.el.drop = function (angle, x, y) {
  - y (number) y coordinate of the flag's point [default: Element's `x` or `cx`]
  **
  = (object) path element of the flag
- > Usage
- | paper.circle(50, 50, 10).attr({
- |     stroke: "#fff",
- |     fill: "0-#c9de96-#8ab66b:44-#398235"
- | }).flag(60);
  \*/
 Raphael.el.flag = function (angle, x, y) {
     var d = 3,
@@ -344,11 +324,6 @@ Raphael.el.flag = function (angle, x, y) {
  * Puts the context Element in a 'label' tooltip. Can also be used on sets.
  **
  = (object) path element of the label.
- > Usage
- | paper.circle(50, 50, 10).attr({
- |     stroke: "#fff",
- |     fill: "0-#c9de96-#8ab66b:44-#398235"
- | }).label();
  \*/
 Raphael.el.label = function () {
     var bb = this.getBBox(),
@@ -373,11 +348,6 @@ Raphael.el.label = function () {
  - y (number) y coordinate of the blob's tail [default: Element's `x` or `cx`]
  **
  = (object) path element of the blob
- > Usage
- | paper.circle(50, 50, 8).attr({
- |     stroke: "#fff",
- |     fill: "0-#c9de96-#8ab66b:44-#398235"
- | }).blob(60);
  \*/
 Raphael.el.blob = function (angle, x, y) {
     var bb = this.getBBox(),
