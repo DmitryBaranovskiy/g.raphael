@@ -24,13 +24,14 @@ Raphael(function () {
 
     prepare("Paper.popup-extra").popup(50, 50, "Hello", 'down');
     prepare("Paper.tag-extra").tag(50, 50, "$9.99", 60);
-    prepare("Paper.drop-extra").drop(50, 50, "$10", 60);
+    prepare("Paper.drop-extra").drop(30, 70, "$9.99", 60);
     prepare("Paper.flag-extra").flag(50, 50, "$9.99", 60);
     prepare("Paper.label-extra").label(50, 50, "$9.99");
     prepare("Paper.blob-extra").blob(50, 50, "Hello", 60);
 
     prepare("Paper.dotchart-extra").dotchart(0, 0, 99, 99, [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], {max: 7, heat: true, gutter: 1, axisxstep: 4});
     prepare("Paper.linechart-extra").linechart(0, 0, 99, 99, [1,2,3,4,5], [[1,2,3,4,5], [1,3,9,16,25], [100,50,25,12,6]], {smooth: true, colors: ['#F00', '#0F0', '#FF0'], symbol: 'circle', width: 1});
+    prepare("Paper.piechart-extra").piechart(50, 50, 47, [1,2,3,4,5]);
     
     prepare("Element.lighter-extra").circle(50, 50, 20).attr(fill).lighter(6);
     prepare("Element.darker-extra").circle(50, 50, 20).attr(fill).darker(6);

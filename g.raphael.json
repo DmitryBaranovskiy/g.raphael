@@ -14,8 +14,7 @@
     },{
         "url": "../g.raphael/g.bar.js",
         "link": "https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.bar.js"
-    },
-    {
+    },{
         "url": "../g.raphael/g.pie.js",
         "link": "https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.pie.js"
     }]

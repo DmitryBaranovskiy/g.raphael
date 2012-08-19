@@ -403,7 +403,7 @@ r.dotchart(<span class="d">0</span>, <span class="d">0</span>, <span class="d">6
 </p>
 <pre class="javascript code"><code>r.linechart(<span class="d">0</span>, <span class="d">0</span>, <span class="d">99</span>, <span class="d">99</span>, [<span class="d">1</span>,<span class="d">2</span>,<span class="d">3</span>,<span class="d">4</span>,<span class="d">5</span>], [[<span class="d">1</span>,<span class="d">2</span>,<span class="d">3</span>,<span class="d">4</span>,<span class="d">5</span>], [<span class="d">1</span>,<span class="d">3</span>,<span class="d">9</span>,<span class="d">16</span>,<span class="d">25</span>], [<span class="d">100</span>,<span class="d">50</span>,<span class="d">25</span>,<span class="d">12</span>,<span class="d">6</span>]], {smooth: <b>true</b>, colors: [<i>'#F00'</i>, <i>'#0F0'</i>, <i>'#FF0'</i>], symbol: <i>'circle'</i>});
 </code></pre>
-</div><div class="Paper-piechart-section"><h3 id="Paper.piechart" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.piechart(cx, cy, r, values, opts)<a href="#Paper.piechart" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 41 in the source" href="https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.pie.js#L41">&#x27ad;</a></h3>
+</div><div class="Paper-piechart-section"><h3 id="Paper.piechart" class="dr-method"><i class="dr-trixie">&#160;</i>Paper.piechart(cx, cy, r, values, opts)<a href="#Paper.piechart" title="Link to this section" class="dr-hash">&#x2693;</a><a class="dr-sourceline" title="Go to line 43 in the source" href="https://github.com/DmitryBaranovskiy/g.raphael/blob/master/g.pie.js#L43">&#x27ad;</a></h3>
 <div class="extra" id="Paper.piechart-extra"></div></div><div class="dr-method"><p>Creates a pie chart
 </p>
 <p class="header">Parameters
@@ -424,7 +424,9 @@ r.dotchart(<span class="d">0</span>, <span class="d">0</span>, <span class="d">6
 <dd class="dr-type"><em class="dr-type-object">object</em></dd>
 <dd class="dr-description">options for the chart</dd>
 </dl>
-<ol class="dr-json"><li>{<ol class="dr-json"><li><span class="dr-json-key">stroke</span><span class="dr-type"><em class="dr-type-string">string</em></span><span class="dr-json-description">color of the circle stroke in HTML color format [default <code>"#FFF"</code>]</span>
+<ol class="dr-json"><li>{<ol class="dr-json"><li><span class="dr-json-key">minPercent</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">minimal percent threshold which will have a slice rendered. Sliced corresponding to data points below this threshold will be collapsed into 1 additional slice. [default <code>1</code>]</span>
+<li><span class="dr-json-key">maxSlices</span><span class="dr-type"><em class="dr-type-number">number</em></span><span class="dr-json-description">a threshold for how many slices should be rendered before collapsing all remaining slices into 1 additional slice (to focus on most important data points). [default <code>100</code>]</span>
+<li><span class="dr-json-key">stroke</span><span class="dr-type"><em class="dr-type-string">string</em></span><span class="dr-json-description">color of the circle stroke in HTML color format [default <code>"#FFF"</code>]</span>
 <li><span class="dr-json-key">strokewidth</span><span class="dr-type"><em class="dr-type-integer">integer</em></span><span class="dr-json-description">width of the chart stroke [default <code>1</code>]</span>
 <li><span class="dr-json-key">init</span><span class="dr-type"><em class="dr-type-boolean">boolean</em></span><span class="dr-json-description">whether or not to show animation when the chart is ready [default <code>false</code>]</span>
 <li><span class="dr-json-key">colors</span><span class="dr-type"><em class="dr-type-array">array</em></span><span class="dr-json-description">colors be used to plot the chart</span>

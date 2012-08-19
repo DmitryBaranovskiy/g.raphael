@@ -1,11 +1,14 @@
-/*
+/*!
  * g.Raphael 0.5 - Charting library, based on Raphaël
  *
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
 
- /*\
+ /*
+ * piechart method on paper
+ */
+/*\
  * Paper.piechart
  [ method ]
  **
@@ -19,6 +22,8 @@
  - values (array) values used to plot
  - opts (object) options for the chart
  o {
+ o minPercent (number) minimal percent threshold which will have a slice rendered. Sliced corresponding to data points below this threshold will be collapsed into 1 additional slice. [default `1`]
+ o maxSlices (number) a threshold for how many slices should be rendered before collapsing all remaining slices into 1 additional slice (to focus on most important data points). [default `100`]
  o stroke (string) color of the circle stroke in HTML color format [default `"#FFF"`]
  o strokewidth (integer) width of the chart stroke [default `1`]
  o init (boolean) whether or not to show animation when the chart is ready [default `false`]
