@@ -124,13 +124,24 @@
  ** 
  \*/
         var axis = paper.set();
-
         if (opts.axis) {
+            // we can define the own labels for each axis
+            // for that we use the new option "axislabels" that is an object:
+            // axislabels: {top: ["label1","label2",...], right:["Other Label","Something", ...], bottom:["foo","bar",...], left:["ok","gniii",...]}
+            // we can also just define one axis, e.g. axislabels:{bottom:["...."]}
+            opts.axislabels=opts.axislabels || {};
+            var lbls={
+              top:opts.axislabels.top||[],
+              right:opts.axislabels.right||[],
+              bottom:opts.axislabels.bottom||[],
+              left:opts.axislabels.left||[]
+            };
+            
             var ax = (opts.axis + "").split(/[,\s]+/);
-            +ax[0] && axis.push(chartinst.axis(x + gutter, y + gutter, width - 2 * gutter, minx, maxx, opts.axisxstep || Math.floor((width - 2 * gutter) / 20), 2, paper));
-            +ax[1] && axis.push(chartinst.axis(x + width - gutter, y + height - gutter, height - 2 * gutter, miny, maxy, opts.axisystep || Math.floor((height - 2 * gutter) / 20), 3, paper));
-            +ax[2] && axis.push(chartinst.axis(x + gutter, y + height - gutter, width - 2 * gutter, minx, maxx, opts.axisxstep || Math.floor((width - 2 * gutter) / 20), 0, paper));
-            +ax[3] && axis.push(chartinst.axis(x + gutter, y + height - gutter, height - 2 * gutter, miny, maxy, opts.axisystep || Math.floor((height - 2 * gutter) / 20), 1, paper));
+            +ax[0] && axis.push(chartinst.axis(x + gutter, y + gutter, width - 2 * gutter, minx, maxx, opts.axisxstep || Math.floor((width - 2 * gutter) / 20), 2, lbls.top, paper));
+            +ax[1] && axis.push(chartinst.axis(x + width - gutter, y + height - gutter, height - 2 * gutter, miny, maxy, opts.axisystep || Math.floor((height - 2 * gutter) / 20), 3, lbls.right, paper));
+            +ax[2] && axis.push(chartinst.axis(x + gutter, y + height - gutter, width - 2 * gutter, minx, maxx, opts.axisxstep || Math.floor((width - 2 * gutter) / 20), 0, lbls.bottom, paper));
+            +ax[3] && axis.push(chartinst.axis(x + gutter, y + height - gutter, height - 2 * gutter, miny, maxy, opts.axisystep || Math.floor((height - 2 * gutter) / 20), 1, lbls.left, paper));
         }
 
  /*\
@@ -476,6 +487,7 @@
  o axis (string) Which axes should be renedered. String of four values evaluated in order `'top right bottom left'` e.g. `'0 0 1 1'`.
  o axisxstep (number) distance between values on axis X
  o axisystep (number) distance between values on axis Y
+ o axislabels (object) customize the labels for each axis, e.g. {bottom:["one","two","three"],right:["1st level","2nd leve"]}
  o }
  **
  = (object) path element of the popup
