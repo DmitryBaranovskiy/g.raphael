@@ -241,6 +241,7 @@
                 C.y = [];
                 C.x = xs[i];
                 C.axis = Xs[i];
+                C.index = i;
 
                 for (var j = 0, jj = valuesy.length; j < jj; j++) {
                     Xs2 = valuesx[j] || valuesx[0];
@@ -278,6 +279,7 @@
                     C.symbol = chart.symbols[i][j];
                     C.symbols = chart.symbols[i];
                     C.axis = (valuesx[i] || valuesx[0])[j];
+                    C.index = i;
                     f && f.call(C);
                 }
             }
