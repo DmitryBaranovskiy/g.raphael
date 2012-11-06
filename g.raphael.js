@@ -719,6 +719,8 @@ Raphael.g = {
         var f = from,
             t = to;
 
+        steps = steps || 10;
+
         if (f == t) {
             return {from: f, to: t, power: 0};
         }
