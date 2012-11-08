@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * g.Raphael 0.51 - Charting library, based on Raphaël
  *
  * Copyright (c) 2009-2012 Dmitry Baranovskiy (http://g.raphaeljs.com)
@@ -40,12 +40,12 @@ Raphael.el.popup = function (dir, size, x, y) {
     size = size || 5;
     bb = this.getBBox();
 
-    x = typeof x == 'number' ? x : (center ? bb.x + bb.width / 2 : bb.x);
-    y = typeof y == 'number' ? y : (center ? bb.y + bb.height / 2 : bb.y);
+    x = typeof x == 'number' ? x : (center ? bb.x2 - bb.width / 2 : bb.x2);
+    y = typeof y == 'number' ? y : (center ? bb.y2 - bb.height / 2 : bb.y2);
     cw = Math.max(bb.width / 2 - size, 0);
     ch = Math.max(bb.height / 2 - size, 0);
 
-    this.translate(x - bb.x - (center ? bb.width / 2 : 0), y - bb.y - (center ? bb.height / 2 : 0));
+    //this.translate(x - bb.x2 - (center ? bb.width / 2 : 0), y - bb.y2 - (center ? bb.height / 2 : 0));
     bb = this.getBBox();
 
     var paths = {

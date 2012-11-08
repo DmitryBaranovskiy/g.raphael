@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * g.Raphael 0.51 - Charting library, based on Raphaël
  *
  * Copyright (c) 2009-2012 Dmitry Baranovskiy (http://g.raphaeljs.com)
@@ -56,9 +56,9 @@
             angle = 0,
             total = 0,
             others = 0,
-            cut = opts.maxSlices || 100,
+	    maxSlices = opts.maxSlices || 100,
             minPercent = parseFloat(opts.minPercent) || 1,
-            defcut = Boolean( minPercent );
+            defcut = false;
 
         function sector(cx, cy, r, startAngle, endAngle, fill) {
             var rad = Math.PI / 180,
@@ -85,37 +85,44 @@
             series.push(paper.circle(cx, cy, r).attr({ fill: opts.colors && opts.colors[0] || chartinst.colors[0], stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth }));
             covers.push(paper.circle(cx, cy, r).attr(chartinst.shim));
             total = values[0];
-            values[0] = { value: values[0], order: 0, valueOf: function () { return this.value; } };
+            values[0] = { value: values[0], valueOf: function () { return this.value; } };
             opts.href && opts.href[0] && covers[0].attr({ href: opts.href[0] });
             series[0].middle = {x: cx, y: cy};
             series[0].mangle = 180;
         } else {
             for (var i = 0; i < len; i++) {
                 total += values[i];
-                values[i] = { value: values[i], order: i, valueOf: function () { return this.value; } };
+                values[i] = { value: values[i], valueOf: function () { return this.value; } };
             }
-            
-            //values are sorted numerically
-            values.sort(function (a, b) {
-                return b.value - a.value;
-            });
-            
-            for (i = 0; i < len; i++) {
-                if (defcut && values[i] * 100 / total < minPercent) {
-                    cut = i;
-                    defcut = false;
-                }
 
-                if (i > cut) {
-                    defcut = false;
-                    values[cut].value += values[i];
-                    values[cut].others = true;
-                    others = values[cut].value;
+	    var totOther = 0;
+            var tooSmall = 0;
+
+            if (len > maxSlices) {
+                var sorted = values.slice(0);
+                sorted.sort(function (a, b) {
+                    return b.value - a.value;
+                });
+                tooSmall = sorted[maxSlices];
+	    }
+            
+
+            for (i = len - 1; i >= 0; i--) {
+                if ((values[i] * 100 / total < minPercent) || (values[i].value <= tooSmall)) {
+                    totOther = totOther + values[i].value;
+                    values.splice(i, 1);
+                    if (opts.legend.length > i) opts.legend.splice(i, 1);
+                    if (opts.colors.length > i) opts.colors.splice(i, 1);
                 }
             }
 
             len = Math.min(cut + 1, values.length);
             others && values.splice(len) && (values[cut].others = true);
+            if (totOther > 0) {
+                values.splice(values.length, 0, { value: totOther, valueOf: function () { return this.value; } });
+                opts.legend.splice(values.length, 0, "Other");
+            }
+            len = values.length;
 
             for (i = 0; i < len; i++) {
                 var mangle = angle - 360 * values[i] / total / 2;
@@ -130,8 +137,7 @@
                 }
 
                 var path = sector(cx, cy, r, angle, angle -= 360 * values[i] / total);
-                var j = (opts.matchColors && opts.matchColors == true) ? values[i].order : i;
-                var p = paper.path(opts.init ? ipath : path).attr({ fill: opts.colors && opts.colors[j] || chartinst.colors[j] || "#666", stroke: opts.stroke || "#fff", "stroke-width": (opts.strokewidth == null ? 1 : opts.strokewidth), "stroke-linejoin": "round" });
+                var p = paper.path(opts.init ? ipath : path).attr({ fill: opts.colors && opts.colors[i] || chartinst.colors[i] || "#666", stroke: opts.stroke || "#fff", "stroke-width": (opts.strokewidth == null ? 1 : opts.strokewidth), "stroke-linejoin": "round" });
 
                 p.value = values[i];
                 p.middle = path.middle;
