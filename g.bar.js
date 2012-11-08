@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * g.Raphael 0.51 - Charting library, based on Raphaël
  *
  * Copyright (c) 2009-2012 Dmitry Baranovskiy (http://g.raphaeljs.com)
@@ -313,7 +313,8 @@
             labels = labels || [];
             this.labels = paper.set();
 
-            var L, l = -Infinity;
+            var L;
+	    var l = [0];
 
             if (opts.stacked) {
                 for (var i = 0; i < len; i++) {
@@ -323,17 +324,32 @@
                         tot += multi ? values[j][i] : values[i];
 
                         if (j == multi - 1) {
-                            var label = paper.labelise(labels[i], tot, total);
+                            var label = chartinst.labelise(labels[i], tot, total);
 
-                            L = paper.text(bars[i * (multi || 1) + j].x, y + height - barvgutter / 2, label).attr(txtattr).insertBefore(covers[i * (multi || 1) + j]);
-
+                            var txt = paper.text(bars[j][i].x, y + height - barvgutter / 2, label);
+			    L = txt.insertBefore(covers[i * (multi || 1) + j]);
                             var bb = L.getBBox();
 
-                            if (bb.x - 7 < l) {
-                                L.remove();
-                            } else {
+			    labelLevels = l.length;
+                            var done = false;
+                            for (var k = 0; k < labelLevels; k++) {
+                                if (bb.x - 7 < l[k] && l[k] > 0) {
+                                    L.remove();
+
+                                    txt = paper.text(bars[j][i].x, y + height - barvgutter / 2 + ((k + 1) * 10), label);
+                                    L = txt.insertBefore(covers[i * (multi || 1) + j]);
+                                    bb = L.getBBox();
+                                } else {
+                                    this.labels.push(L);
+                                    l[k] = bb.x + bb.width;
+                                    done = true;
+                                    break;
+                                }
+                            }
+
+                            if (!done) {
                                 this.labels.push(L);
-                                l = bb.x + bb.width;
+                                l.push(bb.x + bb.width);
                             }
                         }
                     }
@@ -341,7 +357,7 @@
             } else {
                 for (var i = 0; i < len; i++) {
                     for (var j = 0; j < (multi || 1); j++) {
-                        var label = paper.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total);
+                        var label = chartinst.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total);
 
                         L = paper.text(bars[i * (multi || 1) + j].x, isBottom ? y + height - barvgutter / 2 : bars[i * (multi || 1) + j].y - 10, label).attr(txtattr).insertBefore(covers[i * (multi || 1) + j]);
 
@@ -593,7 +609,7 @@
 
             for (var i = 0; i < len; i++) {
                 for (var j = 0; j < multi; j++) {
-                    var  label = paper.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total),
+                    var  label = chartinst.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total),
                         X = isRight ? bars[i * (multi || 1) + j].x - barheight / 2 + 3 : x + 5,
                         A = isRight ? "end" : "start",
                         L;
