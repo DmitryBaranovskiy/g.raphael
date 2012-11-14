@@ -243,7 +243,6 @@
 
             labels = labels || [];
             dir = (dir && dir.toLowerCase && dir.toLowerCase()) || "east";
-            mark = paper[mark && mark.toLowerCase()] || "circle";
             chart.labels = paper.set();
 
             for (var i = 0; i < len; i++) {
@@ -254,7 +253,10 @@
                 values[i].others && (labels[j] = otherslabel || "Others");
                 labels[j] = chartinst.labelise(labels[j], values[i], total);
                 chart.labels.push(paper.set());
-                chart.labels[i].push(paper[mark](x + 5, h, 5).attr({ fill: clr, stroke: "none" }));
+                if (mark == "rect") {
+                    pushMark = paper[mark](x, h, 5, 5);
+                }
+                chart.labels[i].push(pushMark.attr({ fill: clr, stroke: "none" }));
                 chart.labels[i].push(txt = paper.text(x + 20, h, labels[j] || values[j]).attr(chartinst.txtattr).attr({ fill: opts.legendcolor || "#000", "text-anchor": "start"}));
                 covers[i].label = chart.labels[i];
                 h += txt.getBBox().height * 1.2;
