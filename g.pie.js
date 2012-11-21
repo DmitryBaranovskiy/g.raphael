@@ -40,7 +40,7 @@
  > Usage
  | r.piechart(cx, cy, r, values, opts)
  \*/
- 
+
 (function () {
 
     function Piechart(paper, cx, cy, r, values, opts) {
@@ -94,12 +94,14 @@
                 total += values[i];
                 values[i] = { value: values[i], order: i, valueOf: function () { return this.value; } };
             }
-            
-            //values are sorted numerically
-            values.sort(function (a, b) {
-                return b.value - a.value;
-            });
-            
+
+            //values are sorted numerically if option is provided
+            if(opts.sort){
+              values.sort(function (a, b) {
+                  return b.value - a.value;
+              });
+            }
+
             for (i = 0; i < len; i++) {
                 if (defcut && values[i] * 100 / total < minPercent) {
                     cut = i;
@@ -282,15 +284,15 @@
 
         return chart;
     };
-    
+
     //inheritance
     var F = function() {};
     F.prototype = Raphael.g;
     Piechart.prototype = new F;
-    
+
     //public
     Raphael.fn.piechart = function(cx, cy, r, values, opts) {
         return new Piechart(this, cx, cy, r, values, opts);
     }
-    
+
 })();
