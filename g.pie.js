@@ -34,6 +34,7 @@
  o legendothers (string) text that will be used in legend to describe options that are collapsed into 1 slice, because they are too small to render [default `"Others"`]
  o legendmark (string) symbol used as a bullet point in legend that has the same colour as the chart slice [default `"circle"`]
  o legendpos (string) position of the legend on the chart [default `"east"`]. Other options are `"north"`, `"south"`, `"west"`
+ o sort (boolean) enable/disable auto sort values. Useful for useful for predicting combination of array of values and array of colors [default `true`]
  o }
  **
  = (object) path element of the popup
@@ -96,9 +97,12 @@
             }
             
             //values are sorted numerically
-            values.sort(function (a, b) {
-                return b.value - a.value;
-            });
+            if(opts.sort != false) {
+                values.sort(function (a, b) {
+                    return b.value - a.value;
+                });
+            }
+
             
             for (i = 0; i < len; i++) {
                 if (defcut && values[i] * 100 / total < minPercent) {
