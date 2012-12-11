@@ -723,10 +723,6 @@ Raphael.g = {
             return {from: f, to: t, power: 0};
         }
 
-        function round(a) {
-            return Math.abs(a - .5) < .25 ? ~~(a) + .5 : Math.round(a);
-        }
-
         var d = (t - f) / steps,
             r = ~~(d),
             R = r,
@@ -753,13 +749,9 @@ Raphael.g = {
             i && i--;
         }
 
-        t = round(to * Math.pow(10, i)) / Math.pow(10, i);
+        t = Math.ceil(to * Math.pow(10, i)) / Math.pow(10, i);
+        f = Math.floor(from * Math.pow(10, i)) / Math.pow(10, i);
 
-        if (t < to) {
-            t = round((to + .5) * Math.pow(10, i)) / Math.pow(10, i);
-        }
-
-        f = round((from - (i > 0 ? 0 : .5)) * Math.pow(10, i)) / Math.pow(10, i);
         return { from: f, to: t, power: i };
     },
 
