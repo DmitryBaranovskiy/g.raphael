@@ -34,6 +34,7 @@
  o legendothers (string) text that will be used in legend to describe options that are collapsed into 1 slice, because they are too small to render [default `"Others"`]
  o legendmark (string) symbol used as a bullet point in legend that has the same colour as the chart slice [default `"circle"`]
  o legendpos (string) position of the legend on the chart [default `"east"`]. Other options are `"north"`, `"south"`, `"west"`
+ o type (string) type of the pie chart can be "half" or "full" [default `full`]
  o }
  **
  = (object) path element of the popup
@@ -58,7 +59,11 @@
             others = 0,
             cut = opts.maxSlices || 100,
             minPercent = parseFloat(opts.minPercent) || 1,
-            defcut = Boolean( minPercent );
+            defcut = Boolean( minPercent ),
+            type = opts.type || "full",
+            radSize = 360;
+
+        if(type.toLowerCase() =="half") radSize=180;
 
         function sector(cx, cy, r, startAngle, endAngle, fill) {
             var rad = Math.PI / 180,
@@ -118,18 +123,19 @@
             others && values.splice(len) && (values[cut].others = true);
 
             for (i = 0; i < len; i++) {
-                var mangle = angle - 360 * values[i] / total / 2;
+                var mangle = angle - radSize * values[i] / total / 2;
 
                 if (!i) {
-                    angle = 90 - mangle;
-                    mangle = angle - 360 * values[i] / total / 2;
+                    // angle changed to fix pie when it's half
+                    angle = 145 - mangle;
+                    mangle = angle - radSize * values[i] / total / 2;
                 }
 
                 if (opts.init) {
-                    var ipath = sector(cx, cy, 1, angle, angle - 360 * values[i] / total).join(",");
+                    var ipath = sector(cx, cy, 1, angle, angle - radSize * values[i] / total).join(",");
                 }
 
-                var path = sector(cx, cy, r, angle, angle -= 360 * values[i] / total);
+                var path = sector(cx, cy, r, angle, angle -= radSize * values[i] / total);
                 var j = (opts.matchColors && opts.matchColors == true) ? values[i].order : i;
                 var p = paper.path(opts.init ? ipath : path).attr({ fill: opts.colors && opts.colors[j] || chartinst.colors[j] || "#666", stroke: opts.stroke || "#fff", "stroke-width": (opts.strokewidth == null ? 1 : opts.strokewidth), "stroke-linejoin": "round" });
 
@@ -237,8 +243,12 @@
         };
 
         var legend = function (labels, otherslabel, mark, dir) {
+            // cpt added to fix legend y
+            var cpt = 0;
+            if(type == "half")
+                cpt = -65;
             var x = cx + r + r / 5,
-                y = cy,
+                y = cy + cpt,
                 h = y + 10;
 
             labels = labels || [];
