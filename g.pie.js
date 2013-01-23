@@ -127,7 +127,7 @@
 
                 if (!i) {
                     // angle changed to fix pie when it's half
-                    angle = 145 - mangle;
+                    angle = angle - 180;
                     mangle = angle - radSize * values[i] / total / 2;
                 }
 
