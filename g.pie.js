@@ -29,6 +29,7 @@
  o init (boolean) whether or not to show animation when the chart is ready [default `false`]
  o colors (array) colors be used to plot the chart
  o href (array) urls to to set up clicks on chart slices
+ o matchColors (boolean) is colors-array matched with legends-array [default: `false`]
  o legend (array) array containing strings that will be used in a legend. Other label options work if legend is defined.
  o legendcolor (string) color of text in legend [default `"#000"`]
  o legendothers (string) text that will be used in legend to describe options that are collapsed into 1 slice, because they are too small to render [default `"Others"`]
