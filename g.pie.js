@@ -101,21 +101,20 @@
                 values.sort(function (a, b) {
                     return b.value - a.value;
                 });
-            }
 
-            for (i = 0; i < len; i++) {
-                if (defcut && values[i] * 100 / total < minPercent) {
-                    if (!opts.preserveValues) {
+
+                for (i = 0; i < len; i++) {
+                    if (defcut && values[i] * 100 / total < minPercent) {
                         cut = i;
+                        defcut = false;
                     }
-                    defcut = false;
-                }
 
-                if (i > cut) {
-                    defcut = false;
-                    values[cut].value += values[i];
-                    values[cut].others = true;
-                    others = values[cut].value;
+                    if (i > cut) {
+                        defcut = false;
+                        values[cut].value += values[i];
+                        values[cut].others = true;
+                        others = values[cut].value;
+                    }
                 }
             }
 
