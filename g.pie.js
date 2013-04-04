@@ -34,13 +34,14 @@
  o legendothers (string) text that will be used in legend to describe options that are collapsed into 1 slice, because they are too small to render [default `"Others"`]
  o legendmark (string) symbol used as a bullet point in legend that has the same colour as the chart slice [default `"circle"`]
  o legendpos (string) position of the legend on the chart [default `"east"`]. Other options are `"north"`, `"south"`, `"west"`
+ o preserveValues (boolean) whether the values should be left as they are provided, rather than the default behaviour of being sorted and small values collapsed [default `false`]
  o }
  **
  = (object) path element of the popup
  > Usage
  | r.piechart(cx, cy, r, values, opts)
  \*/
- 
+
 (function () {
 
     function Piechart(paper, cx, cy, r, values, opts) {
@@ -94,23 +95,26 @@
                 total += values[i];
                 values[i] = { value: values[i], order: i, valueOf: function () { return this.value; } };
             }
-            
-            //values are sorted numerically
-            values.sort(function (a, b) {
-                return b.value - a.value;
-            });
-            
-            for (i = 0; i < len; i++) {
-                if (defcut && values[i] * 100 / total < minPercent) {
-                    cut = i;
-                    defcut = false;
-                }
 
-                if (i > cut) {
-                    defcut = false;
-                    values[cut].value += values[i];
-                    values[cut].others = true;
-                    others = values[cut].value;
+            if (!opts.preserveValues) {
+                //values are sorted numerically
+                values.sort(function (a, b) {
+                    return b.value - a.value;
+                });
+
+
+                for (i = 0; i < len; i++) {
+                    if (defcut && values[i] * 100 / total < minPercent) {
+                        cut = i;
+                        defcut = false;
+                    }
+
+                    if (i > cut) {
+                        defcut = false;
+                        values[cut].value += values[i];
+                        values[cut].others = true;
+                        others = values[cut].value;
+                    }
                 }
             }
 
@@ -282,15 +286,15 @@
 
         return chart;
     };
-    
+
     //inheritance
     var F = function() {};
     F.prototype = Raphael.g;
     Piechart.prototype = new F;
-    
+
     //public
     Raphael.fn.piechart = function(cx, cy, r, values, opts) {
         return new Piechart(this, cx, cy, r, values, opts);
     }
-    
+
 })();

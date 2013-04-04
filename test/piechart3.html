@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>gRaphaël Static Pie Chart</title>
+        <link rel="stylesheet" href="css/demo.css" type="text/css" media="screen" charset="utf-8">
+        <link rel="stylesheet" href="css/demo-print.css" type="text/css" media="print" charset="utf-8">
+        <script src="../raphael-min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../g.raphael.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../g.pie.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+        window.onload = function () {
+            var colors = ['#F00','#00F', '#0F0' ];
+                values = [30, 0, 10, 40, 20],
+                legend = ["A", "B", "C", "D", "E"],
+                r = Raphael("holder");
+
+            r.text(320, 100, "Interactive Pie Chart Preserving values").attr({ font: "20px 'Fontin Sans', Fontin-Sans, sans-serif" });
+            var pie = r.piechart(320, 240, 100, values, { preserveValues: true, colors: colors, legend: legend });
+        };
+        </script>
+    </head>
+    <body class="raphael" id="g.raphael.dmitry.baranovskiy.com">
+        <div id="holder"></div>
+        <p>
+            Demo of <a href="http://g.raphaeljs.com/">gRaphaël</a> JavaScript library.
+        </p>
+    </body>
+</html>
