@@ -30,6 +30,7 @@ Raphael.el.popup = function (dir, size, x, y) {
     if (!paper) return;
 
     switch (this.type) {
+        case 'set':
         case 'text':
         case 'circle':
         case 'ellipse': center = true; break;
