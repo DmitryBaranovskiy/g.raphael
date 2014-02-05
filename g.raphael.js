@@ -718,8 +718,7 @@ Raphael.g = {
     snapEnds: function(from, to, steps) {
         var f = from,
             t = to;
-
-        if (f == t) {
+        if (f == t || !steps) {
             return {from: f, to: t, power: 0};
         }
 

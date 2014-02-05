@@ -107,11 +107,11 @@
         var allx = Array.prototype.concat.apply([], valuesx),
             ally = Array.prototype.concat.apply([], valuesy),
             xdim = chartinst.snapEnds(Math.min.apply(Math, allx), Math.max.apply(Math, allx), valuesx[0].length - 1),
-            minx = xdim.from,
-            maxx = xdim.to,
+            minx = 'minx' in opts ? opts.minx : xdim.from,
+            maxx = 'maxx' in opts ? opts.maxx : xdim.to,
             ydim = chartinst.snapEnds(Math.min.apply(Math, ally), Math.max.apply(Math, ally), valuesy[0].length - 1),
-            miny = ydim.from,
-            maxy = ydim.to,
+            miny = 'miny' in opts ? opts.miny : ydim.from,
+            maxy = 'maxy' in opts ? opts.maxy : ydim.to,
             kx = (width - gutter * 2) / ((maxx - minx) || 1),
             ky = (height - gutter * 2) / ((maxy - miny) || 1);
 
@@ -126,11 +126,12 @@
         var axis = paper.set();
 
         if (opts.axis) {
+            var lbls = opts.axislabels || [];
             var ax = (opts.axis + "").split(/[,\s]+/);
-            +ax[0] && axis.push(chartinst.axis(x + gutter, y + gutter, width - 2 * gutter, minx, maxx, opts.axisxstep || Math.floor((width - 2 * gutter) / 20), 2, paper));
-            +ax[1] && axis.push(chartinst.axis(x + width - gutter, y + height - gutter, height - 2 * gutter, miny, maxy, opts.axisystep || Math.floor((height - 2 * gutter) / 20), 3, paper));
-            +ax[2] && axis.push(chartinst.axis(x + gutter, y + height - gutter, width - 2 * gutter, minx, maxx, opts.axisxstep || Math.floor((width - 2 * gutter) / 20), 0, paper));
-            +ax[3] && axis.push(chartinst.axis(x + gutter, y + height - gutter, height - 2 * gutter, miny, maxy, opts.axisystep || Math.floor((height - 2 * gutter) / 20), 1, paper));
+            +ax[0] && axis.push(chartinst.axis(x + gutter, y + gutter, width - 2 * gutter, minx, maxx, opts.axisxstep || Math.floor((width - 2 * gutter) / 20), 2, paper, lbls[0]));
+            +ax[1] && axis.push(chartinst.axis(x + width - gutter, y + height - gutter, height - 2 * gutter, miny, maxy, opts.axisystep || Math.floor((height - 2 * gutter) / 20), 3, paper, lbls[1]));
+            +ax[2] && axis.push(chartinst.axis(x + gutter, y + height - gutter, width - 2 * gutter, minx, maxx, opts.axisxstep || Math.floor((width - 2 * gutter) / 20), 0, paper, lbls[2]));
+            +ax[3] && axis.push(chartinst.axis(x + gutter, y + height - gutter, height - 2 * gutter, miny, maxy, opts.axisystep || Math.floor((height - 2 * gutter) / 20), 1, paper, lbls[3]));
         }
 
  /*\
@@ -171,9 +172,14 @@
 
             for (var j = 0, jj = valuesy[i].length; j < jj; j++) {
                 var X = x + gutter + ((valuesx[i] || valuesx[0])[j] - minx) * kx,
-                    Y = y + height - gutter - (valuesy[i][j] - miny) * ky;
+                    Y = y + height - gutter - (valuesy[i][j] - miny) * ky,
+                    symval = Raphael.is(sym, "array") ? sym[j] : sym;
 
-                (Raphael.is(sym, "array") ? sym[j] : sym) && symset.push(paper[Raphael.is(sym, "array") ? sym[j] : sym](X, Y, (opts.width || 2) * 3).attr({ fill: colors[i], stroke: "none" }));
+                symval && 
+                    symset.push(
+                        Raphael.is(symval, "function") ? symval.call(this, X, Y, colors[i]) : 
+                        paper[symval](X, Y, (opts.width || 2) * 3).attr({fill: colors[i], stroke: "none"}));
+                
 
                 if (opts.smooth) {
                     if (j && j != jj - 1) {
