@@ -236,7 +236,7 @@
             for (var j = 0; j < (multi || 1); j++) {
                 var h = Math.round((multi ? values[j][i] : values[i]) * Y),
                     top = y + height - barvgutter - h,
-                    bar = finger(Math.round(X + barwidth / 2), top + h, barwidth, h, true, type, null, paper).attr({ stroke: "none", fill: colors[multi ? j : i] });
+                    bar = finger(Math.round(X + barwidth / 2), top + h, barwidth, h, true, type, null, paper).attr({ stroke: "none", fill: colors[multi ? j : i], 'fill-opacity' : opts.opacity || 1  });
 
                 if (multi) {
                     bars[j].push(bar);
@@ -515,7 +515,7 @@
 
             for (var j = 0; j < (multi || 1); j++) {
                 var val = multi ? values[j][i] : values[i],
-                    bar = finger(x, Y + barheight / 2, Math.round(val * X), barheight - 1, false, type, null, paper).attr({stroke: "none", fill: colors[multi ? j : i]});
+                    bar = finger(x, Y + barheight / 2, Math.round(val * X), barheight - 1, false, type, null, paper).attr({stroke: "none", fill: colors[multi ? j : i], 'fill-opacity' : opts.opacity || 1 });
 
                 if (multi) {
                     bars[j].push(bar);
