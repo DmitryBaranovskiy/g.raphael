@@ -325,7 +325,12 @@
                         if (j == multi - 1) {
                             var label = paper.labelise(labels[i], tot, total);
 
-                            L = paper.text(bars[i * (multi || 1) + j].x, y + height - barvgutter / 2, label).attr(txtattr).insertBefore(covers[i * (multi || 1) + j]);
+                            if (opts.cufont) {
+                                L = paper.print(bars[j][i].x, y + height - barvgutter / 2, label, opts.cufont);
+                            } else {
+                                L = paper.text(bars[j][i].x, y + height - barvgutter / 2, label).attr({ "text-anchor": "start" });
+                            }
+                            L.attr(chartinst.txtattr).attr({ fill: opts.legendcolor || "#000" }).insertBefore(covers[i * (multi || 1) + j]);
 
                             var bb = L.getBBox();
 
@@ -343,9 +348,18 @@
                     for (var j = 0; j < (multi || 1); j++) {
                         var label = paper.labelise(multi ? labels[j] && labels[j][i] : labels[i], multi ? values[j][i] : values[i], total);
 
-                        L = paper.text(bars[i * (multi || 1) + j].x, isBottom ? y + height - barvgutter / 2 : bars[i * (multi || 1) + j].y - 10, label).attr(txtattr).insertBefore(covers[i * (multi || 1) + j]);
+                        if (opts.cufont) {
+                            L = paper.print(bars[j][i].x, isBottom ? y + height - barvgutter / 2 : bars[j][i].y - 10, label, opts.cufont);
+                        } else {
+                            L = paper.text(bars[j][i].x, isBottom ? y + height - barvgutter / 2 : bars[j][i].y - 10, label).attr({ "text-anchor": "middle" });
+                        }
+                        L.attr(chartinst.txtattr).attr({ fill: opts.legendcolor || "#000" }).insertBefore(covers[i * (multi || 1) + j]);
 
                         var bb = L.getBBox();
+
+                        if (opts.cufont) {
+                            L.translate(-bb.width/2, 0);
+                        }
 
                         if (bb.x - 7 < l) {
                             L.remove();
@@ -598,7 +612,12 @@
                         A = isRight ? "end" : "start",
                         L;
 
-                    this.labels.push(L = paper.text(X, bars[i * (multi || 1) + j].y, label).attr(txtattr).attr({ "text-anchor": A }).insertBefore(covers[0]));
+                    if (opts.cufon) {
+                        L = paper.print(X, bars[j][i].y, label, opts.cufont);
+                    } else {
+                        L = paper.text(X, bars[j][i].y, label).attr({ "text-anchor": "start" });
+                    }
+                    this.labels.push(L.attr(chartinst.txtattr).attr({ fill: opts.legendcolor || "#000" }).insertBefore(covers[0]));
 
                     if (L.getBBox().x < x + 5) {
                         L.attr({x: x + 5, "text-anchor": "start"});
