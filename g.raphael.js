@@ -105,9 +105,9 @@ Raphael.el.popup = function (dir, size, x, y) {
 
     xy = {
         up: { x: -!center * (bb.width / 2), y: -size * 2 - (center ? bb.height / 2 : bb.height) },
-        down: { x: -!center * (bb.width / 2), y: size * 2 + (center ? bb.height / 2 : bb.height) },
+        down: { x: -!center * (bb.width / 2), y: size * 2 + (center ? bb.height / 2 : 0) },
         left: { x: -size * 2 - (center ? bb.width / 2 : bb.width), y: -!center * (bb.height / 2) },
-        right: { x: size * 2 + (center ? bb.width / 2 : bb.width), y: -!center * (bb.height / 2) }
+        right: { x: size * 2 + (center ? bb.width / 2 : 0), y: -!center * (bb.height / 2) }
     }[dir];
 
     this.translate(xy.x, xy.y);
