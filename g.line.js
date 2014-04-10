@@ -107,11 +107,11 @@
         var allx = Array.prototype.concat.apply([], valuesx),
             ally = Array.prototype.concat.apply([], valuesy),
             xdim = chartinst.snapEnds(Math.min.apply(Math, allx), Math.max.apply(Math, allx), valuesx[0].length - 1),
-            minx = xdim.from,
-            maxx = xdim.to,
+            minx = opts.xdimMin || xdim.from,
+            maxx = opts.xdimMax || xdim.to,
             ydim = chartinst.snapEnds(Math.min.apply(Math, ally), Math.max.apply(Math, ally), valuesy[0].length - 1),
-            miny = ydim.from,
-            maxy = ydim.to,
+            miny = opts.ydimMin || ydim.from,
+            maxy = opts.ydimMax || ydim.to,
             kx = (width - gutter * 2) / ((maxx - minx) || 1),
             ky = (height - gutter * 2) / ((maxy - miny) || 1);
 
