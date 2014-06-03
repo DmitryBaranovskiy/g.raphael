@@ -17,6 +17,9 @@
  > Parameters
  **
  - dir (string) location of Element relative to the tail: `'down'`, `'left'`, `'up'` [default], or `'right'`.
+        Can take combined values, such as: `'downright'`,`'downleft'`,`'rightup'`,`'rightdown'` and so on.
+        First direction shows location of Element relative to xy point (same action like using non-combined value),
+        Second direction shows location of Element relative to the tail.
  - size (number) amount of bevel/padding around the Element, as well as half the width and height of the tail [default: `5`]
  - x (number) x coordinate of the popup's tail [default: Element's `x` or `cx`]
  - y (number) y coordinate of the popup's tail [default: Element's `y` or `cy`]
@@ -48,23 +51,17 @@ Raphael.el.popup = function (dir, size, x, y) {
     this.translate(x - bb.x - (center ? bb.width / 2 : 0), y - bb.y - (center ? bb.height / 2 : 0));
     bb = this.getBBox();
 
-    var paths = {
+    var patterns = {
         up: [
-            'M', x, y,
-            'l', -size, -size, -cw, 0,
             'a', size, size, 0, 0, 1, -size, -size,
             'l', 0, -bb.height,
             'a', size, size, 0, 0, 1, size, -size,
             'l', size * 2 + cw * 2, 0,
             'a', size, size, 0, 0, 1, size, size,
             'l', 0, bb.height,
-            'a', size, size, 0, 0, 1, -size, size,
-            'l', -cw, 0,
-            'z'
-        ].join(','),
+            'a', size, size, 0, 0, 1, -size, size
+        ],
         down: [
-            'M', x, y,
-            'l', size, size, cw, 0,
             'a', size, size, 0, 0, 1, size, size,
             'l', 0, bb.height,
             'a', size, size, 0, 0, 1, -size, size,
@@ -72,12 +69,8 @@ Raphael.el.popup = function (dir, size, x, y) {
             'a', size, size, 0, 0, 1, -size, -size,
             'l', 0, -bb.height,
             'a', size, size, 0, 0, 1, size, -size,
-            'l', cw, 0,
-            'z'
-        ].join(','),
+        ],
         left: [
-            'M', x, y,
-            'l', -size, size, 0, ch,
             'a', size, size, 0, 0, 1, -size, size,
             'l', -bb.width, 0,
             'a', size, size, 0, 0, 1, -size, -size,
@@ -85,12 +78,8 @@ Raphael.el.popup = function (dir, size, x, y) {
             'a', size, size, 0, 0, 1, size, -size,
             'l', bb.width, 0,
             'a', size, size, 0, 0, 1, size, size,
-            'l', 0, ch,
-            'z'
-        ].join(','),
+        ],
         right: [
-            'M', x, y,
-            'l', size, -size, 0, -ch,
             'a', size, size, 0, 0, 1, size, -size,
             'l', bb.width, 0,
             'a', size, size, 0, 0, 1, size, size,
@@ -98,16 +87,131 @@ Raphael.el.popup = function (dir, size, x, y) {
             'a', size, size, 0, 0, 1, -size, size,
             'l', -bb.width, 0,
             'a', size, size, 0, 0, 1, -size, -size,
-            'l', 0, -ch,
+        ]
+    };
+    var paths = {
+        up: [
+            'M', x, y,
+            'l', -size, -size, -cw, 0
+            ]
+            .concat(patterns['up'])
+            .concat([
+                'l', -cw, 0,
+                'z'
+            ]).join(','),
+        down: [
+            'M', x, y,
+            'l', size, size, cw, 0
+            ]
+            .concat(patterns['down'])
+            .concat([
+                'l', cw, 0,
+                'z'
+            ]).join(','),
+        left: [
+            'M', x, y,
+            'l', -size, size, 0, ch
+            ]
+            .concat(patterns['left'])
+            .concat([
+                'l', 0, ch,
+                'z'
+            ]).join(','),
+        right: [
+            'M', x, y,
+            'l', size, -size, 0, -ch
+            ]
+            .concat(patterns['right'])
+            .concat([
+                'l', 0, -ch,
+                'z'
+            ]).join(','),
+        //combined paths
+        upleft: [
+            'M', x, y,
+            'l', -size, -size, -cw * 2, 0
+            ]
+            .concat(patterns['up'])
+            .concat([
+                'z'
+            ]).join(','),
+        upright: [
+            'M', x, y,
+            'l', -size, -size
+            ]
+            .concat(patterns['up'])
+            .concat([
+                'l', -cw * 2, 0,
+                'z'
+            ]).join(','),
+        downleft: [
+            'M', x, y,
+            'l', size, size
+            ]
+            .concat(patterns['down'])
+            .concat([
+                'l', cw * 2, 0,
+                'z'
+            ]).join(','),
+        downright: [
+            'M', x, y,
+            'l', size, size, cw * 2, 0
+            ]
+            .concat(patterns['down'])
+            .concat([
+                'z'
+            ]).join(','),
+        leftup: [
+            'M', x, y,
+            'l', -size, size
+            ]
+            .concat(patterns['left'])
+            .concat([
+                'l', 0, ch * 2,
+                'z'
+            ]).join(','),
+        leftdown: [
+            'M', x, y,
+            'l', -size, size, 0, ch * 2
+            ]
+            .concat(patterns['left'])
+            .concat([
+                'z'
+            ]).join(','),
+        rightup: [
+            'M', x, y,
+            'l', size, -size, 0, -ch * 2
+            ]
+            .concat(patterns['right'])
+            .concat([
+                'z'
+            ]).join(','),
+        rightdown: [
+            'M', x, y,
+            'l', size, -size
+            ]
+            .concat(patterns['right'])
+            .concat([
+                'l', 0, -ch * 2,
             'z'
-        ].join(',')
+            ]).join(',')
     };
 
     xy = {
         up: { x: -!center * (bb.width / 2), y: -size * 2 - (center ? bb.height / 2 : bb.height) },
         down: { x: -!center * (bb.width / 2), y: size * 2 + (center ? bb.height / 2 : bb.height) },
         left: { x: -size * 2 - (center ? bb.width / 2 : bb.width), y: -!center * (bb.height / 2) },
-        right: { x: size * 2 + (center ? bb.width / 2 : bb.width), y: -!center * (bb.height / 2) }
+        right: { x: size * 2 + (center ? bb.width / 2 : bb.width), y: -!center * (bb.height / 2) },
+
+        upleft: { x: -bb.width / (center ? 2 : 1) + size, y: -size * 2 - (center ? bb.height / 2 : bb.height) },
+        upright: { x: (center ? bb.width / 2 : bb.width) - size, y: -size * 2 - (center ? bb.height / 2 : bb.height) },
+        downleft: { x: -bb.width / (center ? 2 : 1) + size, y: size * 2 + (center ? bb.height / 2 : bb.height) },
+        downright: { x: (center ? bb.width / 2 : bb.width) - size, y: size * 2 + (center ? bb.height / 2 : bb.height) },
+        leftup: { x: -size * 2 - (center ? bb.width / 2 : bb.width), y:  -bb.height / (center ? 2 : 1) + size },
+        leftdown: { x: -size * 2 - (center ? bb.width / 2 : bb.width), y: (center ? bb.height / 2 : bb.height) - size },
+        rightup: { x: size * 2 + (center ? bb.width / 2 : bb.width), y:  -bb.height / (center ? 2 : 1) + size },
+        rightdown: { x: size * 2 + (center ? bb.width / 2 : bb.width), y: (center ? bb.height / 2 : bb.height) - size }
+
     }[dir];
 
     this.translate(xy.x, xy.y);
