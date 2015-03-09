@@ -16,6 +16,7 @@
                 r.text(320, 100, "Interactive Pie Chart").attr({ font: "20px 'Fontin Sans', Fontin-Sans, sans-serif" });
                 pie.hover(function () {
                     this.sector.stop();
+                    this.sector.transform("");
                     this.sector.scale(1.1, 1.1, this.cx, this.cy);
 
                     if (this.label) {
