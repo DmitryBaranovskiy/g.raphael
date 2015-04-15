@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>gRaphaël Static Pie Chart</title>
+        <link rel="stylesheet" href="css/demo.css" type="text/css" media="screen" charset="utf-8">
+        <link rel="stylesheet" href="css/demo-print.css" type="text/css" media="print" charset="utf-8">
+        
+        <script src="../raphael-min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../g.raphael.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../g.donut.js" type="text/javascript" charset="utf-8"></script>
+
+        <script type="text/javascript" charset="utf-8">
+            window.onload = function () {
+                var r = Raphael("holder"),
+                    opt = {
+                        legend: ["%%.%% - Opera Users", "%%.%% - IE Users", "%%.%% - Firefox Users", "%%.%% - Chrome Users", "%%.%% - Other Users"],
+                        legendpos: "east",
+                        href: ["http://raphaeljs.com", "http://g.raphaeljs.com"],
+                        stroke: "#fff",
+                        strokewidth: "2",
+                        colors: ["#445", "#9ab", "#2a5", "#44f", "#4f5"],
+                        init: "true"
+                    }
+                    pie =  r.donutchart(320, 240, 100, 50, [30, 28, 25, 25, 12], opt);                    
+                    r.text(320, 100, "Interactive Donut Chart").attr({ font: "20px 'Fontin Sans', Fontin-Sans, sans-serif" });
+
+                pie.hover(function () {
+                    var anim = Raphael.animation({ transform: 's1.1 1.1 ' + this.cx + ' ' + this.cy }, 500, "bounce");
+                    this.sector.animate(anim);                   
+                    if(this.sector.cint){
+                        this.sector.cint.animate(anim);
+                        this.sector.cext.animate(anim);
+                    }
+                    if (this.label) {
+                        this.label[0].stop();
+                        this.label[0].attr({ r: 7.5 });
+                        this.label[1].attr({ "font-weight": 800 });
+                    }
+                }, function () {
+                    var anim = Raphael.animation({ transform: 's1 1 ' + this.cx + ' ' + this.cy }, 500, "bounce");
+                    this.sector.animate(anim);                   
+                    if(this.sector.cint){
+                        this.sector.cint.animate(anim);
+                        this.sector.cext.animate(anim);
+                    }
+                    if (this.label) {
+                        this.label[0].animate({ r: 5 }, 500, "bounce");
+                        this.label[1].attr({ "font-weight": 400 });
+                    }
+                });
+
+            };
+        </script>
+    </head>
+    <body class="raphael" id="g.raphael.dmitry.baranovskiy.com">
+        <div id="holder"></div>
+        <p>
+            Donut chart with legend, hyperlinks on two first sectors and hover effect.
+        </p>
+        <p>
+            Demo of <a href="http://g.raphaeljs.com/">g·Raphaël</a> JavaScript library.
+        </p>
+    </body>
+</html>
