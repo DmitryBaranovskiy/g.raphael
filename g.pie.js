@@ -142,8 +142,9 @@
             }
 
             for (i = 0; i < len; i++) {
+                j = values[i].order;
                 p = paper.path(sectors[i].attr("path")).attr(chartinst.shim);
-                opts.href && opts.href[i] && p.attr({ href: opts.href[i] });
+                opts.href && opts.href[j] && p.attr({ href: opts.href[j] });
                 p.attr = function () {};
                 covers.push(p);
                 series.push(p);
