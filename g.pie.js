@@ -58,7 +58,7 @@
             others = 0,
             cut = opts.maxSlices || 100,
             minPercent = parseFloat(opts.minPercent) || 1,
-            defcut = Boolean( minPercent );
+            defcut = opts.ignoreMinPercent ? false : Boolean( minPercent );
 
         function sector(cx, cy, r, startAngle, endAngle, fill) {
             var rad = Math.PI / 180,
@@ -82,11 +82,24 @@
         chart.covers = covers;
 
         if (len == 1) {
-            series.push(paper.circle(cx, cy, r).attr({ fill: opts.colors && opts.colors[0] || chartinst.colors[0], stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth }));
-            covers.push(paper.circle(cx, cy, r).attr(chartinst.shim));
             total = values[0];
-            values[0] = { value: values[0], order: 0, valueOf: function () { return this.value; } };
-            opts.href && opts.href[0] && covers[0].attr({ href: opts.href[0] });
+            
+            // use a path so that animation is enabled.
+            var s = "M" + (cx) + "," + (cy-r) + "A"+r+","+r+",0,1,1,"+(cx-0.1)+","+(cy-r)+"z";
+            var p = paper.path(s).attr({ fill: opts.colors && opts.colors[0] || chartinst.colors[0], stroke: opts.stroke || "#fff", "stroke-width": opts.strokewidth == null ? 1 : opts.strokewidth });
+            var path = sector(cx, cy, r, angle, angle -= 360 );
+            values[0] = { value: total, order: 0, valueOf: function () { return this.value; } };
+            p.value = values[0];
+
+            sectors.push(p);
+            series.push(p);
+            opts.init && p.animate({ path: path.join(",") }, (+opts.init - 1) || 1000, ">");
+    
+            p = paper.path(sectors[0].attr("path")).attr(chartinst.shim);
+            opts.href && opts.href[0] && p.attr({ href: opts.href[0] });
+            p.attr = function () {};
+            covers.push(p);
+            series.push(p);
             series[0].middle = {x: cx, y: cy};
             series[0].mangle = 180;
         } else {
@@ -131,7 +144,22 @@
 
                 var path = sector(cx, cy, r, angle, angle -= 360 * values[i] / total);
                 var j = (opts.matchColors && opts.matchColors == true) ? values[i].order : i;
-                var p = paper.path(opts.init ? ipath : path).attr({ fill: opts.colors && opts.colors[j] || chartinst.colors[j] || "#666", stroke: opts.stroke || "#fff", "stroke-width": (opts.strokewidth == null ? 1 : opts.strokewidth), "stroke-linejoin": "round" });
+                var p = null;
+                var attr = { fill: opts.colors && opts.colors[j] || chartinst.colors[j] || "#666", stroke: opts.stroke || "#fff", "stroke-width": (opts.strokewidth == null ? 1 : opts.strokewidth) };
+                
+                //if a single value equals total, it will draw a circle
+                if (values[i].value < total) {
+                  p = paper.path(opts.init ? ipath : path).attr(attr);
+                } else {
+                    //only draw a full circle once -- using a path so the hover over works still
+                    if(values[i].value){
+                        var s = "M";
+                        s = s + "" + (cx) + "," + (cy-r) + "A"+r+","+r+",0,1,1,"+(cx-0.1)+","+(cy-r)+"z";
+                        p = paper.path(s).attr(attr);
+                    }  else {
+                        p = paper.path(opts.init ? ipath : path).attr(attr);
+                    }
+                }
 
                 p.value = values[i];
                 p.middle = path.middle;
