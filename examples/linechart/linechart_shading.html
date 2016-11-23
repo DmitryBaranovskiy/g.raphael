@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <title>gRaphaël Line Chart - a line chart with shading example</title>
+        <script type="text/javascript" src="../raphael-min.js"></script>
+        <script type="text/javascript" src="../../g.raphael-min.js"></script>
+        <script type="text/javascript" src="../../g.line-min.js"></script>
+        <script type="text/javascript">
+            window.onload = function() {
+                // Creates canvas 640 × 480 at 10, 50
+                var r = Raphael(10, 50, 640, 480);
+                
+                // Creates a simple line chart at 10, 10
+                // width 300, height 220
+                // x-values: [1,2,3,4,5], y-values: [10,20,15,35,30]
+				// shade is set to true (fill color opacity will be .3)
+                r.g.linechart(10,10,300,220,[1,2,3,4,5],[10,20,15,35,30], {shade:true, "colors":["#F44"]});
+
+				// Creates a simple line chart at 10, 10
+                // width 300, height 220
+                // x-values: [1,2,3,4,5], y-values: [5,10,5,15,20]
+				// shade is set to true, nostroke is set to true (fill color opacity will be 1)
+				r.g.linechart(10,10,300,220,[1,2,3,4,5],[5,10,5,15,20], {shade:true, "colors":["#44F"], nostroke:true});
+            }
+        </script>
+    </head>
+    <body>   
+    </body>
+</html>

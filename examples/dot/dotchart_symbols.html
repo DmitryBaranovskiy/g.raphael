@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>gRaphaël Line Chart - customised symbol dot chart example</title>
+        <script type="text/javascript" src="../raphael-min.js"></script>
+        <script type="text/javascript" src="../../g.raphael-min.js"></script>
+        <script type="text/javascript" src="../../g.dot-min.js"></script>
+        <script type="text/javascript">
+            window.onload = function() {
+                // Creates canvas 640 × 480 at 10, 50
+                var r = Raphael(10, 50, 640, 480);
+                
+                // Creates a simple dot chart at 10, 10
+                // width 300, height 220
+                // x-values: [5,10,15,20,25], y-values: [220,220,220,220,220]
+                // size: [1,2,3,4,5]
+                r.g.dotchart(10,10,300,220,[5,10,15,20,25],[220,220,220,220,220],[1,2,3,4,5], {max:10, symbol:'*'});
+            }
+        </script>
+    </head>
+    <body>   
+    </body>
+</html>

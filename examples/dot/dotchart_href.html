@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <title>gRaphaël Line Chart - a simple dot chart example with hyperlinks</title>
+        <script type="text/javascript" src="../raphael-min.js"></script>
+        <script type="text/javascript" src="../../g.raphael-min.js"></script>
+        <script type="text/javascript" src="../../g.dot-min.js"></script>
+        <script type="text/javascript">
+            window.onload = function() {
+                // Creates canvas 640 × 480 at 10, 50
+                var r = Raphael(10, 50, 640, 480);
+                
+                // Creates a simple dot chart at 10, 10
+                // width 300, height 220
+                // x-values: [5,10,15,20,25], y-values: [220,220,220,220,220]
+                // size: [1,2,3,4,5]
+                // attach links to the first 2 dots, and the last dot.
+                var dots = r.g.dotchart(10,10,300,220,[5,10,15,20,25],[220,220,220,220,220],[1,2,3,4,5], {max:10, href: ["http://www.google.com","http://www.yahoo.com",,,"http://www.raphaeljs.com"]});
+                dots.each(function() {
+                  this.click(function() {
+                    alert(this.attrs.href);
+                  });
+                });
+            }
+        </script>
+    </head>
+    <body>   
+    </body>
+</html>

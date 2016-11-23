@@ -1,0 +1,41 @@
+<html>
+    <head>
+        <title>gRaphaël Pie Chart - a more complex .hover() example</title>
+        <script type="text/javascript" src="../raphael-min.js"></script>
+        <script type="text/javascript" src="../../g.raphael-min.js"></script>
+        <script type="text/javascript" src="../../g.pie-min.js"></script>
+        <script type="text/javascript">
+            window.onload = function() {
+                // Creates canvas 640 × 480 at 10, 50
+                var r = Raphael(10, 50, 640, 480);
+                // Creates pie chart at with center at 320, 200,
+                // radius 100 and data: [55, 20, 13, 32]
+                var pie = r.g.piechart(320, 240, 100, [55, 20, 13, 32]).attr({"fill":"#666"});
+                
+                var tooltip;
+                // add a hover event to the pie chart
+                pie.hover(function() {
+                    // we store the sector that's being hovered
+                    var that = this.sector;
+                    // loop through the pie and highlight the hovered sector while dimming the rest 
+                    // also show the value of the hovered sector
+                    pie.each(function() {
+                       if(this.sector.id === that.id) {
+                           this.sector.attr({fill:"#666"});
+                           tooltip = r.g.text(this.x, this.y, this.sector.value.value).attr({"font-size": 15, "fill":"#FFF"});
+                           
+                       } else {
+                           this.sector.animate({"opacity":0.25}, 1000);
+                       }
+                    });
+                }, function() {
+                    // when mouse hovers out, restore pie to original color
+                    tooltip.remove();
+                    pie.animate({"opacity":1, "fill":"#666"}, 1000);
+                });
+            }
+        </script>
+    </head>
+    <body>   
+    </body>
+</html>
